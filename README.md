@@ -22,16 +22,16 @@ composer require rakutentech/laravel-request-docs --dev
 You can publish the config file with:
 
 ```bash
-php artisan vendor:publish --provider="Rakutentech\LaravelERD\LaravelERDServiceProvider"
+php artisan vendor:publish --provider="Rakutentech\LaravelRequestDocs\LaravelRequestDocsServiceProvider"
 ```
 
 ## Usage
 
 ```php
-php artisan erd:generate
+php artisan laravel-request-docs
 ```
 
-ERD HTML is generated inside ``docs/``.
+Docs HTML is generated inside ``docs/``.
 
 ### Sample
 
