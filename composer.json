@@ -1,0 +1,61 @@
+{
+    "name": "rakutentech/laravel-request-docs",
+    "description": "Automatically generate Laravel docs from request rules, controllers and routes",
+    "keywords": [
+        "rakutentech",
+        "laravel",
+        "laravel-request-docs"
+    ],
+    "homepage": "https://github.com/rakutentech/laravel-request-docs",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Pulkit Kathuria",
+            "email": "pulkit.kathuria@rakuten.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "spatie/laravel-package-tools": "^1.4.3",
+        "illuminate/contracts": "^8.37"
+    },
+    "require-dev": {
+        "brianium/paratest": "^6.2",
+        "nunomaduro/collision": "^5.3",
+        "orchestra/testbench": "^6.15",
+        "phpunit/phpunit": "^9.3",
+        "spatie/laravel-ray": "^1.23",
+        "vimeo/psalm": "^4.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rakutentech\\LaravelRequestDocs\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rakutentech\\LaravelRequestDocs\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "psalm": "vendor/bin/psalm",
+        "test": "./vendor/bin/testbench package:test --parallel --no-coverage",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Rakutentech\\LaravelRequestDocs\\LaravelRequestDocsServiceProvider"
+            ],
+            "aliases": {
+                "LaravelRequestDocs": "Rakutentech\\LaravelRequestDocs\\LaravelRequestDocsFacade"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

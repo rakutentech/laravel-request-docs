@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<ruleset name="PSR2">
+    <description>Standard Based on PSR2</description>
+    <exclude-pattern type="relative-root">tests/*</exclude-pattern>
+    <rule ref="PSR2"/>
+    <rule ref="Generic.Files.LineLength">
+      <properties>
+       <property name="lineLimit" value="210"/>
+       <property name="absoluteLineLimit" value="0"/>
+      </properties>
+    </rule>
+</ruleset>
