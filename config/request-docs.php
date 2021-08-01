@@ -7,5 +7,10 @@ return [
         //Example
         // \App\Http\Middleware\NotFoundWhenProduction::class,
     ],
-    'docs_path' => base_path('docs/request-docs/')
+    'docs_path' => base_path('docs/request-docs/'),
+    'hide_matching' => [
+        "#^telescope#",
+        "#^docs#",
+        "#^request-docs#",
+    ]
 ];

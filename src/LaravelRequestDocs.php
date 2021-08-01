@@ -6,16 +6,25 @@ use Route;
 use ReflectionMethod;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 class LaravelRequestDocs
 {
 
     public function getDocs()
     {
         $docs = [];
+        $excludePatterns = config('request-docs.hide_matching') ?? [];
         $controllersInfo = $this->getControllersInfo();
         $controllersInfo = $this->appendRequestRules($controllersInfo);
         foreach ($controllersInfo as $controllerInfo) {
-            if (!empty($controllerInfo['rules'])) {
+            $exclude = false;
+            foreach ($excludePatterns as $regex) {
+                $uri = $controllerInfo['uri'];
+                if (preg_match($regex, $uri)) {
+                    $exclude = true;
+                }
+            }
+            if (!$exclude) {
                 $docs[] = $controllerInfo;
             }
         }
