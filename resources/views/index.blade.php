@@ -56,7 +56,7 @@
             </div>
         </nav>
       <div id="app" v-cloak class="w-full flex lg:pt-10">
-         <div class="text-xl text-grey-darkest break-all bg-gray-200 pl-2">
+         <aside class="text-xl text-grey-darkest break-all bg-gray-200 pl-2 h-screen sticky top-1 overflow-auto">
             <h1>Routes List</h1>
             <hr class="border-b border-gray-300">
             <table class="table-fixed text-sm mt-5">
@@ -90,7 +90,7 @@
                     @endforeach
                 </tbody>
             </table>
-         </div>
+        </aside>
          <br><br>
          <div class="ml-6 mr-6 pl-2 w-2/3 bg-gray-300 p-2">
             @foreach ($docs as $index => $doc)
@@ -128,16 +128,16 @@
                     <tbody>
                         <tr>
                             <td class="align-left border pl-2 pr-2 bg-gray-200 font-bold">Controller</td>
-                            <td class="align-left border pl-2 pr-2">{{$doc['controller']}}</td>
+                            <td class="align-left border pl-2 pr-2 break-all">{{$doc['controller']}}</td>
                         </tr>
                         <tr>
                             <td class="align-left border pl-2 pr-2 bg-gray-200 font-bold">Function</td>
-                            <td class="align-left border pl-2 pr-2">{{$doc['method']}}</td>
+                            <td class="align-left border pl-2 pr-2 break-all">{{$doc['method']}}</td>
                         </tr>
                         @foreach ($doc['middlewares'] as $middleware)
                             <tr>
                                 <td class="align-left border pl-2 pr-2 bg-gray-200">Middleware</td>
-                                <td class="align-left border pl-2 pr-2">{{$middleware}}</td>
+                                <td class="align-left border pl-2 pr-2 break-all">{{$middleware}}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -215,7 +215,7 @@
                     </div>
                     <div class="">
                         <div v-if="docs[{{$index}}]['response']">
-                            <h3 class="font-bold mb-2">
+                            <h3 class="font-bold mb-2 mt-2">
                                 RESPONSE
                                 <span v-if="docs[{{$index}}]['responseOk']" class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-green-100 bg-green-500 rounded">OK</span>
                                 <span v-if="!docs[{{$index}}]['responseOk']" class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-500 rounded">ERROR</span>
@@ -273,8 +273,8 @@
         }
         var docs = {!! json_encode($docs) !!}
         var app_url = {!! json_encode(config('app.url')) !!}
-        //remove trailing slash
-        var app_url = app_url.replace(/\/$/, '')
+        //remove trailing slash if any
+        app_url = app_url.replace(/\/$/, '')
         docs.map(function(doc, index) {
             doc.response = null
             doc.responseOk = null
@@ -304,10 +304,11 @@
                 })
             }
 
+            // assume to be POST, PUT, DELETE
             if (doc.methods[0] != 'GET') {
                 body = {}
                 Object.keys(doc.rules).map(function(attribute) {
-                    // check contains in string
+                    // ignore the child attributes
                     if (attribute.indexOf('.*') !== -1) {
                         return
                     }
@@ -330,7 +331,7 @@
                 request(doc) {
                     // convert string to lower case
                     var method = doc['methods'][0].toLowerCase()
-                    // remove \n from string
+                    // remove \n from string that is used for display
                     var url = doc.url.replace(/\n/g, '')
 
                     try {
@@ -340,11 +341,17 @@
                         return
                     }
                     doc.loading = true
+                    var config = {
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    }
                     axios({
                         method: method,
                         url: url,
                         data: json,
-                        withCredentials: true
+                        withCredentials: true,
+                        config: config
                       }).then(function (response) {
                         doc.response = JSON.stringify(response, null, 2)
                         doc.responseOk = true
