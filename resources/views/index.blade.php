@@ -22,15 +22,11 @@
             display: none;
         }
 
-        .request-editor {
-            /* we dont use `language-` classes anymore so thats why we need to add background and text color manually */
-            background: #2d2d2d;
-            color: #ccc;
-
+        .my-prism-editor {
             /* you must provide font-family font-size line-height. Example:*/
             font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
             font-size: 12px;
-            line-height: 1.5;
+            line-height: 1.25;
             padding: 5px;
         }
 
@@ -64,7 +60,7 @@
                     @foreach ($docs as $index => $doc)
                     <tr>
                         <td>
-                            <a href="#{{$doc['methods'][0] .'-'. $doc['uri']}}">
+                            <a href="#{{$doc['methods'][0] .'-'. $doc['uri']}}" @click="highlightSidebar({{$index}})">
                                 <span class="w-20
                                     font-thin
                                     inline-flex
@@ -83,7 +79,11 @@
                                     ">
                                     {{$doc['methods'][0]}}
                                 </span>
-                                <span class="text-xs">{{$doc['uri']}}</span>
+                                <span class="text-xs" v-bind:class="docs[{{$index}}]['isActiveSidebar'] ? 'font-bold':''">
+                                    <span class="font-bold text-green-600" v-if="docs[{{$index}}]['responseOk'] === true">✓</span>
+                                    <span class="font-bold text-red-600" v-if="docs[{{$index}}]['responseOk'] === false">✗</span>
+                                    {{$doc['uri']}}
+                                </span>
                             </a>
                         <td>
                     </td>
@@ -196,20 +196,21 @@
                     </tbody>
                 </table>
                 @endif
-                <button class="bg-transparent hover:bg-indigo-500 text-indigo-700 font-semibold hover:text-white mt-2 pt-1 pb-1 pl-10 pr-10 border border-indigo-500 hover:border-transparent shadow-inner rounded"
+                <button class="bg-transparent hover:bg-indigo-500 text-gray-700 font-semibold hover:text-white mt-2 pt-1 pb-1 pl-10 pr-10 border border-gray-700 hover:border-transparent shadow-inner border-2 rounded-full"
                     v-if="!docs[{{$index}}]['try']" v-on:click="docs[{{$index}}]['try'] = !docs[{{$index}}]['try']">Try</button>
-                <button v-if="docs[{{$index}}]['try']" @click="request(docs[{{$index}}])" class="bg-red-500 hover:bg-red-700 text-white font-bold mt-2 pt-1 pb-2 mb-1 pl-10 pr-10 shadow-xl rounded">
-                    <svg v-if="docs[{{$index}}]['loading']" class="animate-spin h-4 w-4 rounded-full bg-transparent border-2 border-transparent border-opacity-50 inline pr-2" style="border-right-color: white; border-top-color: white;" viewBox="0 0 24 24"></svg> Run
+                <button v-if="docs[{{$index}}]['try']" @click="request(docs[{{$index}}])" class="bg-red-500 hover:bg-red-700 text-white font-bold mt-2 pt-1 pb-2 mb-1 pl-10 pr-10 shadow-xl rounded-full">
+                    <svg v-if="docs[{{$index}}]['loading']" class="animate-spin h-4 w-4 rounded-full bg-transparent border-2 border-transparent border-opacity-50 inline pr-2" style="border-right-color: white; border-top-color: white;" viewBox="0 0 24 24"></svg>
+                    Run
                 </button>
                 <div class="grid grid-cols-1 mt-3 pr-2">
                     <div class="">
                         <div v-if="docs[{{$index}}]['try']">
-                            <h3 class="font-thin">REQUEST URL</h3>
-                            <prism-editor class="request-editor" style="min-height:35px" v-model="docs[{{$index}}]['url']" :highlight="highlighter"></prism-editor>
+                            <h3 class="font-thin">REQUEST URL<sup class="text-red-500"> *required</sup></h3>
+                            <prism-editor class="my-prism-editor" style="min-height:30px;background:#2d2d2d;color: #ccc;resize:both;" v-model="docs[{{$index}}]['url']" :highlight="highlighter" line-numbers></prism-editor>
                             <br>
                             @if (!in_array('GET', $doc['methods']))
-                            <h3 class="font-thin">REQUEST BODY</h3>
-                            <prism-editor class="request-editor" style="min-height:200px;" v-model="docs[{{$index}}]['body']" :highlight="highlighter" line-numbers></prism-editor>
+                            <h3 class="font-thin">REQUEST BODY<sup class="text-red-500"> *required</sup></h3>
+                            <prism-editor class="my-prism-editor" style="min-height:200px;background:#2d2d2d;color: #ccc;resize:both" v-model="docs[{{$index}}]['body']" :highlight="highlighter" line-numbers></prism-editor>
                             @endif
                         </div>
                     </div>
@@ -220,7 +221,7 @@
                                 <span v-if="docs[{{$index}}]['responseOk']" class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-green-100 bg-green-500 rounded">OK</span>
                                 <span v-if="!docs[{{$index}}]['responseOk']" class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-500 rounded">ERROR</span>
                             </h3>
-                            <prism-editor v-if="docs[{{$index}}]['response']" class="request-editor" style="min-height:200px;max-height:500px;background:#282525" v-model="docs[{{$index}}]['response']" :highlight="highlighter" line-numbers></prism-editor>
+                            <prism-editor v-if="docs[{{$index}}]['response']" class="my-prism-editor" style="min-height:200px;max-height:700px;background:rgb(52 33 33);color: #ccc;resize:both;" readonly v-model="docs[{{$index}}]['response']" :highlight="highlighterAtom" line-numbers></prism-editor>
                         </div>
                     </div>
                   </div>
@@ -240,6 +241,7 @@
                 isString: null,
                 isArray: null,
                 isDate: null,
+                isIn: null,
                 value: '',
             }
             rules.map(function(rule) {
@@ -279,6 +281,7 @@
             doc.response = null
             doc.responseOk = null
             doc.body = "{}"
+            doc.isActiveSidebar = window.location.hash.substr(1) === doc['methods'][0] +"-"+ doc['uri']
             doc.url = app_url + "/"+ doc.uri
             doc.try = false
             doc.loading = false
@@ -324,9 +327,16 @@
               docs: docs
             },
             methods: {
+                highlightSidebar(idx) {
+                    docs.map(function(doc, index) {
+                        doc.isActiveSidebar = index == idx
+                    })
+                },
                 highlighter(code) {
-                    // js highlight example
                     return Prism.highlight(code, Prism.languages.js, "js");
+                },
+                highlighterAtom(code) {
+                    return Prism.highlight(code, Prism.languages.atom, "js");
                 },
                 request(doc) {
                     // convert string to lower case
