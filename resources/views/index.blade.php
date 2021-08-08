@@ -51,7 +51,7 @@
 
                 <div class="hidden md:flex flex-col md:flex-row md:ml-auto mt-3 md:mt-0" id="navbar-collapse">
 
-                    <a href="https://github.com/rakutentech/laravel-request-docs" class="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center border border-solid border-indigo-600 rounded hover:bg-indigo-600 hover:text-white transition-colors duration-300 mt-1 md:mt-0 md:ml-1">Github</a>
+                    <a href="https://github.com/rakutentech/laravel-request-docs" class="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center border border-solid border-indigo-600 rounded hover:bg-indigo-600 hover:text-white transition-colors duration-300 mt-1 md:mt-0 md:ml-1">Request Feature</a>
                 </div>
             </div>
         </nav>
