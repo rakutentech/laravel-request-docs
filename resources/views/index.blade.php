@@ -53,7 +53,7 @@
         </nav>
       <div id="app" v-cloak class="w-full flex lg:pt-10">
          <aside class="text-xl text-grey-darkest break-all bg-gray-200 pl-2 h-screen sticky top-1 overflow-auto">
-            <h1>Routes List</h1>
+            <h1 class="font-light">Routes List</h1>
             <hr class="border-b border-gray-300">
             <table class="table-fixed text-sm mt-5">
                 <tbody>
@@ -73,7 +73,7 @@
                                     leading-none
                                     rounded
                                     text-{{in_array('GET', $doc['methods']) ? 'green': ''}}-100 bg-{{in_array('GET', $doc['methods']) ? 'green': ''}}-500
-                                    text-{{in_array('POST', $doc['methods']) ? 'black': ''}}-100 bg-{{in_array('POST', $doc['methods']) ? 'red': ''}}-500
+                                    text-{{in_array('POST', $doc['methods']) ? 'black': ''}} bg-{{in_array('POST', $doc['methods']) ? 'red': ''}}-500
                                     text-{{in_array('PUT', $doc['methods']) ? 'black': ''}}-100 bg-{{in_array('PUT', $doc['methods']) ? 'yellow': ''}}-500
                                     text-{{in_array('DELETE', $doc['methods']) ? 'white': ''}} bg-{{in_array('DELETE', $doc['methods']) ? 'black': ''}}
                                     ">
@@ -109,7 +109,7 @@
                         leading-none
                         rounded
                         text-{{in_array('GET', $doc['methods']) ? 'green': ''}}-100 bg-{{in_array('GET', $doc['methods']) ? 'green': ''}}-500
-                        text-{{in_array('POST', $doc['methods']) ? 'black': ''}}-100 bg-{{in_array('POST', $doc['methods']) ? 'red': ''}}-500
+                        text-{{in_array('POST', $doc['methods']) ? 'black': ''}} bg-{{in_array('POST', $doc['methods']) ? 'red': ''}}-500
                         text-{{in_array('PUT', $doc['methods']) ? 'black': ''}}-100 bg-{{in_array('PUT', $doc['methods']) ? 'yellow': ''}}-500
                         text-{{in_array('DELETE', $doc['methods']) ? 'white': ''}} bg-{{in_array('DELETE', $doc['methods']) ? 'black': ''}}
                         ">
@@ -127,16 +127,16 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="align-left border pl-2 pr-2 bg-gray-200 font-bold">Controller</td>
+                            <td class="align-left border border-gray-300 pl-2 pr-2 bg-gray-200 font-bold">Controller</td>
                             <td class="align-left border pl-2 pr-2 break-all">{{$doc['controller']}}</td>
                         </tr>
                         <tr>
-                            <td class="align-left border pl-2 pr-2 bg-gray-200 font-bold">Function</td>
-                            <td class="align-left border pl-2 pr-2 break-all">{{$doc['method']}}</td>
+                            <td class="align-left border border-gray-300 pl-2 pr-2 bg-gray-200 font-bold">Method</td>
+                            <td class="align-left border pl-2 pr-2 break-all">{{"@" .$doc['method']}}</td>
                         </tr>
                         @foreach ($doc['middlewares'] as $middleware)
                             <tr>
-                                <td class="align-left border pl-2 pr-2 bg-gray-200">Middleware</td>
+                                <td class="align-left border border-gray-300 pl-2 pr-2 bg-gray-200">Middleware</td>
                                 <td class="align-left border pl-2 pr-2 break-all">{{$middleware}}</td>
                             </tr>
                         @endforeach
@@ -146,16 +146,16 @@
                 <table class="table-fixed align-left min-w-full text-sm mt-5">
                     <thead class="border">
                     <tr class="border">
-                        <th class="border pl-2 pr-16 pt-1 pb-1 w-12 text-left bg-gray-200">Attributes</th>
-                        <th class="border pl-2 pr-16 pt-1 pb-1 w-12 text-left bg-gray-200">Required</th>
-                        <th class="border pl-2 pr-16 pt-1 pb-1 w-10 text-left bg-gray-200">Type</th>
-                        <th class="border pl-2 pr-16 pt-1 pb-1 w-1/20 text-left bg-gray-200">Rules</th>
+                        <th class="border border-gray-300 pl-2 pr-16 pt-1 pb-1 w-12 text-left bg-gray-200">Attributes</th>
+                        <th class="border border-gray-300 pl-2 pr-16 pt-1 pb-1 w-12 text-left bg-gray-200">Required</th>
+                        <th class="border border-gray-300 pl-2 pr-16 pt-1 pb-1 w-10 text-left bg-gray-200">Type</th>
+                        <th class="border border-gray-300 pl-2 pr-16 pt-1 pb-1 w-1/20 text-left bg-gray-200">Rules</th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach ($doc['rules'] as $attribute => $rules)
                     <tr class="border">
-                        <td class="border pl-3 pt-1 pb-1 pr-2 bg-gray-100">{{$attribute}}</td>
+                        <td class="border border-blue-200 pl-3 pt-1 pb-1 pr-2 bg-blue-100">{{$attribute}}</td>
                         <td class="border pl-3 pt-1 pb-1 pr-2">
                             @foreach ($rules as $rule)
                                 @if (str_contains($rule, 'required'))
@@ -178,6 +178,9 @@
                                 @if (str_contains($rule, 'date'))
                                 <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-yellow-400 rounded">Date</span>
                                 @endif
+                                @if (str_contains($rule, 'boolean'))
+                                <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-green-400 rounded">Boolean</span>
+                                @endif
                             <br>
                             @endforeach
                         </td>
@@ -185,8 +188,10 @@
                             <div class="font-mono">
                                 @foreach ($rules as $rule)
                                     {{-- No print on just one rule 'required', as already printed as label --}}
-                                    @if ($rule != 'required')
-                                        {{ str_replace(["required|", "integer|", "string|"], ["", "", ""], $rule) }}
+                                    @if($rule != 'required')
+                                        <span>
+                                            {{ str_replace(["required|", "integer|", "string|", "boolean|"], ["", "", ""], $rule) }}
+                                        </span>
                                     @endif
                                 @endforeach
                             </div>
