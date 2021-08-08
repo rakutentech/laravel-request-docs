@@ -31,17 +31,44 @@ class LaravelRequestDocs
         return array_filter($docs);
     }
 
+    public function sortDocs(array $docs): Array
+    {
+        $sorted = [];
+        foreach ($docs as $key => $doc) {
+            if (in_array('GET', $doc['methods'])) {
+                $sorted[] = $doc;
+            }
+        }
+        foreach ($docs as $key => $doc) {
+            if (in_array('POST', $doc['methods'])) {
+                $sorted[] = $doc;
+            }
+        }
+        foreach ($docs as $key => $doc) {
+            if (in_array('PUT', $doc['methods'])) {
+                $sorted[] = $doc;
+            }
+        }
+        foreach ($docs as $key => $doc) {
+            if (in_array('DELETE', $doc['methods'])) {
+                $sorted[] = $doc;
+            }
+        }
+        return $sorted;
+    }
+
     public function getControllersInfo(): Array
     {
         $controllersInfo = [];
         $routes = collect(Route::getRoutes());
         foreach ($routes as $route) {
             $controllersInfo[] = [
-                'uri'        => $route->uri,
-                'methods'    => $route->methods,
-                'middleware' => $route->action['middleware'],
-                'controller' => explode('@', $route->action['controller'])[0],
-                'method'     => explode('@', $route->action['controller'])[1],
+                'uri'         => $route->uri,
+                'methods'     => $route->methods,
+                'middlewares' => !is_array($route->action['middleware']) ? [$route->action['middleware']] : $route->action['middleware'],
+                'controller'  => explode('@', $route->action['controller'])[0],
+                'method'      => explode('@', $route->action['controller'])[1],
+                'rules'       => [],
             ];
         }
 
@@ -51,7 +78,6 @@ class LaravelRequestDocs
     public function appendRequestRules(Array $controllersInfo)
     {
         foreach ($controllersInfo as $index => $controllerInfo) {
-            $controllersInfo[$index]['rules']  = [];
             $controller       = $controllerInfo['controller'];
             $method           = $controllerInfo['method'];
             $reflectionMethod = new ReflectionMethod($controller, $method);

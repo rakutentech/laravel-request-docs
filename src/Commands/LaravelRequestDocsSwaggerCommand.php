@@ -7,9 +7,9 @@ use Rakutentech\LaravelRequestDocs\LaravelRequestDocs;
 use Rakutentech\LaravelRequestDocs\LaravelRequestSwaggerDocs;
 use File;
 
-class LaravelRequestDocsCommand extends Command
+class LaravelRequestDocsSwaggerCommand extends Command
 {
-    public $signature = 'lrd:generate';
+    public $signature = 'lrd:swagger';
 
     public $description = 'Generate request docs to HTML and update swagger json';
 
@@ -25,19 +25,18 @@ class LaravelRequestDocsCommand extends Command
 
     public function handle()
     {
-        $destinationPath = config('request-docs.docs_path') ?? base_path('docs/request-docs/');
+        $swaggerJsonPath = config('request-docs.swagger.docs_json_path');
+        $swaggerJsonPathDst = $swaggerJsonPath;
 
         $docs = $this->laravelRequestDocs->getDocs();
-        $docs = $this->laravelRequestDocs->sortDocs($docs);
 
-        if (! File::exists($destinationPath)) {
-            File::makeDirectory($destinationPath, 0755, true);
+        if (! File::exists(dirname($swaggerJsonPathDst))) {
+            File::makeDirectory(dirname($swaggerJsonPathDst), 0755, true);
         }
-        File::put($destinationPath . '/index.html',
-            view('request-docs::index')
-                ->with(compact('docs'))
-                ->render()
-        );
-        $this->comment("Static HTML generated: $destinationPath");
+
+        // start swagger json update
+        $swaggerJson = $this->laravelRequestSwaggerDocs->regenerateSwaggerJson($docs, $swaggerJsonPath);
+        File::put($swaggerJsonPathDst, json_encode($swaggerJson, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+        $this->comment("Swagger Docs updated: $swaggerJsonPath");
     }
 }

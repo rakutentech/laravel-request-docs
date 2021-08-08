@@ -5,6 +5,7 @@ namespace Rakutentech\LaravelRequestDocs;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Rakutentech\LaravelRequestDocs\Commands\LaravelRequestDocsCommand;
+use Rakutentech\LaravelRequestDocs\Commands\LaravelRequestDocsSwaggerCommand;
 use Route;
 
 class LaravelRequestDocsServiceProvider extends PackageServiceProvider
@@ -20,7 +21,8 @@ class LaravelRequestDocsServiceProvider extends PackageServiceProvider
             ->name('laravel-request-docs')
             ->hasConfigFile()
             ->hasViews()
-            ->hasCommand(LaravelRequestDocsCommand::class);
+            ->hasCommand(LaravelRequestDocsCommand::class)
+            ->hasCommand(LaravelRequestDocsSwaggerCommand::class);
 
         Route::get('/request-docs', [\Rakutentech\LaravelRequestDocs\Controllers\LaravelRequestDocsController::class, 'index'])
             ->name('request-docs.index')
