@@ -8,7 +8,7 @@ return [
     'url' => 'routes-docs',
     'middlewares' => [
         //Example
-        \App\Http\Middleware\NotFoundWhenProduction::class,
+        // \App\Http\Middleware\NotFoundWhenProduction::class,
     ],
     /**
      * Path to to static HTML if using command line.
