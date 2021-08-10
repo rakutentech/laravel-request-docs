@@ -88,13 +88,14 @@ class LaravelRequestDocs
                     continue;
                 }
                 $requestClassName = $param->getType()->getName();
+                $requestClass = null;
                 try {
                     $requestClass = new $requestClassName();
-                    if ($requestClass instanceof FormRequest) {
-                        $controllersInfo[$index]['rules'] = $this->flattenRules($requestClass->rules());
-                    }
                 } catch (\Throwable $th) {
                     //throw $th;
+                }
+                if ($requestClass instanceof FormRequest) {
+                    $controllersInfo[$index]['rules'] = $this->flattenRules($requestClass->rules());
                 }
             }
         }

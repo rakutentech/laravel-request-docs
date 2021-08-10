@@ -42,7 +42,7 @@
             <div class="container px-4 mx-auto md:flex md:items-center">
 
             <div class="flex justify-between items-center">
-                <a href="{{config('request.docs.url')}}" class="font-bold text-xl text-indigo-600">LRD</a>
+                <a href="{{config('request-docs.url')}}" class="font-bold text-xl text-indigo-600">LRD</a>
             </div>
 
                 <div class="hidden md:flex flex-col md:flex-row md:ml-auto mt-3 md:mt-0" id="navbar-collapse">

@@ -5,7 +5,7 @@ return [
     * Route where request docs will be served from
     * localhost:8080/request-docs
     */
-    'url' => 'routes-docs',
+    'url' => 'request-docs',
     'middlewares' => [
         //Example
         // \App\Http\Middleware\NotFoundWhenProduction::class,
