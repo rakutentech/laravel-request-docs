@@ -21,6 +21,7 @@ class LaravelRequestDocsServiceProvider extends PackageServiceProvider
             ->name('laravel-request-docs')
             ->hasConfigFile('request-docs')
             ->hasViews()
+            //->hasAssets()
             ->hasCommand(LaravelRequestDocsCommand::class)
             ->hasCommand(LaravelRequestDocsSwaggerCommand::class);
 

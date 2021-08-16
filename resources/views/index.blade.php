@@ -17,9 +17,15 @@
       <link rel="stylesheet" href="https://unpkg.com/prismjs/themes/prism-tomorrow.css" />
 
       <script src="https://unpkg.com/faker@5.5.3/dist/faker.min.js" referrerpolicy="no-referrer"></script>
+
+      <script src="https://unpkg.com/vue-markdown@2.2.4/dist/vue-markdown.js"></script>
+      {{-- <script src="{{asset('./vendor/request-docs/app.js')}}"></script> --}}
       <style>
         [v-cloak] {
             display: none;
+        }
+        a {
+            color: #3f3398;
         }
 
         .my-prism-editor {
@@ -80,8 +86,8 @@
                                     {{$doc['methods'][0]}}
                                 </span>
                                 <span class="text-xs" v-bind:class="docs[{{$index}}]['isActiveSidebar'] ? 'font-bold':''">
-                                    <span class="font-bold text-green-600" v-if="docs[{{$index}}]['responseOk'] === true">✓</span>
-                                    <span class="font-bold text-red-600" v-if="docs[{{$index}}]['responseOk'] === false">✗</span>
+                                    <span class="font-bold text-green-600 border rounded-full pr-1 pl-1 border-green-500" v-if="docs[{{$index}}]['responseOk'] === true">✓</span>
+                                    <span class="font-bold text-red-600 border rounded-full pr-1 pl-1 border-red-500" v-if="docs[{{$index}}]['responseOk'] === false">✗</span>
                                     {{$doc['uri']}}
                                 </span>
                             </a>
@@ -94,9 +100,9 @@
          <br><br>
          <div class="ml-6 mr-6 pl-2 w-2/3 bg-gray-300 p-2">
             @foreach ($docs as $index => $doc)
-            <section class="pt-5 pl-2 pb-5 border mb-10 rounded bg-white shadow">
+            <section class="pt-5 pl-2 pr-2 pb-5 border mb-10 rounded bg-white shadow">
                 <div class="font-sans" id="{{$doc['methods'][0] .'-'. $doc['uri']}}">
-                <h1 class="font-sans break-normal text-black pt-1 pb-2 ">
+                <h1 class="text-sm break-normal text-black bg-indigo-50 break-normal font-sans pb-1 pt-1 text-black">
                     <span class="w-20
                         font-thin
                         inline-flex
@@ -142,8 +148,12 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div v-if="docs[{{$index}}]['docBlock']" class="border-2 mr-4 mt-4 p-4 rounded shadow-inner text-sm">
+                    <vue-markdown>{!! $doc['docBlock'] !!}</vue-markdown>
+                </div>
+                <br>
                 @if (!empty($doc['rules']))
-                <table class="table-fixed align-left min-w-full text-sm mt-5">
+                <table class="table-fixed align-left text-sm mt-5">
                     <thead class="border">
                     <tr class="border">
                         <th class="border border-gray-300 pl-2 pr-16 pt-1 pb-1 w-12 text-left bg-gray-200">Attributes</th>
@@ -201,32 +211,43 @@
                     </tbody>
                 </table>
                 @endif
-                <button class="bg-transparent hover:bg-indigo-500 text-gray-700 font-semibold hover:text-white mt-2 pt-1 pb-1 pl-10 pr-10 border border-gray-700 hover:border-transparent shadow-inner border-2 rounded-full"
+                <button class="hover:bg-red-500 font-semibold hover:text-white mt-2 pl-5 pr-5 border-gray-700 hover:border-transparent shadow-inner border-2 rounded-full"
                     v-if="!docs[{{$index}}]['try']" v-on:click="docs[{{$index}}]['try'] = !docs[{{$index}}]['try']">Try</button>
-                <button v-if="docs[{{$index}}]['try']" @click="request(docs[{{$index}}])" class="bg-red-500 hover:bg-red-700 text-white font-bold mt-2 pt-1 pb-2 mb-1 pl-10 pr-10 shadow-xl rounded-full">
+                <button v-if="docs[{{$index}}]['try']" @click="request(docs[{{$index}}])" class="bg-red-500 hover:bg-red-700 text-white font-bold mt-2 border-red-800 border-2 shadow-inner mb-1 pl-5 pr-5 rounded-full">
                     <svg v-if="docs[{{$index}}]['loading']" class="animate-spin h-4 w-4 rounded-full bg-transparent border-2 border-transparent border-opacity-50 inline pr-2" style="border-right-color: white; border-top-color: white;" viewBox="0 0 24 24"></svg>
                     Run
                 </button>
-                <div class="grid grid-cols-1 mt-3 pr-2">
+                <div class="grid grid-cols-1 mt-3 pr-2 overflow-auto">
                     <div class="">
                         <div v-if="docs[{{$index}}]['try']">
-                            <h3 class="font-thin">REQUEST URL<sup class="text-red-500"> *required</sup></h3>
+                            <h3 class="font-thin">REQUEST URL<sup class="text-red-500 font-bold"> *required</sup></h3>
+                            <p class="text-xs pb-2 font-thin text-gray-500">Enter your request URL with query params</p>
                             <prism-editor class="my-prism-editor" style="min-height:30px;background:#2d2d2d;color: #ccc;resize:both;" v-model="docs[{{$index}}]['url']" :highlight="highlighter" line-numbers></prism-editor>
                             <br>
                             @if (!in_array('GET', $doc['methods']))
                             <h3 class="font-thin">REQUEST BODY<sup class="text-red-500"> *required</sup></h3>
+                            <p class="text-xs pb-2 font-thin text-gray-500">JSON body for the POST|PUT|DELETE request</p>
                             <prism-editor class="my-prism-editor" style="min-height:200px;background:#2d2d2d;color: #ccc;resize:both" v-model="docs[{{$index}}]['body']" :highlight="highlighter" line-numbers></prism-editor>
                             @endif
                         </div>
                     </div>
                     <div class="">
                         <div v-if="docs[{{$index}}]['response']">
-                            <h3 class="font-bold mb-2 mt-2">
+                            <hr class="border-b border-dotted mt-4 mb-2 border-gray-300">
+                            <h3 class="font-thin">
                                 RESPONSE
                                 <span v-if="docs[{{$index}}]['responseOk']" class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-green-100 bg-green-500 rounded">OK</span>
                                 <span v-if="!docs[{{$index}}]['responseOk']" class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-500 rounded">ERROR</span>
                             </h3>
-                            <prism-editor v-if="docs[{{$index}}]['response']" class="my-prism-editor" style="min-height:200px;max-height:700px;background:rgb(52 33 33);color: #ccc;resize:both;" readonly v-model="docs[{{$index}}]['response']" :highlight="highlighterAtom" line-numbers></prism-editor>
+                            <p class="text-xs pb-2 font-thin text-gray-500">Response from the server</p>
+                            <prism-editor v-if="docs[{{$index}}]['response']" class="my-prism-editor shadow-inner border-gray-400 border-2 rounded" style="min-height:200px;max-height:700px;background:rgb(241 241 241);color: rgb(48 36 36);resize:both;" readonly v-model="docs[{{$index}}]['response']" :highlight="highlighterAtom" line-numbers></prism-editor>
+                            <div class="mt-2">
+                                <h3 class="font-thin">
+                                    SQL
+                                </h3>
+                                <p class="text-xs pb-2 font-thin text-gray-500">SQL query log executed for this request</p>
+                                <prism-editor class="my-prism-editor" style="min-height:50px;max-height:350px;background:rgb(52 33 33);color: #ccc;resize:both;" readonly v-model="docs[{{$index}}]['queries']" :highlight="highlighter" line-numbers></prism-editor>
+                            </div>
                         </div>
                     </div>
                   </div>
@@ -284,6 +305,7 @@
         app_url = app_url.replace(/\/$/, '')
         docs.map(function(doc, index) {
             doc.response = null
+            doc.queries = []
             doc.responseOk = null
             doc.body = "{}"
             doc.isActiveSidebar = window.location.hash.substr(1) === doc['methods'][0] +"-"+ doc['uri']
@@ -326,6 +348,7 @@
             }
 
         })
+        Vue.use(VueMarkdown);
         var app = new Vue({
             el: '#app',
             data: {
@@ -355,22 +378,41 @@
                         doc.response = "Cannot parse JSON request body"
                         return
                     }
+                    doc.queries = ""
+                    doc.response = null
+                    doc.responseOk = null
                     doc.loading = true
-                    var config = {
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        }
-                    }
+                    axios.defaults.headers.common['X-Request-LRD'] = 'lrd'
+                    axios.defaults.headers.common['X-CSRF-TOKEN'] = '{{ csrf_token() }}'
                     axios({
                         method: method,
                         url: url,
                         data: json,
-                        withCredentials: true,
-                        config: config
+                        withCredentials: true
                       }).then(function (response) {
+                        console.log("response ok")
+                        if (response['_lrd']) {
+                            doc.queries = response['_lrd']['queries']
+                            delete response['_lrd']
+                        }
+                        // in case of validation error
+                        if (response.data && response.data['_lrd']) {
+                            doc.queries = response.data['_lrd']['queries']
+                            delete response.data['_lrd']
+                        }
                         doc.response = JSON.stringify(response, null, 2)
                         doc.responseOk = true
                       }).catch(function (error) {
+                        console.log("error")
+                        if (error['_lrd']) {
+                            // split array to new lines
+                            doc.queries = error['_lrd']['queries']
+                            delete error['_lrd']
+                        }
+                        if (error.data && error.data['_lrd']) {
+                            doc.queries = error.data['_lrd']['queries']
+                            delete error.data['_lrd']
+                        }
                         doc.response = JSON.stringify(error, null, 2)
                         doc.responseOk = false
                       }).then(function () {

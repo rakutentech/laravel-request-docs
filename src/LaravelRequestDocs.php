@@ -69,6 +69,7 @@ class LaravelRequestDocs
                 'controller'  => explode('@', $route->action['controller'])[0],
                 'method'      => explode('@', $route->action['controller'])[1],
                 'rules'       => [],
+                'docBlock'    => "",
             ];
         }
 
@@ -96,10 +97,42 @@ class LaravelRequestDocs
                 }
                 if ($requestClass instanceof FormRequest) {
                     $controllersInfo[$index]['rules'] = $this->flattenRules($requestClass->rules());
+                    $controllersInfo[$index]['docBlock'] = $this->lrdDocComment($reflectionMethod->getDocComment());
                 }
             }
         }
         return $controllersInfo;
+    }
+
+    public function lrdDocComment(bool|string $docComment): string
+    {
+        $lrdComment = "";
+        $counter = 0;
+        foreach (explode("\n", $docComment) as $comment) {
+            $comment = trim($comment);
+            // check contains in string
+            if (Str::contains($comment, '@lrd')) {
+                $counter++;
+            }
+            if ($counter == 1 && !Str::contains($comment, '@lrd')) {
+                if (Str::startsWith($comment, '*')) {
+                    $comment = trim(substr($comment, 1));
+                }
+                // remove first character from string
+                $lrdComment .= $comment . "\n";
+            }
+        }
+        return $lrdComment;
+    }
+
+    // get text between first and last tag
+    private function getTextBetweenTags($docComment, $tag1, $tag2)
+    {
+        $docComment = trim($docComment);
+        $start = strpos($docComment, $tag1);
+        $end = strpos($docComment, $tag2);
+        $text = substr($docComment, $start + strlen($tag1), $end - $start - strlen($tag1));
+        return $text;
     }
 
     public function flattenRules($mixedRules)
