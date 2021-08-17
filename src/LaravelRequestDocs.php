@@ -50,6 +50,11 @@ class LaravelRequestDocs
             }
         }
         foreach ($docs as $key => $doc) {
+            if (in_array('PATCH', $doc['methods'])) {
+                $sorted[] = $doc;
+            }
+        }
+        foreach ($docs as $key => $doc) {
             if (in_array('DELETE', $doc['methods'])) {
                 $sorted[] = $doc;
             }
