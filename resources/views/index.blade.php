@@ -252,7 +252,7 @@
                                 </h3>
                                 <p class="text-xs pb-2 font-thin text-gray-500">SQL query log executed for this request</p>
                                 <div v-for="query in docs[{{$index}}]['queries']" class="mb-2">
-                                    <p class="text-sm">Time Took: @{{query.time}}ms</p>
+                                    <p class="text-sm font-thin">Query took: <span class="">@{{query.time}}ms</span></p>
                                     <prism-editor
                                         v-model="sqlFormatter.format(query['sql'])"
                                         class="my-prism-editor"
