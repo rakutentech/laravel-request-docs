@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\DB;
 
 class LaravelRequestDocsMiddleware extends Middleware
 {
-    private $queries = "";
+    private array $queries = [];
+
     public function handle($request, Closure $next, ...$guards)
     {
         if (!$request->headers->has('X-Request-LRD') || !config('app.debug')) {
@@ -36,8 +37,7 @@ class LaravelRequestDocsMiddleware extends Middleware
     public function listenDB()
     {
         DB::listen(function (QueryExecuted $query) {
-            $sql = $this->formatMessage($this->getMessages($query));
-            $this->queries .= $sql . "\n";
+            $this->queries[] = $this->getMessages($query);
         });
     }
 
@@ -64,14 +64,8 @@ class LaravelRequestDocsMiddleware extends Middleware
 
         return [
             'time' => $query->time,
-            'connection_name' => $query->connectionName,
             'sql' => $sql,
         ];
-    }
-
-    protected function formatMessage(array $message): string
-    {
-        return "TOOK: {$message['time']} ms, QUERY: {$message['sql']}";
     }
 
     /**

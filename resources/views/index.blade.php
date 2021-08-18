@@ -19,6 +19,7 @@
       <script src="https://unpkg.com/faker@5.5.3/dist/faker.min.js" referrerpolicy="no-referrer"></script>
 
       <script src="https://unpkg.com/vue-markdown@2.2.4/dist/vue-markdown.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/sql-formatter/3.1.0/sql-formatter.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
       {{-- <script src="{{asset('./vendor/request-docs/app.js')}}"></script> --}}
       <style>
         [v-cloak] {
@@ -224,7 +225,9 @@
                         <div v-if="docs[{{$index}}]['try']">
                             <h3 class="font-thin">REQUEST URL<sup class="text-red-500 font-bold"> *required</sup></h3>
                             <p class="text-xs pb-2 font-thin text-gray-500">Enter your request URL with query params</p>
-                            <prism-editor class="my-prism-editor" style="min-height:30px;background:#2d2d2d;color: #ccc;resize:both;" v-model="docs[{{$index}}]['url']" :highlight="highlighter" line-numbers></prism-editor>
+                            <prism-editor class="my-prism-editor"
+                            style="padding:15px 0px 15px 0px;min-height:20px;background:#2d2d2d;color: #ccc;resize:both;"
+                            v-model="docs[{{$index}}]['url']" :highlight="highlighter" line-numbers></prism-editor>
                             <br>
                             @if (!in_array('GET', $doc['methods']))
                             <h3 class="font-thin">REQUEST BODY<sup class="text-red-500"> *required</sup></h3>
@@ -248,7 +251,16 @@
                                     SQL
                                 </h3>
                                 <p class="text-xs pb-2 font-thin text-gray-500">SQL query log executed for this request</p>
-                                <prism-editor class="my-prism-editor" style="min-height:50px;max-height:350px;background:rgb(52 33 33);color: #ccc;resize:both;" readonly v-model="docs[{{$index}}]['queries']" :highlight="highlighter" line-numbers></prism-editor>
+                                <div v-for="query in docs[{{$index}}]['queries']" class="mb-2">
+                                    <p class="text-sm">Time Took: @{{query.time}}ms</p>
+                                    <prism-editor
+                                        v-model="sqlFormatter.format(query['sql'])"
+                                        class="my-prism-editor"
+                                        style="padding:10px 0px 10px 0px;min-height:20px;max-height:350px;background:rgb(52 33 33);color: #ccc;resize:both;"
+                                        readonly
+                                        :highlight="highlighter"
+                                        line-numbers></prism-editor>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -351,6 +363,7 @@
 
         })
         Vue.use(VueMarkdown);
+
         var app = new Vue({
             el: '#app',
             data: {
@@ -380,7 +393,7 @@
                         doc.response = "Cannot parse JSON request body"
                         return
                     }
-                    doc.queries = ""
+                    doc.queries = []
                     doc.response = null
                     doc.responseOk = null
                     doc.loading = true
@@ -392,7 +405,7 @@
                         data: json,
                         withCredentials: true
                       }).then(function (response) {
-                        console.log("response ok")
+                        console.log("response ok", response)
                         if (response['_lrd']) {
                             doc.queries = response['_lrd']['queries']
                             delete response['_lrd']
@@ -405,7 +418,7 @@
                         doc.response = JSON.stringify(response, null, 2)
                         doc.responseOk = true
                       }).catch(function (error) {
-                        console.log("error")
+                        console.log("error", error)
                         if (error['_lrd']) {
                             // split array to new lines
                             doc.queries = error['_lrd']['queries']
