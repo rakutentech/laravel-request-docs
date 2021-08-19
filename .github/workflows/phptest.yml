@@ -6,7 +6,7 @@ jobs:
   test:
     name: Test
 
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -25,8 +25,6 @@ jobs:
           ini-values: memory_limit=-1,disable_functions="",pcov.exclude="~(vendor|tests|node_modules)~",pcov.directory="./"
           php-version: ${{ matrix.php-versions }}
           tools: composer:v2
-        env:
-          runner: self-hosted
 
       - name: Composer Install
         run: composer install
