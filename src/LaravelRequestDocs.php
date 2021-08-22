@@ -7,6 +7,7 @@ use ReflectionMethod;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
+use Exception;
 class LaravelRequestDocs
 {
 
@@ -67,15 +68,19 @@ class LaravelRequestDocs
         $controllersInfo = [];
         $routes = collect(Route::getRoutes());
         foreach ($routes as $route) {
-            $controllersInfo[] = [
-                'uri'         => $route->uri,
-                'methods'     => $route->methods,
-                'middlewares' => !is_array($route->action['middleware']) ? [$route->action['middleware']] : $route->action['middleware'],
-                'controller'  => explode('@', $route->action['controller'])[0],
-                'method'      => explode('@', $route->action['controller'])[1],
-                'rules'       => [],
-                'docBlock'    => "",
-            ];
+            try {
+                $controllersInfo[] = [
+                    'uri'         => $route->uri,
+                    'methods'     => $route->methods,
+                    'middlewares' => !is_array($route->action['middleware']) ? [$route->action['middleware']] : $route->action['middleware'],
+                    'controller'  => explode('@', $route->action['controller'])[0],
+                    'method'      => explode('@', $route->action['controller'])[1],
+                    'rules'       => [],
+                    'docBlock'    => "",
+                ];
+            } catch (Exception $e) {
+                continue;
+            }
         }
 
         return $controllersInfo;
@@ -109,7 +114,7 @@ class LaravelRequestDocs
         return $controllersInfo;
     }
 
-    public function lrdDocComment(bool|string $docComment): string
+    public function lrdDocComment($docComment): string
     {
         $lrdComment = "";
         $counter = 0;

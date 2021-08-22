@@ -399,6 +399,7 @@
                     doc.loading = true
                     axios.defaults.headers.common['X-Request-LRD'] = 'lrd'
                     axios.defaults.headers.common['X-CSRF-TOKEN'] = '{{ csrf_token() }}'
+
                     axios({
                         method: method,
                         url: url,

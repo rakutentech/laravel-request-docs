@@ -4,22 +4,20 @@ namespace Rakutentech\LaravelRequestDocs\Commands;
 
 use Illuminate\Console\Command;
 use Rakutentech\LaravelRequestDocs\LaravelRequestDocs;
-use Rakutentech\LaravelRequestDocs\LaravelRequestSwaggerDocs;
+
 use File;
 
 class LaravelRequestDocsCommand extends Command
 {
     public $signature = 'lrd:generate';
 
-    public $description = 'Generate request docs to HTML and update swagger json';
+    public $description = 'Generate request docs to HTML';
 
     private $laravelRequestDocs;
-    private $laravelRequestSwaggerDocs;
 
-    public function __construct(LaravelRequestDocs $laravelRequestDocs, LaravelRequestSwaggerDocs $laravelRequestSwaggerDocs)
+    public function __construct(LaravelRequestDocs $laravelRequestDocs)
     {
-        $this->laravelRequestDocs        = $laravelRequestDocs;
-        $this->laravelRequestSwaggerDocs = $laravelRequestSwaggerDocs;
+        $this->laravelRequestDocs = $laravelRequestDocs;
         parent::__construct();
     }
 
