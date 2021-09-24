@@ -19,7 +19,7 @@ class LaravelRequestDocsController extends Controller
     public function index()
     {
         $docs = $this->laravelRequestDocs->getDocs();
-        $docs = $this->laravelRequestDocs->sortDocs($docs);
+        $docs = $this->laravelRequestDocs->sortDocs($docs, config('request-docs.sort_by', 'default'));
         return view('request-docs::index')->with(compact('docs'));
     }
 

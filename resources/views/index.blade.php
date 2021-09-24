@@ -4,7 +4,7 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta http-equiv="X-UA-Compatible" content="ie=edge">
-      <title>LRD</title>
+      <title>{{ config('request-docs.document_name') }}</title>
       <meta name="description" content="Laravel Request Docs">
       <meta name="keywords" content="">
       <link href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css" rel="stylesheet">
@@ -47,19 +47,13 @@
 
         <nav class="bg-white py-2 ">
             <div class="container px-4 mx-auto md:flex md:items-center">
-
-            <div class="flex justify-between items-center">
-                <a href="{{config('request-docs.url')}}" class="font-bold text-xl text-indigo-600">LRD</a>
-            </div>
-
-                <div class="hidden md:flex flex-col md:flex-row md:ml-auto mt-3 md:mt-0" id="navbar-collapse">
-
-                    <a href="https://github.com/rakutentech/laravel-request-docs" class="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center border border-solid border-indigo-600 rounded hover:bg-indigo-600 hover:text-white transition-colors duration-300 mt-1 md:mt-0 md:ml-1">Request Feature</a>
+                <div class="flex justify-between items-center">
+                    <a href="{{config('request-docs.url')}}" class="font-bold text-xl text-indigo-600">{{ config('request-docs.document_name') }}</a>
                 </div>
             </div>
         </nav>
       <div id="app" v-cloak class="w-full flex lg:pt-10">
-         <aside class="text-xl text-grey-darkest break-all bg-gray-200 pl-2 h-screen sticky top-1 overflow-auto">
+         <aside class="text-xl text-grey-darkest break-all bg-gray-200 pl-2 h-screen sticky top-1 overflow-auto" style="width: 25%">
             <h1 class="font-light">Routes List</h1>
             <hr class="border-b border-gray-300">
             <table class="table-fixed text-sm mt-5">
@@ -100,7 +94,7 @@
             </table>
         </aside>
          <br><br>
-         <div class="ml-6 mr-6 pl-2 w-2/3 bg-gray-300 p-2">
+         <div class="ml-6 mr-6 pl-2 w-2/3 bg-gray-300 p-2" style="width: 100%">
             @foreach ($docs as $index => $doc)
             <section class="pt-5 pl-2 pr-2 pb-5 border mb-10 rounded bg-white shadow">
                 <div class="font-sans" id="{{$doc['methods'][0] .'-'. $doc['uri']}}">
@@ -214,12 +208,48 @@
                     </tbody>
                 </table>
                 @endif
-                <button class="hover:bg-red-500 font-semibold hover:text-white mt-2 pl-5 pr-5 border-gray-700 hover:border-transparent shadow-inner border-2 rounded-full"
-                    v-if="!docs[{{$index}}]['try']" v-on:click="docs[{{$index}}]['try'] = !docs[{{$index}}]['try']">Try</button>
-                <button v-if="docs[{{$index}}]['try']" @click="request(docs[{{$index}}])" class="bg-red-500 hover:bg-red-700 text-white font-bold mt-2 border-red-800 border-2 shadow-inner mb-1 pl-5 pr-5 rounded-full">
-                    <svg v-if="docs[{{$index}}]['loading']" class="animate-spin h-4 w-4 rounded-full bg-transparent border-2 border-transparent border-opacity-50 inline pr-2" style="border-right-color: white; border-top-color: white;" viewBox="0 0 24 24"></svg>
+                <button
+                    class="hover:bg-red-500 font-semibold hover:text-white mt-2 pl-5 pr-5 border-gray-700 hover:border-transparent shadow-inner border-2 rounded-full"
+                    v-if="!docs[{{$index}}]['try']"
+                    v-on:click="docs[{{$index}}]['try'] = !docs[{{$index}}]['try'];docs[{{$index}}]['cancel'] = !docs[{{$index}}]['cancel']"
+                >
+                    Try
+                </button>
+
+                <button
+                    class="hover:bg-red-500 font-semibold hover:text-white mt-2 pl-5 pr-5 border-gray-700 hover:border-transparent shadow-inner border-2 rounded-full"
+                    v-if="!docs[{{$index}}]['cancel']"
+                    v-on:click="docs[{{$index}}]['cancel'] = !docs[{{$index}}]['cancel'];docs[{{$index}}]['try'] = !docs[{{$index}}]['try'];"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    v-if="docs[{{$index}}]['try']"
+                    @click="request(docs[{{$index}}])"
+                    class="bg-red-500 hover:bg-red-700 text-white font-bold mt-2 border-red-800 border-2 shadow-inner mb-1 pl-5 pr-5 rounded-full"
+                >
+                    <svg
+                        v-if="docs[{{$index}}]['loading']"
+                        class="animate-spin h-4 w-4 rounded-full bg-transparent border-2 border-transparent border-opacity-50 inline pr-2" style="border-right-color: white; border-top-color: white;" viewBox="0 0 24 24"></svg>
                     Run
                 </button>
+
+
+                <div v-if="docs[{{$index}}]['bearer'] && docs[{{$index}}]['try']" class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
+                        Bearer Token
+                    </label>
+                    <input
+                        v-model="token"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="username"
+                        type="text"
+                        placeholder="Bearer Token"
+                        autocomplete="off"
+                    />
+                </div>
+
                 <div class="grid grid-cols-1 mt-3 pr-2 overflow-auto">
                     <div class="">
                         <div v-if="docs[{{$index}}]['try']">
@@ -271,8 +301,8 @@
       </div>
       <script>
         var guessValue = function(attribute, rules) {
-            //console.log(attribute)
-            //console.log(rules)
+            // console.log(attribute)
+            // console.log(rules)
             // match max:1
             var validations = {
                 max: 100,
@@ -313,8 +343,9 @@
 
             return validations
         }
-        var docs = {!! json_encode($docs) !!}
-        var app_url = {!! json_encode(config('app.url')) !!}
+        var docs = {!! json_encode($docs) !!};
+        var app_url = {!! json_encode(config('app.url')) !!};
+
         //remove trailing slash if any
         app_url = app_url.replace(/\/$/, '')
         docs.map(function(doc, index) {
@@ -325,6 +356,7 @@
             doc.isActiveSidebar = window.location.hash.substr(1) === doc['methods'][0] +"-"+ doc['uri']
             doc.url = app_url + "/"+ doc.uri
             doc.try = false
+            doc.cancel = true
             doc.loading = false
             // check in array
             if (doc.methods[0] == 'GET') {
@@ -367,7 +399,8 @@
         var app = new Vue({
             el: '#app',
             data: {
-              docs: docs
+                docs: docs,
+                token: ''
             },
             methods: {
                 highlightSidebar(idx) {
@@ -384,6 +417,7 @@
                 request(doc) {
                     // convert string to lower case
                     var method = doc['methods'][0].toLowerCase()
+
                     // remove \n from string that is used for display
                     var url = doc.url.replace(/\n/g, '')
 
@@ -400,13 +434,16 @@
                     axios.defaults.headers.common['X-Request-LRD'] = 'lrd'
                     axios.defaults.headers.common['X-CSRF-TOKEN'] = '{{ csrf_token() }}'
 
+                    if (doc.bearer) {
+                        axios.defaults.headers.common = {Authorization: `Bearer ${this.token}`};
+                    }
+
                     axios({
                         method: method,
                         url: url,
                         data: json,
                         withCredentials: true
                       }).then(function (response) {
-                        console.log("response ok", response)
                         if (response['_lrd']) {
                             doc.queries = response['_lrd']['queries']
                             delete response['_lrd']
@@ -419,7 +456,6 @@
                         doc.response = JSON.stringify(response, null, 2)
                         doc.responseOk = true
                       }).catch(function (error) {
-                        console.log("error", error)
                         if (error['_lrd']) {
                             // split array to new lines
                             doc.queries = error['_lrd']['queries']
