@@ -10,7 +10,7 @@
       <link href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css" rel="stylesheet">
       <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
       <script src="https://unpkg.com/vue-prism-editor"></script>
-      <script src="https://unpkg.com/axios@0.2.1/dist/axios.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.4/axios.min.js"></script>
       <link rel="stylesheet" href="https://unpkg.com/vue-prism-editor/dist/prismeditor.min.css" />
 
       <script src="https://unpkg.com/prismjs/prism.js"></script>
@@ -41,6 +41,49 @@
         .prism-editor__textarea:focus {
             outline: none;
         }
+        .dropdown{
+            position: relative;
+            width: 100%;
+        }
+        .dropdown-input, .dropdown-selected{
+            width: 100%;
+            padding: 10px 16px;
+            border: 1px solid transparent;
+            background: #edf2f7;
+            outline: none;
+            border-radius: 8px;
+        }
+        .dropdown-input:focus, .dropdown-selected:hover{
+            background: #fff;
+            border-color: #e2e8f0;
+        }
+        .dropdown-input::placeholder{
+            opacity: 0.7;
+        }
+        .dropdown-selected{
+            cursor: pointer;
+        }
+        .dropdown-list{
+            z-index: 9999;
+            position: absolute;
+            width: 100%;
+            max-height: 500px;
+            margin-top: 4px;
+            overflow-y: auto;
+            background: #ffffff;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+        }
+        .dropdown-item{
+            display: flex;
+            width: 100%;
+            padding: 11px 16px;
+            cursor: pointer;
+            font-size: 15;
+        }
+        .dropdown-item:hover{
+            background: #edf2f7;
+        }
       </style>
    </head>
    <body class="bg-gray-100 tracking-wide bg-gray-200">
@@ -54,13 +97,37 @@
         </nav>
       <div id="app" v-cloak class="w-full flex lg:pt-10">
          <aside class="text-xl text-grey-darkest break-all bg-gray-200 pl-2 h-screen sticky top-1 overflow-auto" style="width: 25%">
-            <h1 class="font-light">Routes List</h1>
+            <h1 class="font-light mx-3">Routes List</h1>
+             <div class="dropdown">
+                 <input
+                     v-model.trim="search"
+                     v-chang
+                     class="dropdown-input shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                     type="text"
+                     placeholder="Search"
+                     @focus="showRoute = true;$event.target.select()"
+                     @blur="setTimeout(() => { showRoute = false}, 200)"
+                 />
+                 <div class="dropdown-list">
+                     @foreach ($docs as $index => $doc)
+                     <div v-show="showRoute" @click="searched('{{ $doc["methods"][0] }}', '{{ $doc["uri"] }}')" class="dropdown-item">
+                         {{ str_replace('api/', '', $doc['uri']) }}
+                     </div>
+                     @endforeach
+                 </div>
+             </div>
             <hr class="border-b border-gray-300">
             <table class="table-fixed text-sm mt-5">
                 <tbody>
+                    @php
+                        $previousController = ['controller' => null];
+                    @endphp
                     @foreach ($docs as $index => $doc)
                     <tr>
                         <td>
+                            @if ($previousController['controller'] !== $doc['controller'])
+                                <h3 class="my-2 font-semibold" style="font-size: 18px">{{ str_replace('Controller', '', $doc['controller']) }}</h3>
+                            @endif
                             <a href="#{{$doc['methods'][0] .'-'. $doc['uri']}}" @click="highlightSidebar({{$index}})">
                                 <span class="w-20
                                     font-thin
@@ -87,8 +154,11 @@
                                     {{$doc['uri']}}
                                 </span>
                             </a>
-                        <td>
-                    </td>
+                        </td>
+                    </tr>
+                    @php
+                        $previousController = $doc;
+                    @endphp
                     @endforeach
                 </tbody>
             </table>
@@ -237,13 +307,13 @@
 
 
                 <div v-if="docs[{{$index}}]['bearer'] && docs[{{$index}}]['try']" class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="token">
                         Bearer Token
                     </label>
                     <input
                         v-model="token"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="username"
+                        id="token"
                         type="text"
                         placeholder="Bearer Token"
                         autocomplete="off"
@@ -267,12 +337,30 @@
                         </div>
                     </div>
                     <div class="">
-                        <div v-if="docs[{{$index}}]['response']">
+                        <div v-if="docs[{{$index}}]['response'] && !docs[{{$index}}]['cancel']">
                             <hr class="border-b border-dotted mt-4 mb-2 border-gray-300">
                             <h3 class="font-thin">
                                 RESPONSE
-                                <span v-if="docs[{{$index}}]['responseOk']" class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-green-100 bg-green-500 rounded">OK</span>
-                                <span v-if="!docs[{{$index}}]['responseOk']" class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-500 rounded">ERROR</span>
+                                <span
+                                    v-if="docs[{{$index}}]['responseOk']"
+                                    class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-green-100 bg-green-500 rounded">
+                                    OK
+                                </span>
+                                <span
+                                    v-if="!docs[{{$index}}]['responseOk']"
+                                    class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-500 rounded">
+                                    ERROR
+                                </span>
+                                <span
+                                    v-if="docs[{{$index}}]['responseOk']"
+                                    class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-green-100 bg-green-500 rounded"
+                                    v-text="'STATUS CODE: ' + docs[{{$index}}]['responseCode']">
+                                </span>
+                                <span
+                                    v-if="!docs[{{$index}}]['responseOk']"
+                                    class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-500 rounded"
+                                    v-text="'STATUS CODE: ' + docs[{{$index}}]['responseCode']">
+                                </span>
                             </h3>
                             <p class="text-xs pb-2 font-thin text-gray-500">Response from the server</p>
                             <prism-editor v-if="docs[{{$index}}]['response']" class="my-prism-editor shadow-inner border-gray-400 border-2 rounded" style="min-height:200px;max-height:700px;background:rgb(241 241 241);color: rgb(48 36 36);resize:both;" readonly v-model="docs[{{$index}}]['response']" :highlight="highlighterAtom" line-numbers></prism-editor>
@@ -350,6 +438,7 @@
         app_url = app_url.replace(/\/$/, '')
         docs.map(function(doc, index) {
             doc.response = null
+            doc.responseCode = 200
             doc.queries = []
             doc.responseOk = null
             doc.body = "{}"
@@ -400,9 +489,18 @@
             el: '#app',
             data: {
                 docs: docs,
-                token: ''
+                token: '',
+                search: '',
+                showRoute: false
             },
             methods: {
+                searched(method, uri) {
+                    var oldUrl = new URL(document.URL);
+                    oldUrl.hash = '#' + method + '-' + uri;
+                    var newUrl = oldUrl.href;
+                    document.location.href = newUrl;
+                    this.search = uri.replace('api/', '');
+                },
                 highlightSidebar(idx) {
                     docs.map(function(doc, index) {
                         doc.isActiveSidebar = index == idx
@@ -435,7 +533,10 @@
                     axios.defaults.headers.common['X-CSRF-TOKEN'] = '{{ csrf_token() }}'
 
                     if (doc.bearer) {
-                        axios.defaults.headers.common = {Authorization: `Bearer ${this.token}`};
+                        axios.defaults.headers.common = {
+                            Authorization: `Bearer ${this.token}`,
+                            Accept: `application/json`
+                        };
                     }
 
                     axios({
@@ -443,7 +544,7 @@
                         url: url,
                         data: json,
                         withCredentials: true
-                      }).then(function (response) {
+                      }).then((response) => {
                         if (response['_lrd']) {
                             doc.queries = response['_lrd']['queries']
                             delete response['_lrd']
@@ -453,9 +554,10 @@
                             doc.queries = response.data['_lrd']['queries']
                             delete response.data['_lrd']
                         }
-                        doc.response = JSON.stringify(response, null, 2)
+                        doc.response = JSON.stringify(response.data, null, 2)
+                        doc.responseCode = response.status
                         doc.responseOk = true
-                      }).catch(function (error) {
+                      }).catch((error) => {
                         if (error['_lrd']) {
                             // split array to new lines
                             doc.queries = error['_lrd']['queries']
@@ -465,12 +567,13 @@
                             doc.queries = error.data['_lrd']['queries']
                             delete error.data['_lrd']
                         }
-                        doc.response = JSON.stringify(error, null, 2)
+                        doc.response = JSON.stringify(error.response.data, null, 2)
+                        doc.responseCode = error.response.status;
                         doc.responseOk = false
                       }).then(function () {
                         doc.loading = false
                       })
-                }
+                },
             },
           });
       </script>
