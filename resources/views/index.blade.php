@@ -17,6 +17,7 @@
       <link rel="stylesheet" href="https://unpkg.com/prismjs/themes/prism-tomorrow.css" />
 
       <script src="https://unpkg.com/faker@5.5.3/dist/faker.min.js" referrerpolicy="no-referrer"></script>
+      <script src="https://unpkg.com/string-similarity@4.0.2/umd/string-similarity.min.js" referrerpolicy="no-referrer"></script>
 
       <script src="https://unpkg.com/vue-markdown@2.2.4/dist/vue-markdown.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/sql-formatter/3.1.0/sql-formatter.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -97,7 +98,7 @@
             </div>
         </nav>
       <div id="app" v-cloak class="w-full flex lg:pt-10">
-         <aside class="text-xl text-grey-darkest break-all bg-gray-200 pl-2 h-screen sticky top-1 overflow-auto" style="width: 25%">
+         <aside class="text-xl text-grey-darkest break-all bg-gray-200 pl-2 h-screen sticky top-1 overflow-auto" style="width: 35%">
             <h1 class="font-light mx-3">Routes List</h1>
              <div class="dropdown">
                  <input
@@ -110,7 +111,10 @@
                  />
                  <div class="dropdown-list">
                      @foreach ($docs as $index => $doc)
-                     <div  v-if="filter('{{ $doc["uri"] }}')" v-show="showRoute" @click="searched('{{ $doc["methods"][0] }}', '{{ $doc["uri"] }}')" class="dropdown-item">
+                     <div  v-if="filter('{{ $doc["uri"] }}')"
+                        v-show="showRoute"
+                        @click="searched('{{ $doc["methods"][0] }}', '{{ $doc["uri"] }}') ; highlightSidebar('{{ $index }}')"
+                        class="dropdown-item">
                          {{ str_replace('api/', '', $doc['uri']) }}
                      </div>
                      @endforeach
@@ -495,9 +499,11 @@
             },
             methods: {
                 filter(uri) {
-                    var comparor = uri.slice(0, this.search.length - 1);
-                    var regexp = new RegExp("^"+comparor, "i");
-                    return !this.search || regexp.test(this.search)
+                    if (!this.search) {
+                        return true
+                    }
+                    var similarity = stringSimilarity.compareTwoStrings(uri, this.search);
+                    return similarity > 0.1
                 },
                 searched(method, uri) {
                     var oldUrl = new URL(document.URL);
@@ -572,8 +578,12 @@
                             doc.queries = error.data['_lrd']['queries']
                             delete error.data['_lrd']
                         }
-                        doc.response = JSON.stringify(error.response.data, null, 2)
-                        doc.responseCode = error.response.status;
+                        doc.loading = false
+                        if (error && error.response && error.response.data) {
+                            doc.response = JSON.stringify(error.response.data, null, 2)
+                            doc.responseCode = error.response.status;
+                        }
+
                         doc.responseOk = false
                       }).then(function () {
                         doc.loading = false
