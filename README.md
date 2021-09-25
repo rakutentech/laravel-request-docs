@@ -4,7 +4,6 @@ Automatically generate api documentation for Laravel without writing annotations
 
 Read more: https://medium.com/web-developer/laravel-automatically-generate-api-documentation-without-annotations-a-swagger-alternative-e0699409a59e
 
-
 ## Requirements
 
 | Lang    | Version    |
