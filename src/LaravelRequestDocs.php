@@ -14,27 +14,27 @@ class LaravelRequestDocs
 
     public function getDocs()
     {
-            $docs = [];
-            $excludePatterns = config('request-docs.hide_matching') ?? [];
-            $controllersInfo = $this->getControllersInfo();
-            $controllersInfo = $this->appendRequestRules($controllersInfo);
-            foreach ($controllersInfo as $controllerInfo) {
-                try {
-                    $exclude = false;
-                    foreach ($excludePatterns as $regex) {
-                        $uri = $controllerInfo['uri'];
-                        if (preg_match($regex, $uri)) {
-                            $exclude = true;
-                        }
+        $docs = [];
+        $excludePatterns = config('request-docs.hide_matching') ?? [];
+        $controllersInfo = $this->getControllersInfo();
+        $controllersInfo = $this->appendRequestRules($controllersInfo);
+        foreach ($controllersInfo as $controllerInfo) {
+            try {
+                $exclude = false;
+                foreach ($excludePatterns as $regex) {
+                    $uri = $controllerInfo['uri'];
+                    if (preg_match($regex, $uri)) {
+                        $exclude = true;
                     }
-                    if (!$exclude) {
-                        $docs[] = $controllerInfo;
-                    }
-                } catch (Exception $exception) {
-                    continue;
                 }
+                if (!$exclude) {
+                    $docs[] = $controllerInfo;
+                }
+            } catch (Exception $exception) {
+                continue;
             }
-            return array_filter($docs);
+        }
+        return array_filter($docs);
     }
 
     public function sortDocs(array $docs, $sortBy = 'default'): Array

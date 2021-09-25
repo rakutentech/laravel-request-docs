@@ -47,6 +47,7 @@
         }
         .dropdown-input, .dropdown-selected{
             width: 100%;
+            font-size:14px;
             padding: 10px 16px;
             border: 1px solid transparent;
             background: #edf2f7;
@@ -77,9 +78,9 @@
         .dropdown-item{
             display: flex;
             width: 100%;
-            padding: 11px 16px;
+            padding: 2px 6px;
             cursor: pointer;
-            font-size: 15;
+            font-size: 12px;
         }
         .dropdown-item:hover{
             background: #edf2f7;
@@ -101,8 +102,7 @@
              <div class="dropdown">
                  <input
                      v-model.trim="search"
-                     v-chang
-                     class="dropdown-input shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                     class="dropdown-input appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                      type="text"
                      placeholder="Search"
                      @focus="showRoute = true;$event.target.select()"
@@ -110,7 +110,7 @@
                  />
                  <div class="dropdown-list">
                      @foreach ($docs as $index => $doc)
-                     <div v-show="showRoute" @click="searched('{{ $doc["methods"][0] }}', '{{ $doc["uri"] }}')" class="dropdown-item">
+                     <div  v-if="filter('{{ $doc["uri"] }}')" v-show="showRoute" @click="searched('{{ $doc["methods"][0] }}', '{{ $doc["uri"] }}')" class="dropdown-item">
                          {{ str_replace('api/', '', $doc['uri']) }}
                      </div>
                      @endforeach
@@ -126,10 +126,10 @@
                     <tr>
                         <td>
                             @if ($previousController['controller'] !== $doc['controller'])
-                                <h3 class="my-2 font-semibold" style="font-size: 18px">{{ str_replace('Controller', '', $doc['controller']) }}</h3>
+                                <h3 class="mt-2 font-thin">{{ str_replace('Controller', '', $doc['controller']) }}</h3>
                             @endif
                             <a href="#{{$doc['methods'][0] .'-'. $doc['uri']}}" @click="highlightSidebar({{$index}})">
-                                <span class="w-20
+                                <span class="
                                     font-thin
                                     inline-flex
                                     items-center
@@ -201,7 +201,7 @@
                     <tbody>
                         <tr>
                             <td class="align-left border border-gray-300 pl-2 pr-2 bg-gray-200 font-bold">Controller</td>
-                            <td class="align-left border pl-2 pr-2 break-all">{{$doc['controller']}}</td>
+                            <td class="align-left border pl-2 pr-2 break-all">{{$doc['controller_full_path']}}</td>
                         </tr>
                         <tr>
                             <td class="align-left border border-gray-300 pl-2 pr-2 bg-gray-200 font-bold">Method</td>
@@ -494,6 +494,11 @@
                 showRoute: false
             },
             methods: {
+                filter(uri) {
+                    var comparor = uri.slice(0, this.search.length - 1);
+                    var regexp = new RegExp("^"+comparor, "i");
+                    return !this.search || regexp.test(this.search)
+                },
                 searched(method, uri) {
                     var oldUrl = new URL(document.URL);
                     oldUrl.hash = '#' + method + '-' + uri;
