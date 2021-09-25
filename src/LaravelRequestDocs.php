@@ -8,32 +8,41 @@ use Illuminate\Http\Request;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Exception;
+
 class LaravelRequestDocs
 {
 
     public function getDocs()
     {
-        $docs = [];
-        $excludePatterns = config('request-docs.hide_matching') ?? [];
-        $controllersInfo = $this->getControllersInfo();
-        $controllersInfo = $this->appendRequestRules($controllersInfo);
-        foreach ($controllersInfo as $controllerInfo) {
-            $exclude = false;
-            foreach ($excludePatterns as $regex) {
-                $uri = $controllerInfo['uri'];
-                if (preg_match($regex, $uri)) {
-                    $exclude = true;
+            $docs = [];
+            $excludePatterns = config('request-docs.hide_matching') ?? [];
+            $controllersInfo = $this->getControllersInfo();
+            $controllersInfo = $this->appendRequestRules($controllersInfo);
+            foreach ($controllersInfo as $controllerInfo) {
+                try {
+                    $exclude = false;
+                    foreach ($excludePatterns as $regex) {
+                        $uri = $controllerInfo['uri'];
+                        if (preg_match($regex, $uri)) {
+                            $exclude = true;
+                        }
+                    }
+                    if (!$exclude) {
+                        $docs[] = $controllerInfo;
+                    }
+                } catch (Exception $exception) {
+                    continue;
                 }
             }
-            if (!$exclude) {
-                $docs[] = $controllerInfo;
-            }
-        }
-        return array_filter($docs);
+            return array_filter($docs);
     }
 
-    public function sortDocs(array $docs): Array
+    public function sortDocs(array $docs, $sortBy = 'default'): Array
     {
+        if ($sortBy === 'route_names') {
+            sort($docs);
+            return $docs;
+        }
         $sorted = [];
         foreach ($docs as $key => $doc) {
             if (in_array('GET', $doc['methods'])) {
@@ -69,14 +78,24 @@ class LaravelRequestDocs
         $routes = collect(Route::getRoutes());
         foreach ($routes as $route) {
             try {
+                /// Show Pnly Controller Name
+                $controllerFullPath = explode('@', $route->action['controller'])[0];
+                $getStartWord = strrpos(explode('@', $route->action['controller'])[0], '\\') + 1;
+                $controllerName = substr($controllerFullPath, $getStartWord);
+
+                /// Has Auth Token
+                $hasAuthToken = !is_array($route->action['middleware']) ? [$route->action['middleware']] : $route->action['middleware'];
+
                 $controllersInfo[] = [
-                    'uri'         => $route->uri,
-                    'methods'     => $route->methods,
-                    'middlewares' => !is_array($route->action['middleware']) ? [$route->action['middleware']] : $route->action['middleware'],
-                    'controller'  => explode('@', $route->action['controller'])[0],
-                    'method'      => explode('@', $route->action['controller'])[1],
-                    'rules'       => [],
-                    'docBlock'    => "",
+                    'uri'                   => $route->uri,
+                    'methods'               => $route->methods,
+                    'middlewares'           => !is_array($route->action['middleware']) ? [$route->action['middleware']] : $route->action['middleware'],
+                    'controller'            => $controllerName,
+                    'controller_full_path'  => $controllerFullPath,
+                    'method'                => explode('@', $route->action['controller'])[1],
+                    'rules'                 => [],
+                    'docBlock'              => "",
+                    'bearer'                => in_array('auth:api', $hasAuthToken)
                 ];
             } catch (Exception $e) {
                 continue;
@@ -89,7 +108,7 @@ class LaravelRequestDocs
     public function appendRequestRules(Array $controllersInfo)
     {
         foreach ($controllersInfo as $index => $controllerInfo) {
-            $controller       = $controllerInfo['controller'];
+            $controller       = $controllerInfo['controller_full_path'];
             $method           = $controllerInfo['method'];
             $reflectionMethod = new ReflectionMethod($controller, $method);
             $params           = $reflectionMethod->getParameters();

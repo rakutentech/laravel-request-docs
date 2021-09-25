@@ -26,7 +26,7 @@ class LaravelRequestDocsCommand extends Command
         $destinationPath = config('request-docs.docs_path') ?? base_path('docs/request-docs/');
 
         $docs = $this->laravelRequestDocs->getDocs();
-        $docs = $this->laravelRequestDocs->sortDocs($docs);
+        $docs = $this->laravelRequestDocs->sortDocs($docs, config('request-docs.sort_by', 'default'));
 
         if (! File::exists($destinationPath)) {
             File::makeDirectory($destinationPath, 0755, true);
