@@ -393,8 +393,6 @@
       </div>
       <script>
         var guessValue = function(attribute, rules) {
-            // console.log(attribute)
-            // console.log(rules)
             // match max:1
             var validations = {
                 max: 100,
@@ -546,7 +544,9 @@
                     if (doc.bearer) {
                         axios.defaults.headers.common = {
                             Authorization: `Bearer ${this.token}`,
-                            Accept: `application/json`
+                            Accept: `application/json`,
+                            'X-Request-LRD': 'lrd',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         };
                     }
 
@@ -561,9 +561,15 @@
                             delete response['_lrd']
                         }
                         // in case of validation error
-                        if (response.data && response.data['_lrd']) {
+                        if (response.data && response.data && response.data['_lrd']) {
                             doc.queries = response.data['_lrd']['queries']
                             delete response.data['_lrd']
+                        }
+
+                        // in case of validation error
+                        if (response.data && response.data.data && response.data.data['_lrd']) {
+                            doc.queries = response.data.data['_lrd']['queries']
+                            delete response.data.data['_lrd']
                         }
                         doc.response = JSON.stringify(response.data, null, 2)
                         doc.responseCode = response.status
