@@ -37,7 +37,7 @@ class LaravelRequestDocs
         return array_filter($docs);
     }
 
-    public function sortDocs(array $docs, $sortBy = 'default'): Array
+    public function sortDocs(array $docs, $sortBy = 'default'): array
     {
         if ($sortBy === 'route_names') {
             sort($docs);
@@ -72,7 +72,7 @@ class LaravelRequestDocs
         return $sorted;
     }
 
-    public function getControllersInfo(): Array
+    public function getControllersInfo(): array
     {
         $controllersInfo = [];
         $routes = collect(Route::getRoutes());
@@ -105,7 +105,7 @@ class LaravelRequestDocs
         return $controllersInfo;
     }
 
-    public function appendRequestRules(Array $controllersInfo)
+    public function appendRequestRules(array $controllersInfo)
     {
         foreach ($controllersInfo as $index => $controllerInfo) {
             $controller       = $controllerInfo['controller_full_path'];
@@ -125,7 +125,11 @@ class LaravelRequestDocs
                     //throw $th;
                 }
                 if ($requestClass instanceof FormRequest) {
-                    $controllersInfo[$index]['rules'] = $this->flattenRules($requestClass->rules());
+                    try {
+                        $controllersInfo[$index]['rules'] = $this->flattenRules($requestClass->rules());
+                    } catch (\ErrorException $th) {
+                        $controllerInfo[$index]['rules'] = $this->rulesByRegex($requestClassName);
+                    }
                     $controllersInfo[$index]['docBlock'] = $this->lrdDocComment($reflectionMethod->getDocComment());
                 }
             }
@@ -181,6 +185,36 @@ class LaravelRequestDocs
                 $rules[$attribute][] = $rule;
             }
         }
+
+        return $rules;
+    }
+
+    public function rulesByRegex($requestClassName)
+    {
+        $data = new ReflectionMethod($requestClassName, 'rules');
+        $lines = file($data->getFileName());
+        $rules = [];
+        for ($i = $data->getStartLine() - 1; $i <= $data->getEndLine() - 1; $i++) {
+            preg_match_all("/(?:'|\").*?(?:'|\")/", $lines[$i], $matches);
+            $rules[] =  $matches;
+        }
+
+        $rules = collect($rules)
+            ->filter(function ($item) {
+                return count($item[0]) > 0;
+            })
+            ->transform(function ($item) {
+                $fieldName = Str::of($item[0][0])->replace(['"', "'"], '');
+                $definedFieldRules = collect(array_slice($item[0], 1))->transform(function ($rule) {
+                    return Str::of($rule)->replace(['"', "'"], '')->__toString();
+                })->toArray();
+
+                return ['key' => $fieldName, 'rules' => $definedFieldRules];
+            })
+            ->keyBy('key')
+            ->transform(function ($item) {
+                return $item['rules'];
+            })->toArray();
 
         return $rules;
     }
