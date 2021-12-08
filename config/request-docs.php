@@ -22,6 +22,9 @@ return [
      */
     'sort_by' => 'default',
 
+    //Use only routes where ->uri start with next string Using Str::startWith( . e.g. - /api/mobile
+    'only_route_uri_start_with' => '',
+
     'hide_matching' => [
         "#^telescope#",
         "#^docs#",
