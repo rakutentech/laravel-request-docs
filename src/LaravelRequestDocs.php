@@ -2,12 +2,14 @@
 
 namespace Rakutentech\LaravelRequestDocs;
 
+use ErrorException;
 use Route;
 use ReflectionMethod;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Exception;
+use Throwable;
 
 class LaravelRequestDocs
 {
@@ -76,7 +78,13 @@ class LaravelRequestDocs
     {
         $controllersInfo = [];
         $routes = collect(Route::getRoutes());
+        $onlyRouteStartWith = config('request-docs.only_route_uri_start_with') ?? '';
+
         foreach ($routes as $route) {
+            if($onlyRouteStartWith && !Str::startsWith($route->uri, $onlyRouteStartWith)){
+                continue;
+            }
+
             try {
                 /// Show Pnly Controller Name
                 $controllerFullPath = explode('@', $route->action['controller'])[0];
@@ -121,13 +129,13 @@ class LaravelRequestDocs
                 $requestClass = null;
                 try {
                     $requestClass = new $requestClassName();
-                } catch (\Throwable $th) {
+                } catch (Throwable $th) {
                     //throw $th;
                 }
                 if ($requestClass instanceof FormRequest) {
                     try {
                         $controllersInfo[$index]['rules'] = $this->flattenRules($requestClass->rules());
-                    } catch (\ErrorException $th) {
+                    } catch (ErrorException $th) {
                         $controllerInfo[$index]['rules'] = $this->rulesByRegex($requestClassName);
                     }
                     $controllersInfo[$index]['docBlock'] = $this->lrdDocComment($reflectionMethod->getDocComment());
