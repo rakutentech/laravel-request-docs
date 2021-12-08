@@ -1,5 +1,5 @@
 {
-    "name": "justraviga/laravel-request-docs",
+    "name": "rakutentech/laravel-request-docs",
     "description": "Automatically generate Laravel docs from request rules, controllers and routes",
     "keywords": [
         "rakutentech",
