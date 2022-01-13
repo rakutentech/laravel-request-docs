@@ -135,7 +135,7 @@ class LaravelRequestDocs
                 if ($requestClass instanceof FormRequest) {
                     try {
                         $controllersInfo[$index]['rules'] = $this->flattenRules($requestClass->rules());
-                    } catch (ErrorException $th) {
+                    } catch (Exception $th) {
                         $controllerInfo[$index]['rules'] = $this->rulesByRegex($requestClassName);
                     }
                     $controllersInfo[$index]['docBlock'] = $this->lrdDocComment($reflectionMethod->getDocComment());
