@@ -46,29 +46,18 @@ class LaravelRequestDocs
             return $docs;
         }
         $sorted = [];
-        foreach ($docs as $key => $doc) {
-            if (in_array('GET', $doc['methods'])) {
-                $sorted[] = $doc;
-            }
-        }
-        foreach ($docs as $key => $doc) {
-            if (in_array('POST', $doc['methods'])) {
-                $sorted[] = $doc;
-            }
-        }
-        foreach ($docs as $key => $doc) {
-            if (in_array('PUT', $doc['methods'])) {
-                $sorted[] = $doc;
-            }
-        }
-        foreach ($docs as $key => $doc) {
-            if (in_array('PATCH', $doc['methods'])) {
-                $sorted[] = $doc;
-            }
-        }
-        foreach ($docs as $key => $doc) {
-            if (in_array('DELETE', $doc['methods'])) {
-                $sorted[] = $doc;
+        $methods = [
+            'GET',
+            'POST',
+            'PUT',
+            'PATCH',
+            'DELETE',
+        ];
+        foreach ($methods as $method) {
+            foreach ($docs as $key => $doc) {
+                if (in_array($method, $doc['methods'])) {
+                    $sorted[] = $doc;
+                }
             }
         }
         return $sorted;
