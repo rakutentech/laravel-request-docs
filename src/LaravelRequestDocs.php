@@ -83,13 +83,22 @@ class LaravelRequestDocs
                 /// Has Auth Token
                 $hasAuthToken = !is_array($route->action['middleware']) ? [$route->action['middleware']] : $route->action['middleware'];
 
+                $method = explode('@', $route->action['controller'])[1];
+
+                foreach ($controllersInfo as $controllerInfo) {
+                    if ($controllerInfo['uri'] == $route->uri && $controllerInfo['method'] == $method) {
+                        // is duplicate
+                        continue;
+                    }
+                }
+
                 $controllersInfo[] = [
                     'uri'                   => $route->uri,
                     'methods'               => $route->methods,
                     'middlewares'           => !is_array($route->action['middleware']) ? [$route->action['middleware']] : $route->action['middleware'],
                     'controller'            => $controllerName,
                     'controller_full_path'  => $controllerFullPath,
-                    'method'                => explode('@', $route->action['controller'])[1],
+                    'method'                => $method,
                     'rules'                 => [],
                     'docBlock'              => "",
                     'bearer'                => in_array('auth:api', $hasAuthToken)
