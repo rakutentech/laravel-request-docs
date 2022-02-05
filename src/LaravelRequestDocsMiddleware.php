@@ -24,14 +24,10 @@ class LaravelRequestDocsMiddleware extends Middleware
         $this->listenDB();
         $response = $next($request);
 
-        $content = json_decode($response->content(), true);
-        $content['_lrd'] = [
-            'queries' => $this->queries
-        ];
-
-        $json = new JsonResource($content);
-
-        return $json;
+        $content = $response->getData();
+        $content->_lrd = ['queries' => $this->queries];
+        $response->setData($content);
+        return $response;
     }
 
     public function listenDB()

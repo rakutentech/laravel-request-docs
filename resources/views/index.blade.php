@@ -10,7 +10,7 @@
       <link href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css" rel="stylesheet">
       <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
       <script src="https://unpkg.com/vue-prism-editor"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.4/axios.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2/axios.min.js"></script>
       <link rel="stylesheet" href="https://unpkg.com/vue-prism-editor/dist/prismeditor.min.css" />
 
       <script src="https://unpkg.com/prismjs/prism.js"></script>
@@ -91,50 +91,24 @@
    <body class="bg-gray-100 tracking-wide bg-gray-200">
 
         <nav class="bg-white py-2 ">
-            <div class="container px-4 mx-auto md:flex md:items-center">
+            <div class="container px-4 md:flex md:items-center">
                 <div class="flex justify-between items-center">
                     <a href="{{config('request-docs.url')}}" class="font-bold text-xl text-indigo-600">{{ config('request-docs.document_name') }}</a>
                 </div>
             </div>
         </nav>
       <div id="app" v-cloak class="w-full flex lg:pt-10">
-         <aside class="text-xl text-grey-darkest break-all bg-gray-200 pl-2 h-screen sticky top-1 overflow-auto" style="width: 35%">
-            <h1 class="font-light mx-3">Routes List</h1>
-             <div class="dropdown">
-                 <input
-                     v-model.trim="search"
-                     class="dropdown-input appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                     type="text"
-                     placeholder="Search"
-                     @focus="showRoute = true;$event.target.select()"
-                     @blur="setTimeout(() => { showRoute = false}, 200)"
-                 />
-                 <div class="dropdown-list">
-                     @foreach ($docs as $index => $doc)
-                     <div  v-if="filter('{{ $doc["uri"] }}')"
-                        v-show="showRoute"
-                        @click="searched('{{ $doc["methods"][0] }}', '{{ $doc["uri"] }}') ; highlightSidebar('{{ $index }}')"
-                        class="dropdown-item">
-                         {{ str_replace('api/', '', $doc['uri']) }}
-                     </div>
-                     @endforeach
-                 </div>
-             </div>
+         <aside class="text-sm ml-1.5 text-grey-darkest break-all bg-gray-200 pl-2 h-screen sticky top-1 overflow-auto" style="width: 35%">
+            <h1 class="font-medium mx-3">Routes List</h1>
             <hr class="border-b border-gray-300">
             <table class="table-fixed text-sm mt-5">
                 <tbody>
-                    @php
-                        $previousController = ['controller' => null];
-                    @endphp
                     @foreach ($docs as $index => $doc)
                     <tr>
                         <td>
-                            @if ($previousController['controller'] !== $doc['controller'])
-                                <h3 class="mt-2 font-thin">{{ str_replace('Controller', '', $doc['controller']) }}</h3>
-                            @endif
                             <a href="#{{$doc['methods'][0] .'-'. $doc['uri']}}" @click="highlightSidebar({{$index}})">
                                 <span class="
-                                    font-thin
+                                    font-medium
                                     inline-flex
                                     items-center
                                     justify-center
@@ -153,28 +127,42 @@
                                     {{$doc['methods'][0]}}
                                 </span>
                                 <span class="text-xs" v-bind:class="docs[{{$index}}]['isActiveSidebar'] ? 'font-bold':''">
-                                    <span class="font-bold text-green-600 border rounded-full pr-1 pl-1 border-green-500" v-if="docs[{{$index}}]['responseOk'] === true">✓</span>
-                                    <span class="font-bold text-red-600 border rounded-full pr-1 pl-1 border-red-500" v-if="docs[{{$index}}]['responseOk'] === false">✗</span>
-                                    {{$doc['uri']}}
+                                    <span class="text-gray-800 pr-1 pl-1" v-if="docs[{{$index}}]['responseOk'] === null">{{$doc['uri']}}</span>
+                                    <span class="font-bold text-green-600 border rounded-full pr-1 pl-1 border-green-600" v-if="docs[{{$index}}]['responseOk'] === true">{{$doc['uri']}} - Response OK</span>
+                                    <span class="font-bold text-red-600 border rounded-full pr-1 pl-1 border-red-500" v-if="docs[{{$index}}]['responseOk'] === false">{{$doc['uri']}} - Not OK</span>
                                 </span>
                             </a>
                         </td>
                     </tr>
-                    @php
-                        $previousController = $doc;
-                    @endphp
                     @endforeach
                 </tbody>
             </table>
         </aside>
          <br><br>
          <div class="ml-6 mr-6 pl-2 w-2/3 bg-gray-300 p-2" style="width: 100%">
+            <section class="pt-5 pl-2 pr-2 pb-5 border mb-10 rounded bg-white shadow">
+                <div class="font-sans" id="{{$doc['methods'][0] .'-'. $doc['uri']}}">
+                    <h2 class="text-sm break-normal text-black bg-indigo-50 break-normal font-sans pb-1 pt-1 text-black">
+                        Request docs - Settings
+                    </h2>
+                    <h2 class="text-sm break-normal text-black break-normal font-sans pb-1 pt-1 text-black">
+                        Append Request Headers
+                    </h2>
+                    <p class="text-xs pb-2 font-medium text-gray-500">Default headers sent on every request. Format <code>Key:Value</code></p>
+                    <prism-editor
+                        class="my-prism-editor"
+                        style="min-height:100px;background:#2d2d2d;color: #ccc;resize:both" v-model="requestHeaders" :highlight="highlighter" line-numbers></prism-editor>
+                </div>
+            </section>
+            <h1 class="pl-2 pr-2 break-normal text-black break-normal font-sans text-black font-medium">
+                Routes List
+            </h1>
             @foreach ($docs as $index => $doc)
             <section class="pt-5 pl-2 pr-2 pb-5 border mb-10 rounded bg-white shadow">
                 <div class="font-sans" id="{{$doc['methods'][0] .'-'. $doc['uri']}}">
                 <h1 class="text-sm break-normal text-black bg-indigo-50 break-normal font-sans pb-1 pt-1 text-black">
                     <span class="w-20
-                        font-thin
+                        font-medium
                         inline-flex
                         items-center
                         justify-center
@@ -301,7 +289,7 @@
                 <button
                     v-if="docs[{{$index}}]['try']"
                     @click="request(docs[{{$index}}])"
-                    class="bg-red-500 hover:bg-red-700 text-white font-bold mt-2 border-red-800 border-2 shadow-inner mb-1 pl-5 pr-5 rounded-full"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold mt-2 border-blue-800 border-2 shadow-inner mb-1 pl-5 pr-5 rounded-full"
                 >
                     <svg
                         v-if="docs[{{$index}}]['loading']"
@@ -327,23 +315,28 @@
                 <div class="grid grid-cols-1 mt-3 pr-2 overflow-auto">
                     <div class="">
                         <div v-if="docs[{{$index}}]['try']">
-                            <h3 class="font-thin">REQUEST URL<sup class="text-red-500 font-bold"> *required</sup></h3>
-                            <p class="text-xs pb-2 font-thin text-gray-500">Enter your request URL with query params</p>
+                            <h3 class="font-medium">REQUEST URL<sup class="text-red-500 font-bold"> *required</sup></h3>
+                            <p class="text-xs pb-2 font-medium text-gray-500">Enter your request URL with query params</p>
                             <prism-editor class="my-prism-editor"
                             style="padding:15px 0px 15px 0px;min-height:20px;background:#2d2d2d;color: #ccc;resize:both;"
                             v-model="docs[{{$index}}]['url']" :highlight="highlighter" line-numbers></prism-editor>
                             <br>
                             @if (!in_array('GET', $doc['methods']))
-                            <h3 class="font-thin">REQUEST BODY<sup class="text-red-500"> *required</sup></h3>
-                            <p class="text-xs pb-2 font-thin text-gray-500">JSON body for the POST|PUT|DELETE request</p>
-                            <prism-editor class="my-prism-editor" style="min-height:200px;background:#2d2d2d;color: #ccc;resize:both" v-model="docs[{{$index}}]['body']" :highlight="highlighter" line-numbers></prism-editor>
+                            <h3 class="font-medium">REQUEST BODY<sup class="text-red-500"> *required</sup></h3>
+                            <p class="text-xs pb-2 font-medium text-gray-500">JSON body for the POST|PUT|DELETE request</p>
+                            <prism-editor
+                                class="my-prism-editor"
+                                style="min-height:200px;background:#2d2d2d;color: #ccc;resize:both"
+                                v-model="docs[{{$index}}]['body']"
+                                :highlight="highlighter"
+                                line-numbers></prism-editor>
                             @endif
                         </div>
                     </div>
                     <div class="">
                         <div v-if="docs[{{$index}}]['response'] && !docs[{{$index}}]['cancel']">
                             <hr class="border-b border-dotted mt-4 mb-2 border-gray-300">
-                            <h3 class="font-thin">
+                            <h3 class="font-medium">
                                 RESPONSE
                                 <span
                                     v-if="docs[{{$index}}]['responseOk']"
@@ -365,28 +358,57 @@
                                     class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-500 rounded"
                                     v-text="'STATUS CODE: ' + docs[{{$index}}]['responseCode']">
                                 </span>
+                                <span
+                                    v-if="docs[{{$index}}]['responseTime']"
+                                    class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-100 bg-gray-500 rounded"
+                                    v-text="'Response time: ' + docs[{{$index}}]['responseTime'] + 'ms'">
+                                </span>
                             </h3>
-                            <p class="text-xs pb-2 font-thin text-gray-500">Response from the server</p>
-                            <prism-editor v-if="docs[{{$index}}]['response']" class="my-prism-editor shadow-inner border-gray-400 border-2 rounded" style="min-height:200px;max-height:700px;background:rgb(241 241 241);color: rgb(48 36 36);resize:both;" readonly v-model="docs[{{$index}}]['response']" :highlight="highlighterAtom" line-numbers></prism-editor>
+                            <p class="text-xs pb-2 font-medium text-gray-500">Response from the server</p>
+                            <prism-editor
+                                v-if="docs[{{$index}}]['response']"
+                                class="my-prism-editor shadow-inner border-gray-400 border-2 rounded"
+                                style="min-height:100px;max-height:300px;background:#2d2d2d;color: #ccc;resize:both"
+                                readonly
+                                v-model="docs[{{$index}}]['response']"
+                                :highlight="highlighter"
+                                line-numbers></prism-editor>
                             <div class="mt-2">
-                                <h3 class="font-thin">
+                                <h3 class="font-medium">
                                     SQL
                                 </h3>
-                                <p class="text-xs pb-2 font-thin text-gray-500">SQL query log executed for this request</p>
-                                <div v-for="query in docs[{{$index}}]['queries']" class="mb-2">
-                                    <p class="text-sm font-thin">Query took: <span class="">@{{query.time}}ms</span></p>
-                                    <prism-editor
-                                        v-model="sqlFormatter.format(query['sql'])"
-                                        class="my-prism-editor"
-                                        style="padding:10px 0px 10px 0px;min-height:20px;max-height:350px;background:rgb(52 33 33);color: #ccc;resize:both;"
-                                        readonly
-                                        :highlight="highlighter"
-                                        line-numbers></prism-editor>
+                                <p v-if="docs[{{$index}}]['queries'].length" class="text-xs pb-2 font-medium text-gray-500">
+                                        SQL query log executed for this request.
+                                </p>
+                                <p v-if="!docs[{{$index}}]['queries'].length" class="text-xs pb-2 font-medium text-gray-500">No sql queries for this request</p>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div v-for="(query, index) in docs[{{$index}}]['queries']">
+                                        <p class="text-sm font-medium">@{{index+1}}) Query took:
+                                            <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-yellow-500 rounded mb-1">@{{query.time}}ms</span></p>
+                                        <prism-editor
+                                            v-model="sqlFormatter.format(query['sql'])"
+                                            class="my-prism-editor"
+                                            style="padding:10px 0px 10px 0px;min-height:20px;max-height:350px;background:rgb(52 33 33);color: #ccc;resize:both;"
+                                            readonly
+                                            :highlight="highlighter"
+                                            line-numbers></prism-editor>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                   </div>
+
+                  <button
+                  v-if="docs[{{$index}}]['response']"
+                  @click="request(docs[{{$index}}])"
+                  class="bg-blue-500 hover:bg-blue-700 text-white font-bold mt-2 border-blue-800 border-2 shadow-inner mb-1 pl-5 pr-5 rounded-full"
+              >
+                  <svg
+                      v-if="docs[{{$index}}]['loading']"
+                      class="animate-spin h-4 w-4 rounded-full bg-transparent border-2 border-transparent border-opacity-50 inline pr-2" style="border-right-color: white; border-top-color: white;" viewBox="0 0 24 24"></svg>
+                  Re Run
+                </button>
             </section>
             @endforeach
          </div>
@@ -449,6 +471,7 @@
             doc.try = false
             doc.cancel = true
             doc.loading = false
+            doc.responseTime = null
             // check in array
             if (doc.methods[0] == 'GET') {
                 var idx = 1
@@ -492,24 +515,18 @@
             data: {
                 docs: docs,
                 token: '',
-                search: '',
-                showRoute: false
+                showRoute: false,
+                requestHeaders: ''
+            },
+            created: function () {
+                this.requestHeaders = 'X-CSRF-TOKEN:{{ csrf_token() }}'
+                this.requestHeaders += '\n'
+                this.requestHeaders += 'Accept:application/json'
+                this.requestHeaders += '\n'
+                this.requestHeaders += 'Authorization:Bearer ' + this.token
+                this.requestHeaders += '\n'
             },
             methods: {
-                filter(uri) {
-                    if (!this.search) {
-                        return true
-                    }
-                    var similarity = stringSimilarity.compareTwoStrings(uri, this.search);
-                    return similarity > 0.1
-                },
-                searched(method, uri) {
-                    var oldUrl = new URL(document.URL);
-                    oldUrl.hash = '#' + method + '-' + uri;
-                    var newUrl = oldUrl.href;
-                    document.location.href = newUrl;
-                    this.search = uri.replace('api/', '');
-                },
                 highlightSidebar(idx) {
                     docs.map(function(doc, index) {
                         doc.isActiveSidebar = index == idx
@@ -537,62 +554,57 @@
                     doc.queries = []
                     doc.response = null
                     doc.responseOk = null
+                    doc.responseTime = null
                     doc.loading = true
-                    axios.defaults.headers.common['X-Request-LRD'] = 'lrd'
-                    axios.defaults.headers.common['X-CSRF-TOKEN'] = '{{ csrf_token() }}'
 
-                    if (doc.bearer) {
-                        axios.defaults.headers.common = {
-                            Authorization: `Bearer ${this.token}`,
-                            Accept: `application/json`,
-                            'X-Request-LRD': 'lrd',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        };
+                    headers = this.requestHeaders.split("\n")
+
+                    axios.defaults.headers.common['X-Request-LRD'] = 'lrd'
+
+                    for (header of headers) {
+                        let h = header.split(":")
+                        let key = h[0]
+                        let value = h[1]
+                        if (key && value) {
+                            axios.defaults.headers.common[key.trim()] = value.trim()
+                        }
                     }
 
+                    let startTime = new Date().getTime();
                     axios({
                         method: method,
                         url: url,
                         data: json,
+                        decompress: true,
                         withCredentials: true
-                      }).then((response) => {
-                        if (response['_lrd']) {
-                            doc.queries = response['_lrd']['queries']
-                            delete response['_lrd']
-                        }
-                        // in case of validation error
-                        if (response.data && response.data && response.data['_lrd']) {
-                            doc.queries = response.data['_lrd']['queries']
-                            delete response.data['_lrd']
-                        }
-
-                        // in case of validation error
-                        if (response.data && response.data.data && response.data.data['_lrd']) {
-                            doc.queries = response.data.data['_lrd']['queries']
-                            delete response.data.data['_lrd']
-                        }
-                        doc.response = JSON.stringify(response.data, null, 2)
-                        doc.responseCode = response.status
+                      }).then(response => {
+                        console.log(response)
                         doc.responseOk = true
-                      }).catch((error) => {
-                        if (error['_lrd']) {
-                            // split array to new lines
-                            doc.queries = error['_lrd']['queries']
-                            delete error['_lrd']
-                        }
-                        if (error.data && error.data['_lrd']) {
-                            doc.queries = error.data['_lrd']['queries']
-                            delete error.data['_lrd']
-                        }
-                        doc.loading = false
-                        if (error && error.response && error.response.data) {
-                            doc.response = JSON.stringify(error.response.data, null, 2)
-                            doc.responseCode = error.response.status;
+                        if (response && response.data) {
+                            if (response.data['_lrd']) {
+                                doc.queries = response.data['_lrd']['queries']
+                                delete response.data['_lrd']
+                            }
+                            doc.response = JSON.stringify(response.data, null, 2)
+                            doc.responseCode = response.status
                         }
 
+                      }).catch(error => {
                         doc.responseOk = false
+                        console.log(error)
+                        if (error && error.response && error.response.data) {
+                            if (error.response.data['_lrd']) {
+                                doc.queries = error.response.data['_lrd']['queries']
+                                delete error.response.data['_lrd']
+                            }
+                            doc.responseCode = error.response.status;
+                            doc.response = JSON.stringify(error.response.data, null, 2)
+                        }
+
                       }).then(function () {
+                        let endTime = new Date().getTime()
                         doc.loading = false
+                        doc.responseTime = endTime - startTime;
                       })
                 },
             },
