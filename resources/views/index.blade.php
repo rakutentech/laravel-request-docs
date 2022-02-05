@@ -98,10 +98,10 @@
             </div>
         </nav>
       <div id="app" v-cloak class="w-full flex lg:pt-10">
-         <aside class="text-sm ml-1.5 text-grey-darkest break-all bg-gray-200 pl-2 h-screen sticky top-1 overflow-auto" style="width: 35%">
+         <aside class="text-sm ml-1.5 text-grey-darkest break-all bg-gray-200 pl-2 h-screen sticky top-1 overflow-auto">
             <h1 class="font-medium mx-3">Routes List</h1>
             <hr class="border-b border-gray-300">
-            <table class="table-fixed text-sm mt-5">
+            <table class="table-fixed text-sm mt-5" style="width: max-content">
                 <tbody>
                     @foreach ($docs as $index => $doc)
                     <tr>
@@ -128,8 +128,8 @@
                                 </span>
                                 <span class="text-xs" v-bind:class="docs[{{$index}}]['isActiveSidebar'] ? 'font-bold':''">
                                     <span class="text-gray-800 pr-1 pl-1" v-if="docs[{{$index}}]['responseOk'] === null">{{$doc['uri']}}</span>
-                                    <span class="font-bold text-green-600 border rounded-full pr-1 pl-1 border-green-600" v-if="docs[{{$index}}]['responseOk'] === true">{{$doc['uri']}} - Response OK</span>
-                                    <span class="font-bold text-red-600 border rounded-full pr-1 pl-1 border-red-500" v-if="docs[{{$index}}]['responseOk'] === false">{{$doc['uri']}} - Not OK</span>
+                                    <span class="font-bold text-green-600 border rounded-full pr-1 pl-1 border-green-600" v-if="docs[{{$index}}]['responseOk'] === true">{{$doc['uri']}} - SUCCESS</span>
+                                    <span class="font-bold text-red-600 border rounded-full pr-1 pl-1 border-red-500" v-if="docs[{{$index}}]['responseOk'] === false">{{$doc['uri']}} - ERROR</span>
                                 </span>
                             </a>
                         </td>
@@ -139,12 +139,12 @@
             </table>
         </aside>
          <br><br>
-         <div class="ml-6 mr-6 pl-2 w-2/3 bg-gray-300 p-2" style="width: 100%">
+         <div class="ml-6 mr-6 pl-2 w-2/3 p-2" style="width: 100%">
+            <h1 class="pl-2 pr-2 break-normal text-black break-normal font-sans text-black font-medium">
+                Settings
+            </h1>
             <section class="pt-5 pl-2 pr-2 pb-5 border mb-10 rounded bg-white shadow">
                 <div class="font-sans" id="{{$doc['methods'][0] .'-'. $doc['uri']}}">
-                    <h2 class="text-sm break-normal text-black bg-indigo-50 break-normal font-sans pb-1 pt-1 text-black">
-                        Request docs - Settings
-                    </h2>
                     <h2 class="text-sm break-normal text-black break-normal font-sans pb-1 pt-1 text-black">
                         Append Request Headers
                     </h2>
@@ -242,7 +242,7 @@
                                 <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-green-100 bg-green-500 rounded">String</span>
                                 @endif
                                 @if (str_contains($rule, 'array'))
-                                <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-700 bg-yellow-400 rounded">Array</span>
+                                <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-yellow-400 rounded">Array</span>
                                 @endif
                                 @if (str_contains($rule, 'date'))
                                 <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-yellow-400 rounded">Date</span>
@@ -341,7 +341,7 @@
                                 <span
                                     v-if="docs[{{$index}}]['responseOk']"
                                     class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-green-100 bg-green-500 rounded">
-                                    OK
+                                    SUCCESS
                                 </span>
                                 <span
                                     v-if="!docs[{{$index}}]['responseOk']"
@@ -360,7 +360,7 @@
                                 </span>
                                 <span
                                     v-if="docs[{{$index}}]['responseTime']"
-                                    class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-100 bg-gray-500 rounded"
+                                    class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-yellow-400 rounded"
                                     v-text="'Response time: ' + docs[{{$index}}]['responseTime'] + 'ms'">
                                 </span>
                             </h3>
@@ -383,8 +383,8 @@
                                 <p v-if="!docs[{{$index}}]['queries'].length" class="text-xs pb-2 font-medium text-gray-500">No sql queries for this request</p>
                                 <div class="grid grid-cols-2 gap-2">
                                     <div v-for="(query, index) in docs[{{$index}}]['queries']">
-                                        <p class="text-sm font-medium">@{{index+1}}) Query took:
-                                            <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-yellow-500 rounded mb-1">@{{query.time}}ms</span></p>
+                                        <p class="text-sm font-medium">@{{index+1}}.
+                                            <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-yellow-500 rounded mb-1">Query time: @{{query.time}}ms</span></p>
                                         <prism-editor
                                             v-model="sqlFormatter.format(query['sql'])"
                                             class="my-prism-editor"
@@ -436,21 +436,26 @@
                 }
                 if (rule.match(/min:([0-9]+)/)) {
                     validations.min = rule.match(/min:([0-9]+)/)[1]
+                    if (!validations.min) {
+                        validations.min = 1
+                    }
                 }
                 if (rule.match(/max:([0-9]+)/)) {
                     validations.max = rule.match(/max:([0-9]+)/)[1]
+                    if (!validations.max) {
+                        validations.max = 100
+                    }
                 }
             })
 
             if (validations.isString) {
                 validations.value = faker.name.findName()
             }
-
             if (validations.isInteger) {
-                validations.value = faker.datatype.number({ min: validations.min, max:validations.max })
+                validations.value = Math.floor(Math.random() * (validations.max - validations.min + 1) + validations.min)
             }
             if (validations.isDate) {
-                validations.value = new Date(faker.datatype.datetime()).toISOString().slice(0, 10)
+                validations.value = new Date(faker.date.between(new Date(), new Date())).toISOString().slice(0, 10)
             }
 
             return validations
@@ -480,15 +485,19 @@
                     if (attribute.indexOf('.*') !== -1) {
                         return
                     }
-                    var value = guessValue(attribute, doc.rules[attribute])
+                    let value = guessValue(attribute, doc.rules[attribute])
                     if (!value.isRequired) {
                         //return
                     }
 
+                    let attr = attribute
+                    if (value.isArray) {
+                        attr = attribute + "[]"
+                    }
                     if (idx === 1) {
-                        doc.url += "\n"+ "?"+attribute+"="+value.value+"\n"
+                        doc.url += "\n"+ "?"+attr+"="+value.value+"\n"
                     } else {
-                        doc.url += "&"+attribute+"="+value.value+"\n"
+                        doc.url += "&"+attr+"="+value.value+"\n"
                     }
                     idx++
                 })
@@ -502,7 +511,12 @@
                     if (attribute.indexOf('.*') !== -1) {
                         return
                     }
-                    body[attribute] = guessValue(attribute, doc.rules[attribute]).value
+                    let value = guessValue(attribute, doc.rules[attribute])
+                    if (value.isArray) {
+                        body[attribute] = [value.value]
+                    } else {
+                        body[attribute] = value.value
+                    }
                 })
                 doc.body = JSON.stringify(body, null, 2)
             }
