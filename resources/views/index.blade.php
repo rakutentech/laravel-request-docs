@@ -159,7 +159,7 @@
             </h1>
             @foreach ($docs as $index => $doc)
             <section class="pt-5 pl-2 pr-2 pb-5 border mb-10 rounded bg-white shadow">
-                <div class="font-sans" id="{{$doc['methods'][0] .'-'. $doc['uri']}}">
+                <div class="font-sans" id="{{$doc['httpMethod'] .'-'. $doc['uri']}}">
                 <h1 class="text-sm break-normal text-black bg-indigo-50 break-normal font-sans pb-1 pt-1 text-black">
                     <span class="w-20
                         font-medium
@@ -187,27 +187,36 @@
                 </div>
                 <hr class="border-b border-grey-light">
 
-                <table class="table-fixed text-sm mt-5 shadow-inner">
-                    <thead class="border">
-                    </thead>
+                <table class="table-fixed text-sm mt-5">
                     <tbody>
                         <tr>
-                            <td class="align-left border border-gray-300 pl-2 pr-2 bg-gray-200 font-bold">Controller</td>
-                            <td class="align-left border pl-2 pr-2 break-all">{{$doc['controller_full_path']}}</td>
+                            <td class="align-left pl-2 pr-2 bg-gray-100 border-r-2">HTTP Method</td>
+                            <td class="align-left pl-2 pr-2 font-bold break-all">{{$doc['httpMethod']}}</td>
                         </tr>
                         <tr>
-                            <td class="align-left border border-gray-300 pl-2 pr-2 bg-gray-200 font-bold">Method</td>
-                            <td class="align-left border pl-2 pr-2 break-all">{{"@" .$doc['method']}}</td>
+                            <td class="align-left pl-2 pr-2 bg-gray-100 border-r-2">URL</td>
+                            <td class="align-left pl-2 pr-2 break-all">
+                                <a target="_blank" href="@{{window.location.origin}}/{{$doc['uri']}}">@{{window.location.origin}}/{{$doc['uri']}}</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="align-left pl-2 pr-2 bg-gray-100 border-r-2">Controller</td>
+                            <td class="align-left pl-2 pr-2 break-all">{{$doc['controller_full_path']}}</td>
+                        </tr>
+                        <tr>
+                            <td class="align-left pl-2 pr-2 bg-gray-100 border-r-2">Controller Method</td>
+                            <td class="align-left pl-2 pr-2 break-all">{{"@" .$doc['method']}}</td>
                         </tr>
                         @foreach ($doc['middlewares'] as $middleware)
                             <tr>
-                                <td class="align-left border border-gray-300 pl-2 pr-2 bg-gray-200">Middleware</td>
-                                <td class="align-left border pl-2 pr-2 break-all">{{$middleware}}</td>
+                                <td class="align-left pl-2 pr-2 bg-gray-100 border-r-2">Middleware {{ $loop->index + 1 }}</td>
+                                <td class="align-left pl-2 pr-2 break-all">{{$middleware}}</td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
-                <div v-if="docs[{{$index}}]['docBlock']" class="border-2 mr-4 mt-4 p-4 rounded shadow-inner text-sm">
+                <div v-if="docs[{{$index}}]['docBlock']" class="border-2 mr-4 mt-4 p-4 rounded text-sm">
+                    <h3 class="font-bold">LRD Docs</h3>
                     <vue-markdown>{!! $doc['docBlock'] !!}</vue-markdown>
                 </div>
                 <br>
@@ -215,34 +224,36 @@
                 <table class="table-fixed align-left text-sm mt-5">
                     <thead class="border">
                     <tr class="border">
-                        <th class="border border-gray-300 pl-2 pr-16 pt-1 pb-1 w-12 text-left bg-gray-200">Attributes</th>
-                        <th class="border border-gray-300 pl-2 pr-16 pt-1 pb-1 w-12 text-left bg-gray-200">Required</th>
-                        <th class="border border-gray-300 pl-2 pr-16 pt-1 pb-1 w-10 text-left bg-gray-200">Type</th>
-                        <th class="border border-gray-300 pl-2 pr-16 pt-1 pb-1 w-1/20 text-left bg-gray-200">Rules</th>
+                        <th class="border border-gray-300 pl-2 pr-16 pt-1 pb-1 w-min text-left bg-gray-200">No.</th>
+                        <th class="border border-gray-300 pl-2 pr-16 pt-1 pb-1 w-min text-left bg-gray-200">Attributes</th>
+                        <th class="border border-gray-300 pl-2 pr-16 pt-1 pb-1 w-min text-left bg-gray-200">Type</th>
+                        <th class="border border-gray-300 pl-2 pr-16 pt-1 pb-1 w-min text-left bg-gray-200">Nullable</th>
+                        <th class="border border-gray-300 pl-2 pr-16 pt-1 pb-1 w-min text-left bg-gray-200">Bail</th>
+                        <th class="border border-gray-300 pl-2 pr-16 pt-1 pb-1 w-min text-left bg-gray-200">Rules</th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach ($doc['rules'] as $attribute => $rules)
                     <tr class="border">
-                        <td class="border border-blue-200 pl-3 pt-1 pb-1 pr-2 bg-blue-100">{{$attribute}}</td>
-                        <td class="border pl-3 pt-1 pb-1 pr-2">
+                        <td class="border pl-3 pt-1 pb-1 pr-2">{{$loop->index+1}}</td>
+                        <td class="border pl-3 pt-1 pb-1 pr-2 bg-gray-200">
+                            {{$attribute}}
                             @foreach ($rules as $rule)
                                 @if (str_contains($rule, 'required'))
-                                <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-pink-100 bg-pink-600 rounded">REQUIRED</span>
+                                <sup class="text-red-500 font-bold"> *required</sup>
                                 @endif
-                            <br>
                             @endforeach
                         </td>
-                        <td class="border pl-3 pt-1 pb-1 pr-2 bg-gray-100">
+                        <td class="border pl-3 pt-1 pb-1 pr-2">
                             @foreach ($rules as $rule)
                                 @if (str_contains($rule, 'integer'))
-                                <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-blue-100 bg-blue-500 rounded">Integer</span>
+                                <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-blue-800 bg-blue-300 rounded">Integer</span>
                                 @endif
                                 @if (str_contains($rule, 'string'))
                                 <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-green-100 bg-green-500 rounded">String</span>
                                 @endif
                                 @if (str_contains($rule, 'array'))
-                                <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-yellow-400 rounded">Array</span>
+                                <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-blue-200 rounded">Array</span>
                                 @endif
                                 @if (str_contains($rule, 'date'))
                                 <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-yellow-400 rounded">Date</span>
@@ -250,18 +261,33 @@
                                 @if (str_contains($rule, 'boolean'))
                                 <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-green-400 rounded">Boolean</span>
                                 @endif
-                            <br>
+                            @endforeach
+                        </td>
+                        <td class="border pl-3 pt-1 pb-1 pr-2 bg-gray-100 text-center">
+                            @foreach ($rules as $rule)
+                                @if (str_contains($rule, 'nullable'))
+                                <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none rounded">Nullable</span>
+                                @endif
+                            @endforeach
+                        </td>
+                        <td class="border pl-3 pt-1 pb-1 pr-2 text-center">
+                            @foreach ($rules as $rule)
+                                @if (str_contains($rule, 'bail'))
+                                <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-500 rounded">Bail</span>
+                                @endif
                             @endforeach
                         </td>
                         <td class="border pl-3 pr-2 break-all">
                             <div class="font-mono">
                                 @foreach ($rules as $rule)
-                                    {{-- No print on just one rule 'required', as already printed as label --}}
-                                    @if($rule != 'required')
-                                        <span>
-                                            {{ str_replace(["required|", "integer|", "string|", "boolean|"], ["", "", ""], $rule) }}
-                                        </span>
-                                    @endif
+                                    @foreach (explode('|', $rule) as $r)
+                                        @if (!in_array($r, ['required', 'integer', 'string', 'boolean', 'array', 'nullable', 'bail']))
+                                            {{$r}}
+                                            @if (!$loop->last)
+                                            <span class="text-gray-900 font-bold">|</span>
+                                            @endif
+                                        @endif
+                                    @endforeach
                                 @endforeach
                             </div>
                         </td>
@@ -333,38 +359,63 @@
                             @endif
                         </div>
                     </div>
-                    <div class="">
-                        <div v-if="docs[{{$index}}]['response'] && !docs[{{$index}}]['cancel']">
-                            <hr class="border-b border-dotted mt-4 mb-2 border-gray-300">
+                    <hr class="border-b border-dotted mt-4 mb-2 border-gray-300">
+                    <div class="grid grid-cols-2 gap-2" v-if="docs[{{$index}}]['response'] && !docs[{{$index}}]['cancel']">
+                        <div class="border-r-2">
                             <h3 class="font-medium">
                                 RESPONSE
-                                <span
-                                    v-if="docs[{{$index}}]['responseOk']"
-                                    class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-green-100 bg-green-500 rounded">
-                                    SUCCESS
-                                </span>
-                                <span
-                                    v-if="!docs[{{$index}}]['responseOk']"
-                                    class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-500 rounded">
-                                    ERROR
-                                </span>
-                                <span
-                                    v-if="docs[{{$index}}]['responseOk']"
-                                    class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-green-100 bg-green-500 rounded"
-                                    v-text="'STATUS CODE: ' + docs[{{$index}}]['responseCode']">
-                                </span>
-                                <span
-                                    v-if="!docs[{{$index}}]['responseOk']"
-                                    class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-500 rounded"
-                                    v-text="'STATUS CODE: ' + docs[{{$index}}]['responseCode']">
-                                </span>
-                                <span
-                                    v-if="docs[{{$index}}]['responseTime']"
-                                    class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-yellow-400 rounded"
-                                    v-text="'Response time: ' + docs[{{$index}}]['responseTime'] + 'ms'">
-                                </span>
+                                <p class="text-xs pt-2 pb-2 font-medium text-gray-500">
+                                    Response codes, time and headers.
+                                </p>
+
+                                <table class="table-fixed text-sm mt-5">
+                                    <tbody>
+                                        <tr>
+                                            <td class="align-left pl-2 pr-2 bg-gray-100 border-r-2">Status</td>
+                                            <td class="align-left pl-2 pr-2 break-all">
+                                                <span
+                                                v-if="docs[{{$index}}]['responseOk']"
+                                                class="inline-flex  text-xs font-bold leading-none text-green-700">
+                                                    SUCCESS
+                                                </span>
+                                                <span
+                                                    v-if="!docs[{{$index}}]['responseOk']"
+                                                    class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-500 rounded">
+                                                    ERROR
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="align-left pl-2 pr-2 bg-gray-100 border-r-2">Status Code</td>
+                                            <td class="align-left pl-2 pr-2 break-all">
+                                                <span
+                                                    v-if="docs[{{$index}}]['responseOk']"
+                                                    class="inline-flex text-xs font-bold text-green-900"
+                                                    v-text="docs[{{$index}}]['responseCode']">
+                                                </span>
+                                                <span
+                                                    v-if="!docs[{{$index}}]['responseOk']"
+                                                    class="inline-flex text-xs font-bold text-red-900"
+                                                    v-text="docs[{{$index}}]['responseCode']">
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="align-left pl-2 pr-2 bg-gray-100 border-r-2">Response Time</td>
+                                            <td class="align-left pl-2 pr-2 break-all">
+                                                <span
+                                                    v-if="docs[{{$index}}]['responseTime']"
+                                                    class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-yellow-400 rounded"
+                                                    v-text="docs[{{$index}}]['responseTime'] + 'ms'">
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </h3>
-                            <p class="text-xs pb-2 font-medium text-gray-500">Response from the server</p>
+                        </div>
+                        <div>
+                            <p class="text-xs pb-2 font-medium text-gray-800">Response from the server</p>
                             <prism-editor
                                 v-if="docs[{{$index}}]['response']"
                                 class="my-prism-editor shadow-inner border-gray-400 border-2 rounded"
@@ -373,42 +424,57 @@
                                 v-model="docs[{{$index}}]['response']"
                                 :highlight="highlighter"
                                 line-numbers></prism-editor>
-                            <div class="mt-2">
-                                <h3 class="font-medium">
-                                    SQL
-                                </h3>
-                                <p v-if="docs[{{$index}}]['queries'].length" class="text-xs pb-2 font-medium text-gray-500">
-                                        SQL query log executed for this request.
+                        </div>
+                        <div class="border-r-2">
+                            <h3 class="font-medium mt-10">
+                                SQL
+                            </h3>
+                            <p v-if="!docs[{{$index}}]['queries'].length" class="text-xs pb-2 font-medium text-gray-500">
+                                No SQL queries executed for this request.
+                            </p>
+                            <p v-if="docs[{{$index}}]['queries'].length" class="text-xs pb-2 font-medium text-gray-500">
+                                SQL queries executed for this request.
+                                <table class="table-fixed text-sm mt-5">
+                                    <tbody>
+                                        <tr>
+                                            <td class="align-left pl-2 pr-2 bg-gray-100 border-r-2">Total Queries</td>
+                                            <td class="align-left pl-2 pr-2 break-all">
+                                                <div v-text="docs[{{$index}}]['queries'].length"></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="align-left pl-2 pr-2 bg-gray-100 border-r-2">Total Query time</td>
+                                            <td class="align-left pl-2 pr-2 break-all">
+                                                <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-yellow-400 rounded">
+                                                    <span v-text="docs[{{$index}}]['queries'].reduce((total, query) => total + query.time, 0).toFixed(2)"></span>ms
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </p>
+                        </div>
+                        <div class="">
+                                <p class="text-xs mt-10 font-medium text-gray-500">
+                                    SQL queries
                                 </p>
-                                <p v-if="!docs[{{$index}}]['queries'].length" class="text-xs pb-2 font-medium text-gray-500">No sql queries for this request</p>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <div v-for="(query, index) in docs[{{$index}}]['queries']">
-                                        <p class="text-sm font-medium">@{{index+1}}.
-                                            <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-yellow-500 rounded mb-1">Query time: @{{query.time}}ms</span></p>
-                                        <prism-editor
-                                            v-model="sqlFormatter.format(query['sql'])"
-                                            class="my-prism-editor"
-                                            style="padding:10px 0px 10px 0px;min-height:20px;max-height:350px;background:rgb(52 33 33);color: #ccc;resize:both;"
-                                            readonly
-                                            :highlight="highlighter"
-                                            line-numbers></prism-editor>
-                                    </div>
+                                <div v-for="(query, index) in docs[{{$index}}]['queries']">
+                                    <p class="mt-2 text-sm font-medium">@{{index+1}}.
+                                        <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-yellow-500 rounded mb-1">
+                                            @{{query.time}}ms
+                                        </span>
+                                    </p>
+                                    <prism-editor
+                                        v-model="sqlFormatter.format(query['sql'])"
+                                        class="my-prism-editor"
+                                        style="padding:10px 0px 10px 0px;min-height:20px;max-height:350px;background:rgb(52 33 33);color: #ccc;resize:both;"
+                                        readonly
+                                        :highlight="highlighter"
+                                        line-numbers></prism-editor>
                                 </div>
-                            </div>
                         </div>
                     </div>
                   </div>
-
-                  <button
-                  v-if="docs[{{$index}}]['response']"
-                  @click="request(docs[{{$index}}])"
-                  class="bg-blue-500 hover:bg-blue-700 text-white font-bold mt-2 border-blue-800 border-2 shadow-inner mb-1 pl-5 pr-5 rounded-full"
-              >
-                  <svg
-                      v-if="docs[{{$index}}]['loading']"
-                      class="animate-spin h-4 w-4 rounded-full bg-transparent border-2 border-transparent border-opacity-50 inline pr-2" style="border-right-color: white; border-top-color: white;" viewBox="0 0 24 24"></svg>
-                  Re Run
-                </button>
             </section>
             @endforeach
          </div>

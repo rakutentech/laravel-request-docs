@@ -84,9 +84,9 @@ class LaravelRequestDocs
                 $hasAuthToken = !is_array($route->action['middleware']) ? [$route->action['middleware']] : $route->action['middleware'];
 
                 $method = explode('@', $route->action['controller'])[1];
-
+                $httpMethod = $route->methods[0];
                 foreach ($controllersInfo as $controllerInfo) {
-                    if ($controllerInfo['uri'] == $route->uri && $controllerInfo['method'] == $method) {
+                    if ($controllerInfo['uri'] == $route->uri && $controllerInfo['httpMethod'] == $httpMethod) {
                         // is duplicate
                         continue;
                     }
@@ -99,6 +99,7 @@ class LaravelRequestDocs
                     'controller'            => $controllerName,
                     'controller_full_path'  => $controllerFullPath,
                     'method'                => $method,
+                    'httpMethod'            => $httpMethod,
                     'rules'                 => [],
                     'docBlock'              => "",
                     'bearer'                => in_array('auth:api', $hasAuthToken)
