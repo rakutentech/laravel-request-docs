@@ -99,7 +99,7 @@
         </nav>
       <div id="app" v-cloak class="w-full flex lg:pt-10">
          <aside class="text-sm ml-1.5 text-grey-darkest break-all bg-gray-200 pl-2 h-screen sticky top-1 overflow-auto">
-            <h1 class="font-medium mx-3">Routes List</h1>
+            <h1 class="font-medium mx-3 mt-3">Routes List</h1>
             <hr class="border-b border-gray-300">
             <table class="table-fixed text-sm mt-5" style="width: max-content">
                 <tbody>
@@ -143,6 +143,8 @@
             <h1 class="pl-2 pr-2 break-normal text-black break-normal font-sans text-black font-medium">
                 Settings
             </h1>
+            <hr class="border-b border-gray-300">
+            <br>
             <section class="pt-5 pl-2 pr-2 pb-5 border mb-10 rounded bg-white shadow">
                 <div class="font-sans" id="{{$doc['methods'][0] .'-'. $doc['uri']}}">
                     <h2 class="text-sm break-normal text-black break-normal font-sans pb-1 pt-1 text-black">
@@ -157,6 +159,8 @@
             <h1 class="pl-2 pr-2 break-normal text-black break-normal font-sans text-black font-medium">
                 Routes List
             </h1>
+            <hr class="border-b border-gray-300">
+            <br>
             @foreach ($docs as $index => $doc)
             <section class="pt-5 pl-2 pr-2 pb-5 border mb-10 rounded bg-white shadow">
                 <div class="font-sans" id="{{$doc['httpMethod'] .'-'. $doc['uri']}}">
@@ -365,54 +369,64 @@
                             <h3 class="font-medium">
                                 RESPONSE
                                 <p class="text-xs pt-2 pb-2 font-medium text-gray-500">
-                                    Response codes, time and headers.
+                                    Response status, code and time.
                                 </p>
-
-                                <table class="table-fixed text-sm mt-5">
-                                    <tbody>
-                                        <tr>
-                                            <td class="align-left pl-2 pr-2 bg-gray-100 border-r-2">Status</td>
-                                            <td class="align-left pl-2 pr-2 break-all">
-                                                <span
-                                                v-if="docs[{{$index}}]['responseOk']"
-                                                class="inline-flex  text-xs font-bold leading-none text-green-700">
-                                                    SUCCESS
-                                                </span>
-                                                <span
-                                                    v-if="!docs[{{$index}}]['responseOk']"
-                                                    class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-500 rounded">
-                                                    ERROR
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="align-left pl-2 pr-2 bg-gray-100 border-r-2">Status Code</td>
-                                            <td class="align-left pl-2 pr-2 break-all">
-                                                <span
-                                                    v-if="docs[{{$index}}]['responseOk']"
-                                                    class="inline-flex text-xs font-bold text-green-900"
-                                                    v-text="docs[{{$index}}]['responseCode']">
-                                                </span>
-                                                <span
-                                                    v-if="!docs[{{$index}}]['responseOk']"
-                                                    class="inline-flex text-xs font-bold text-red-900"
-                                                    v-text="docs[{{$index}}]['responseCode']">
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="align-left pl-2 pr-2 bg-gray-100 border-r-2">Response Time</td>
-                                            <td class="align-left pl-2 pr-2 break-all">
-                                                <span
-                                                    v-if="docs[{{$index}}]['responseTime']"
-                                                    class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-yellow-400 rounded"
-                                                    v-text="docs[{{$index}}]['responseTime'] + 'ms'">
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
                             </h3>
+                            <table class="table-fixed text-sm mt-5">
+                                <tbody>
+                                    <tr>
+                                        <td class="align-left pl-2 pr-2 bg-gray-100 border-r-2">Status</td>
+                                        <td class="align-left pl-2 pr-2 break-all">
+                                            <span
+                                            v-if="docs[{{$index}}]['responseOk']"
+                                            class="inline-flex  text-xs font-bold leading-none text-green-700">
+                                                SUCCESS
+                                            </span>
+                                            <span
+                                                v-if="!docs[{{$index}}]['responseOk']"
+                                                class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-500 rounded">
+                                                ERROR
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="align-left pl-2 pr-2 bg-gray-100 border-r-2">Status Code</td>
+                                        <td class="align-left pl-2 pr-2 break-all">
+                                            <span
+                                                v-if="docs[{{$index}}]['responseOk']"
+                                                class="inline-flex text-xs font-bold text-green-900"
+                                                v-text="docs[{{$index}}]['responseCode']">
+                                            </span>
+                                            <span
+                                                v-if="!docs[{{$index}}]['responseOk']"
+                                                class="inline-flex text-xs font-bold text-red-900"
+                                                v-text="docs[{{$index}}]['responseCode']">
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="align-left pl-2 pr-2 bg-gray-100 border-r-2">Response Time</td>
+                                        <td class="align-left pl-2 pr-2 break-all">
+                                            <span
+                                                v-if="docs[{{$index}}]['responseTime']"
+                                                class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-yellow-400 rounded"
+                                                v-text="docs[{{$index}}]['responseTime'] + 'ms'">
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p class="text-xs pt-2 pb-2 font-medium text-gray-500">
+                                Response headers.
+                            </p>
+                            <prism-editor
+                                v-if="docs[{{$index}}]['responseHeaders']"
+                                class="my-prism-editor shadow-inner border-gray-400 border-2 rounded"
+                                style="width:75%;min-height:100px;max-height:200px;background:#fefefe;color: rgb(66, 63, 63);resize:both"
+                                readonly
+                                v-model="docs[{{$index}}]['responseHeaders']"
+                                :highlight="highlighterAtom"
+                                line-numbers></prism-editor>
                         </div>
                         <div>
                             <p class="text-xs pb-2 font-medium text-gray-800">Response from the server</p>
@@ -635,6 +649,7 @@
                     doc.response = null
                     doc.responseOk = null
                     doc.responseTime = null
+                    doc.responseHeaders = null
                     doc.loading = true
 
                     headers = this.requestHeaders.split("\n")
@@ -667,6 +682,7 @@
                             }
                             doc.response = JSON.stringify(response.data, null, 2)
                             doc.responseCode = response.status
+                            doc.responseHeaders = JSON.stringify(response.headers, null, 2)
                         }
 
                       }).catch(error => {
@@ -678,6 +694,7 @@
                                 delete error.response.data['_lrd']
                             }
                             doc.responseCode = error.response.status;
+                            doc.responseHeaders = JSON.stringify(error.response.headers, null, 2)
                             doc.response = JSON.stringify(error.response.data, null, 2)
                         }
 
