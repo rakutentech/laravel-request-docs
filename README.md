@@ -62,7 +62,21 @@ Try API
 ./vendor/bin/phpunit
 ```
 
+## Linting
+
+```bash
+./vendor/bin/phpcs --standard=phpcs.xml --extensions=php --ignore=tests/migrations config/ src/
+```
+
+Fixing lints
+
+```bash
+./vendor/bin/php-cs-fixer fix src/
+./vendor/bin/php-cs-fixer fix config/
+```
+
 ## Changelog
 
 - Initial Release
+- v1.9 Added improvements such as status code, response headers, custom request headers and fixed issues reported by users
 

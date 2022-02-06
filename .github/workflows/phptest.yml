@@ -10,8 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        php-versions: [7.4, 8.0.6]
-        # laravel-versions: [8.*, 8.12]
+        php-versions: [7.4, 8.0.6, 8.1]
 
     steps:
       - name: Checkout
@@ -32,6 +31,9 @@ jobs:
       - name: PHPUNIT Tests
         run: |
             ./vendor/bin/phpunit
+      - name: PHPLint
+        run: |
+            ./vendor/bin/phpcs --standard=phpcs.xml --extensions=php --ignore=tests/migrations config/ src/
 
 
 

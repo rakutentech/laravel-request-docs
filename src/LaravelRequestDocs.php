@@ -13,7 +13,6 @@ use Throwable;
 
 class LaravelRequestDocs
 {
-
     public function getDocs()
     {
         $docs = [];
@@ -70,7 +69,7 @@ class LaravelRequestDocs
         $onlyRouteStartWith = config('request-docs.only_route_uri_start_with') ?? '';
 
         foreach ($routes as $route) {
-            if($onlyRouteStartWith && !Str::startsWith($route->uri, $onlyRouteStartWith)){
+            if ($onlyRouteStartWith && !Str::startsWith($route->uri, $onlyRouteStartWith)) {
                 continue;
             }
 
@@ -182,7 +181,7 @@ class LaravelRequestDocs
             if (is_object($rule)) {
                 $rule = get_class($rule);
                 $rules[$attribute][] = $rule;
-            } else if (is_array($rule)) {
+            } elseif (is_array($rule)) {
                 $rulesStrs = [];
                 foreach ($rule as $ruleItem) {
                     $rulesStrs[] = is_object($ruleItem) ? get_class($ruleItem) : $ruleItem;

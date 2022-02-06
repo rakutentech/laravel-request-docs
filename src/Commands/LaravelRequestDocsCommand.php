@@ -31,7 +31,8 @@ class LaravelRequestDocsCommand extends Command
         if (! File::exists($destinationPath)) {
             File::makeDirectory($destinationPath, 0755, true);
         }
-        File::put($destinationPath . '/index.html',
+        File::put(
+            $destinationPath . '/index.html',
             view('request-docs::index')
                 ->with(compact('docs'))
                 ->render()
