@@ -7,6 +7,7 @@
       <title>{{ config('request-docs.document_name') }}</title>
       <meta name="description" content="Laravel Request Docs">
       <meta name="keywords" content="">
+      <meta name="csrf-token" content="{{ csrf_token() }}">
       <link href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css" rel="stylesheet">
       <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
       <script src="https://unpkg.com/vue-prism-editor"></script>
@@ -327,21 +328,6 @@
                     Run
                 </button>
 
-
-                <div v-if="docs[{{$index}}]['bearer'] && docs[{{$index}}]['try']" class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="token">
-                        Bearer Token
-                    </label>
-                    <input
-                        v-model="token"
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="token"
-                        type="text"
-                        placeholder="Bearer Token"
-                        autocomplete="off"
-                    />
-                </div>
-
                 <div class="grid grid-cols-1 mt-3 pr-2 overflow-auto">
                     <div class="">
                         <div v-if="docs[{{$index}}]['try']">
@@ -608,17 +594,13 @@
             el: '#app',
             data: {
                 docs: docs,
-                token: '',
                 showRoute: false,
                 requestHeaders: ''
             },
             created: function () {
-                this.requestHeaders = 'X-CSRF-TOKEN:{{ csrf_token() }}'
-                this.requestHeaders += '\n'
-                this.requestHeaders += 'Accept:application/json'
-                this.requestHeaders += '\n'
-                this.requestHeaders += 'Authorization:Bearer ' + this.token
-                this.requestHeaders += '\n'
+                axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                axios.defaults.headers.common['Authorization'] = 'Bearer '
+                this.requestHeaders = JSON.stringify(axios.defaults.headers.common, null, 2)
             },
             methods: {
                 highlightSidebar(idx) {
@@ -633,6 +615,7 @@
                     return Prism.highlight(code, Prism.languages.atom, "js");
                 },
                 request(doc) {
+
                     // convert string to lower case
                     var method = doc['methods'][0].toLowerCase()
 
@@ -645,25 +628,20 @@
                         doc.response = "Cannot parse JSON request body"
                         return
                     }
+
+                    try {
+                        axios.defaults.headers.common = JSON.parse(this.requestHeaders)
+                        axios.defaults.headers.common['X-Request-LRD'] = 'lrd'
+                    } catch (e) {
+                        doc.response = "Cannot parse JSON request headers"
+                        return
+                    }
                     doc.queries = []
                     doc.response = null
                     doc.responseOk = null
                     doc.responseTime = null
                     doc.responseHeaders = null
                     doc.loading = true
-
-                    headers = this.requestHeaders.split("\n")
-
-                    axios.defaults.headers.common['X-Request-LRD'] = 'lrd'
-
-                    for (header of headers) {
-                        let h = header.split(":")
-                        let key = h[0]
-                        let value = h[1]
-                        if (key && value) {
-                            axios.defaults.headers.common[key.trim()] = value.trim()
-                        }
-                    }
 
                     let startTime = new Date().getTime();
                     axios({

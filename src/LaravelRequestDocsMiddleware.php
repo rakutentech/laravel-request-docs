@@ -26,7 +26,18 @@ class LaravelRequestDocsMiddleware extends Middleware
 
         $content = $response->getData();
         $content->_lrd = ['queries' => $this->queries];
-        $response->setData($content);
+        $jsonContent = json_encode($content);
+
+        if (in_array('gzip', $request->getEncodings()) && function_exists('gzencode')) {
+            $level = 9; // best compression;
+            $jsonContent = gzencode($jsonContent, $level);
+            $response->headers->add([
+                'Content-type' => 'application/json; charset=utf-8',
+                'Content-Length'=> strlen($jsonContent),
+                'Content-Encoding' => 'gzip',
+            ]);
+        }
+        $response->setContent($jsonContent);
         return $response;
     }
 

@@ -79,9 +79,6 @@ class LaravelRequestDocs
                 $getStartWord = strrpos(explode('@', $route->action['controller'])[0], '\\') + 1;
                 $controllerName = substr($controllerFullPath, $getStartWord);
 
-                /// Has Auth Token
-                $hasAuthToken = !is_array($route->action['middleware']) ? [$route->action['middleware']] : $route->action['middleware'];
-
                 $method = explode('@', $route->action['controller'])[1];
                 $httpMethod = $route->methods[0];
                 foreach ($controllersInfo as $controllerInfo) {
@@ -100,8 +97,7 @@ class LaravelRequestDocs
                     'method'                => $method,
                     'httpMethod'            => $httpMethod,
                     'rules'                 => [],
-                    'docBlock'              => "",
-                    'bearer'                => in_array('auth:api', $hasAuthToken)
+                    'docBlock'              => ""
                 ];
             } catch (Exception $e) {
                 continue;
