@@ -129,8 +129,20 @@
                                 </span>
                                 <span class="text-xs" v-bind:class="docs[{{$index}}]['isActiveSidebar'] ? 'font-bold':''">
                                     <span class="text-gray-800 pr-1 pl-1" v-if="docs[{{$index}}]['responseOk'] === null">{{$doc['uri']}}</span>
-                                    <span class="font-bold text-green-600 border rounded-full pr-1 pl-1 border-green-600" v-if="docs[{{$index}}]['responseOk'] === true">{{$doc['uri']}} - SUCCESS</span>
-                                    <span class="font-bold text-red-600 border rounded-full pr-1 pl-1 border-red-500" v-if="docs[{{$index}}]['responseOk'] === false">{{$doc['uri']}} - ERROR</span>
+                                    <span class="font-bold text-green-600 border rounded-full pr-1 pl-1 border-green-600" v-if="docs[{{$index}}]['responseOk'] === true">
+                                        {{$doc['uri']}} -
+                                        <span
+                                            class="inline-flex text-xs"
+                                            v-text="'Status:'+docs[{{$index}}]['responseCode'] + ', Took:' + docs[{{$index}}]['responseTime'] + 'ms'">
+                                        </span>
+                                    </span>
+                                    <span class="font-bold text-red-600 border rounded-full pr-1 pl-1 border-red-500" v-if="docs[{{$index}}]['responseOk'] === false">
+                                        {{$doc['uri']}} -
+                                        <span
+                                            class="inline-flex text-xs"
+                                            v-text="'Status:'+docs[{{$index}}]['responseCode'] + ', Took:' + docs[{{$index}}]['responseTime'] + 'ms'">
+                                        </span>
+                                    </span>
                                 </span>
                             </a>
                         </td>
@@ -391,6 +403,16 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td class="align-left pl-2 pr-2 bg-gray-100 border-r-2">Memory Usage</td>
+                                        <td class="align-left pl-2 pr-2 break-all">
+                                            <span
+                                                v-if="docs[{{$index}}]['memory']"
+                                                class="inline-flex text-xs font-bold text-red-900"
+                                                v-text="docs[{{$index}}]['memory']">
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td class="align-left pl-2 pr-2 bg-gray-100 border-r-2">Response Time</td>
                                         <td class="align-left pl-2 pr-2 break-all">
                                             <span
@@ -543,6 +565,7 @@
             doc.cancel = true
             doc.loading = false
             doc.responseTime = null
+            doc.memory = null
             // check in array
             if (doc.methods[0] == 'GET') {
                 var idx = 1
@@ -651,11 +674,12 @@
                         decompress: true,
                         withCredentials: true
                       }).then(response => {
-                        console.log(response)
+                        console.log("response", response)
                         doc.responseOk = true
                         if (response && response.data) {
                             if (response.data['_lrd']) {
                                 doc.queries = response.data['_lrd']['queries']
+                                doc.memory = response.data['_lrd']['memory']
                                 delete response.data['_lrd']
                             }
                             doc.response = JSON.stringify(response.data, null, 2)
@@ -665,10 +689,12 @@
 
                       }).catch(error => {
                         doc.responseOk = false
-                        console.log(error)
+                        console.log("error", error)
                         if (error && error.response && error.response.data) {
+                            console.log("error response", error.response)
                             if (error.response.data['_lrd']) {
                                 doc.queries = error.response.data['_lrd']['queries']
+                                doc.memory = error.response.data['_lrd']['memory']
                                 delete error.response.data['_lrd']
                             }
                             doc.responseCode = error.response.status;

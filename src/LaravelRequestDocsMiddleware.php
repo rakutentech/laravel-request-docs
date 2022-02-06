@@ -25,7 +25,10 @@ class LaravelRequestDocsMiddleware extends Middleware
         $response = $next($request);
 
         $content = $response->getData();
-        $content->_lrd = ['queries' => $this->queries];
+        $content->_lrd = [
+            'queries' => $this->queries,
+            'memory' => (string) round(memory_get_peak_usage(true) / 1048576, 2) . "MB",
+        ];
         $jsonContent = json_encode($content);
 
         if (in_array('gzip', $request->getEncodings()) && function_exists('gzencode')) {
