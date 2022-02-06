@@ -79,4 +79,5 @@ Fixing lints
 
 - Initial Release
 - v1.9 Added improvements such as status code, response headers, custom request headers and fixed issues reported by users
+- v1.10 Show PHP memory usage, gzip encoding fix
 

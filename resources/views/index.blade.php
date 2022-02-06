@@ -7,6 +7,7 @@
       <title>{{ config('request-docs.document_name') }}</title>
       <meta name="description" content="Laravel Request Docs">
       <meta name="keywords" content="">
+      <meta name="csrf-token" content="{{ csrf_token() }}">
       <link href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css" rel="stylesheet">
       <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
       <script src="https://unpkg.com/vue-prism-editor"></script>
@@ -128,8 +129,20 @@
                                 </span>
                                 <span class="text-xs" v-bind:class="docs[{{$index}}]['isActiveSidebar'] ? 'font-bold':''">
                                     <span class="text-gray-800 pr-1 pl-1" v-if="docs[{{$index}}]['responseOk'] === null">{{$doc['uri']}}</span>
-                                    <span class="font-bold text-green-600 border rounded-full pr-1 pl-1 border-green-600" v-if="docs[{{$index}}]['responseOk'] === true">{{$doc['uri']}} - SUCCESS</span>
-                                    <span class="font-bold text-red-600 border rounded-full pr-1 pl-1 border-red-500" v-if="docs[{{$index}}]['responseOk'] === false">{{$doc['uri']}} - ERROR</span>
+                                    <span class="font-bold text-green-600 border rounded-full pr-1 pl-1 border-green-600" v-if="docs[{{$index}}]['responseOk'] === true">
+                                        {{$doc['uri']}} -
+                                        <span
+                                            class="inline-flex text-xs"
+                                            v-text="'Status:'+docs[{{$index}}]['responseCode'] + ', Took:' + docs[{{$index}}]['responseTime'] + 'ms'">
+                                        </span>
+                                    </span>
+                                    <span class="font-bold text-red-600 border rounded-full pr-1 pl-1 border-red-500" v-if="docs[{{$index}}]['responseOk'] === false">
+                                        {{$doc['uri']}} -
+                                        <span
+                                            class="inline-flex text-xs"
+                                            v-text="'Status:'+docs[{{$index}}]['responseCode'] + ', Took:' + docs[{{$index}}]['responseTime'] + 'ms'">
+                                        </span>
+                                    </span>
                                 </span>
                             </a>
                         </td>
@@ -327,21 +340,6 @@
                     Run
                 </button>
 
-
-                <div v-if="docs[{{$index}}]['bearer'] && docs[{{$index}}]['try']" class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="token">
-                        Bearer Token
-                    </label>
-                    <input
-                        v-model="token"
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="token"
-                        type="text"
-                        placeholder="Bearer Token"
-                        autocomplete="off"
-                    />
-                </div>
-
                 <div class="grid grid-cols-1 mt-3 pr-2 overflow-auto">
                     <div class="">
                         <div v-if="docs[{{$index}}]['try']">
@@ -401,6 +399,16 @@
                                                 v-if="!docs[{{$index}}]['responseOk']"
                                                 class="inline-flex text-xs font-bold text-red-900"
                                                 v-text="docs[{{$index}}]['responseCode']">
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="align-left pl-2 pr-2 bg-gray-100 border-r-2">Memory Usage</td>
+                                        <td class="align-left pl-2 pr-2 break-all">
+                                            <span
+                                                v-if="docs[{{$index}}]['memory']"
+                                                class="inline-flex text-xs font-bold text-red-900"
+                                                v-text="docs[{{$index}}]['memory']">
                                             </span>
                                         </td>
                                     </tr>
@@ -557,6 +565,7 @@
             doc.cancel = true
             doc.loading = false
             doc.responseTime = null
+            doc.memory = null
             // check in array
             if (doc.methods[0] == 'GET') {
                 var idx = 1
@@ -608,17 +617,13 @@
             el: '#app',
             data: {
                 docs: docs,
-                token: '',
                 showRoute: false,
                 requestHeaders: ''
             },
             created: function () {
-                this.requestHeaders = 'X-CSRF-TOKEN:{{ csrf_token() }}'
-                this.requestHeaders += '\n'
-                this.requestHeaders += 'Accept:application/json'
-                this.requestHeaders += '\n'
-                this.requestHeaders += 'Authorization:Bearer ' + this.token
-                this.requestHeaders += '\n'
+                axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                axios.defaults.headers.common['Authorization'] = 'Bearer '
+                this.requestHeaders = JSON.stringify(axios.defaults.headers.common, null, 2)
             },
             methods: {
                 highlightSidebar(idx) {
@@ -633,6 +638,7 @@
                     return Prism.highlight(code, Prism.languages.atom, "js");
                 },
                 request(doc) {
+
                     // convert string to lower case
                     var method = doc['methods'][0].toLowerCase()
 
@@ -645,25 +651,20 @@
                         doc.response = "Cannot parse JSON request body"
                         return
                     }
+
+                    try {
+                        axios.defaults.headers.common = JSON.parse(this.requestHeaders)
+                        axios.defaults.headers.common['X-Request-LRD'] = 'lrd'
+                    } catch (e) {
+                        doc.response = "Cannot parse JSON request headers"
+                        return
+                    }
                     doc.queries = []
                     doc.response = null
                     doc.responseOk = null
                     doc.responseTime = null
                     doc.responseHeaders = null
                     doc.loading = true
-
-                    headers = this.requestHeaders.split("\n")
-
-                    axios.defaults.headers.common['X-Request-LRD'] = 'lrd'
-
-                    for (header of headers) {
-                        let h = header.split(":")
-                        let key = h[0]
-                        let value = h[1]
-                        if (key && value) {
-                            axios.defaults.headers.common[key.trim()] = value.trim()
-                        }
-                    }
 
                     let startTime = new Date().getTime();
                     axios({
@@ -673,11 +674,12 @@
                         decompress: true,
                         withCredentials: true
                       }).then(response => {
-                        console.log(response)
+                        console.log("response", response)
                         doc.responseOk = true
                         if (response && response.data) {
                             if (response.data['_lrd']) {
                                 doc.queries = response.data['_lrd']['queries']
+                                doc.memory = response.data['_lrd']['memory']
                                 delete response.data['_lrd']
                             }
                             doc.response = JSON.stringify(response.data, null, 2)
@@ -687,10 +689,12 @@
 
                       }).catch(error => {
                         doc.responseOk = false
-                        console.log(error)
+                        console.log("error", error)
                         if (error && error.response && error.response.data) {
+                            console.log("error response", error.response)
                             if (error.response.data['_lrd']) {
                                 doc.queries = error.response.data['_lrd']['queries']
+                                doc.memory = error.response.data['_lrd']['memory']
                                 delete error.response.data['_lrd']
                             }
                             doc.responseCode = error.response.status;
