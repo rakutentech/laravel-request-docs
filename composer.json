@@ -17,8 +17,9 @@
     ],
     "require": {
         "php": "^7.3|^7.4|^8.0",
-        "spatie/laravel-package-tools": "^1.4.3",
-        "illuminate/contracts": "^8.37"
+        "illuminate/contracts": "^8.37",
+        "kitloong/laravel-app-logger": "^1.0",
+        "spatie/laravel-package-tools": "^1.4.3"
     },
     "require-dev": {
         "brianium/paratest": "^6.2",
