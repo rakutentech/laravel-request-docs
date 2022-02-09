@@ -129,8 +129,12 @@ class LaravelRequestDocs
                 if ($requestClass instanceof FormRequest) {
                     try {
                         $controllersInfo[$index]['rules'] = $this->flattenRules($requestClass->rules());
-                    } catch (Exception $th) {
-                        $controllerInfo[$index]['rules'] = $this->rulesByRegex($requestClassName);
+                    } catch (Exception $e) {
+                        // disabled. This only works when the rules are defined as 'required|integer' and that too in single line
+                        // doesn't work well when the same rule is defined as array ['required', 'integer'] or in multiple lines such as
+                        // If your rules are not populated using this library, then fix your rule to only throw validation errors and not throw exceptions
+                        // such as 404, 500 inside the request class.
+                        // $controllersInfo[$index]['rules'] = $this->rulesByRegex($requestClassName);
                     }
                     $controllersInfo[$index]['docBlock'] = $this->lrdDocComment($reflectionMethod->getDocComment());
                 }
@@ -196,6 +200,7 @@ class LaravelRequestDocs
         $data = new ReflectionMethod($requestClassName, 'rules');
         $lines = file($data->getFileName());
         $rules = [];
+
         for ($i = $data->getStartLine() - 1; $i <= $data->getEndLine() - 1; $i++) {
             preg_match_all("/(?:'|\").*?(?:'|\")/", $lines[$i], $matches);
             $rules[] =  $matches;
