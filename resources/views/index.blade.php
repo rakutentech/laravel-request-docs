@@ -159,7 +159,7 @@
             <hr class="border-b border-gray-300">
             <br>
             <section class="pt-5 pl-2 pr-2 pb-5 border mb-10 rounded bg-white shadow">
-                <div class="font-sans" id="{{$doc['methods'][0] .'-'. $doc['uri']}}">
+                <div class="font-sans">
                     <h2 class="text-sm break-normal text-black break-normal font-sans pb-1 pt-1 text-black">
                         Append Request Headers
                     </h2>
