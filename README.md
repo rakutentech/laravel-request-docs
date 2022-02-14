@@ -6,10 +6,10 @@ Read more: https://medium.com/web-developer/laravel-automatically-generate-api-d
 
 ## Requirements
 
-| Lang    | Version    |
-| :------ | :--------- |
-| PHP     | 7.4 or 8.0 |
-| Laravel | 6.* or 8.* |
+| Lang    | Version           |
+| :------ | :---------------- |
+| PHP     | 7.4 or 8.0        |
+| Laravel | 6.* or 8.* or 9.* |
 
 ## Installation
 
@@ -81,4 +81,5 @@ Fixing lints
 - v1.9 Added improvements such as status code, response headers, custom request headers and fixed issues reported by users
 - v1.10 Show PHP memory usage, gzip encoding fix
 - v1.12 Bug Fix of id, and Laravel 9 support
+- v1.13 Laravel 9 support
 
