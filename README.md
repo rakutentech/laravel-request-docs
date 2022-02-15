@@ -1,4 +1,29 @@
-# Laravel Docs Generator
+<p align="center">
+  <a href="https://github.com/rakutentech/laravel-request-docs">
+    <img alt="Laravel Request Docs" src="https://imgur.com/9eDTUaI.png" width="360">
+  </a>
+</p>
+
+<p align="center">
+  The Hassle-Free automatic API documentation generation for Laravel. <br>
+  A Swagger alernative.
+</p>
+
+**Fast:** Install on any Laravel Project
+
+**Hassle Free:** Auto Generate API Documentation for request rules and parameters
+
+**Analyze:** In build SQL query time analyzer, response time and headers output.
+
+## Features
+
+- Automatic routes fetching from Laravel Routes
+- Automatic rules fetching from injected Request
+- Support for Authorization Headers
+- Support for SQL query, response time and memory consumption by request on Laravel
+- Intelligent auto request builder using ``faker.js``
+- Display extra documentation using markdown
+# Read on Medium
 
 Automatically generate api documentation for Laravel without writing annotations.
 
@@ -11,7 +36,7 @@ Read more: https://medium.com/web-developer/laravel-automatically-generate-api-d
 | PHP     | 7.4 or 8.0        |
 | Laravel | 6.* or 8.* or 9.* |
 
-## Installation
+# Installation
 
 You can install the package via composer:
 
@@ -26,7 +51,7 @@ You can publish the config file with:
 php artisan vendor:publish --tag=request-docs-config
 ```
 
-## Usage
+# Usage
 
 View in the browser on ``/request-docs/``
 
@@ -38,31 +63,59 @@ php artisan lrd:generate
 
 Docs HTML is generated inside ``docs/``.
 
-## Design pattern
+# Design pattern
 
 In order for this plugin to work, you need to follow the design pattern by injecting the request class inside the controller.
 For extra documentation you can use markdown inside your controller method as well.
 
 ![Design pattern](https://imgur.com/yXjq3jp.png)
 
-### Screenshots
+# Screenshots
 
-Generated API documentation
+**Generated API documentation**
 
 ![Preview](https://imgur.com/8DvBBhs.png)
 
-Try API
+**Try API**
 
 ![Preview](https://imgur.com/kcKVSzm.png)
 
+**SQL query profile**
 
-## Testing
+![Preview](https://imgur.com/y8jT3jj.png)
+
+**Resonse profile**
+
+![Preview](https://imgur.com/U0Je956.png)
+
+**Customize Headers**
+
+![Preview](https://imgur.com/5ydtRd8.png)
+
+
+# Extra
+
+You write extra documentation in markdown which will be rendered as HTML on the dashboard.
+Example of using it in controller
+
+```php
+    /**
+     * @lrd:start
+     * #Hello markdown
+     * ## Documentation for /my route
+     * @lrd:end
+     */
+    public function index(MyIndexRequest $request): Resource
+    {
+```
+
+# Testing
 
 ```bash
 ./vendor/bin/phpunit
 ```
 
-## Linting
+# Linting
 
 ```bash
 ./vendor/bin/phpcs --standard=phpcs.xml --extensions=php --ignore=tests/migrations config/ src/
@@ -75,7 +128,7 @@ Fixing lints
 ./vendor/bin/php-cs-fixer fix config/
 ```
 
-## Changelog
+# Changelog
 
 - Initial Release
 - v1.9 Added improvements such as status code, response headers, custom request headers and fixed issues reported by users
