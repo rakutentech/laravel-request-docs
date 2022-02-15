@@ -82,4 +82,5 @@ Fixing lints
 - v1.10 Show PHP memory usage, gzip encoding fix
 - v1.12 Bug Fix of id, and Laravel 9 support
 - v1.13 Laravel 9 support
+- v1.15 Adds Filter and fall back to regexp upon Exception
 
