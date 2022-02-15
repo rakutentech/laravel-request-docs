@@ -100,14 +100,14 @@
         </nav>
       <div id="app" v-cloak class="w-full flex lg:pt-10">
          <aside class="text-sm ml-1.5 text-grey-darkest break-all bg-gray-200 pl-2 h-screen sticky top-1 overflow-auto">
-            <h1 class="font-medium mx-3 mt-3">Routes List</h1>
+            <h1 class="font-medium mx-3 mt-3" style="width: max-content;min-width:350px;">Routes List</h1>
             <hr class="border-b border-gray-300">
             <table class="table-fixed text-sm mt-5" style="width: max-content">
                 <tbody>
                     @foreach ($docs as $index => $doc)
                     <tr>
                         <td>
-                            <a href="#{{$doc['methods'][0] .'-'. $doc['uri']}}" @click="highlightSidebar({{$index}})">
+                            <a href="#{{$doc['methods'][0] .'-'. $doc['uri']}}" @click="highlightSidebar({{$index}})" v-if="!docs[{{$index}}]['isHidden']">
                                 <span class="
                                     font-medium
                                     inline-flex
@@ -154,7 +154,21 @@
          <br><br>
          <div class="ml-6 mr-6 pl-2 w-2/3 p-2" style="width: 100%">
             <h1 class="pl-2 pr-2 break-normal text-black break-normal font-sans text-black font-medium">
-                Settings
+                Search・Sort settings
+            </h1>
+            <hr class="border-b border-gray-300">
+            <br>
+            <section class="pt-5 pl-2 pr-2 pb-5 border mb-10 rounded bg-white shadow">
+                <div class="font-sans">
+                    <h2 class="text-sm break-normal text-black break-normal font-sans pb-1 pt-1 text-black">
+                        Filter
+                    </h2>
+                    <p class="text-xs pb-2 font-medium text-gray-500">Hide non matching</code></p>
+                    <input type="text" v-model="filterTerm" @input="filterDocs" class="w-full p-2 border-2 border-gray-300 rounded" placeholder="/api/search">
+                </div>
+            </section>
+            <h1 class="pl-2 pr-2 break-normal text-black break-normal font-sans text-black font-medium">
+                Request Settings (editable)
             </h1>
             <hr class="border-b border-gray-300">
             <br>
@@ -175,7 +189,7 @@
             <hr class="border-b border-gray-300">
             <br>
             @foreach ($docs as $index => $doc)
-            <section class="pt-5 pl-2 pr-2 pb-5 border mb-10 rounded bg-white shadow">
+            <section class="pt-5 pl-2 pr-2 pb-5 border mb-10 rounded bg-white shadow" v-if="!docs[{{$index}}]['isHidden']">
                 <div class="font-sans" id="{{$doc['httpMethod'] .'-'. $doc['uri']}}">
                 <h1 class="text-sm break-normal text-black bg-indigo-50 break-normal font-sans pb-1 pt-1 text-black">
                     <span class="w-20
@@ -618,7 +632,8 @@
             data: {
                 docs: docs,
                 showRoute: false,
-                requestHeaders: ''
+                requestHeaders: '',
+                filterTerm: ''
             },
             created: function () {
                 axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -636,6 +651,11 @@
                 },
                 highlighterAtom(code) {
                     return Prism.highlight(code, Prism.languages.atom, "js");
+                },
+                filterDocs() {
+                    for (doc of this.docs) {
+                        doc['isHidden'] = !doc['uri'].includes(this.filterTerm)
+                    }
                 },
                 request(doc) {
 
