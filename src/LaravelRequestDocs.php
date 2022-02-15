@@ -136,6 +136,7 @@ class LaravelRequestDocs
                         // If your rules are not populated using this library, then fix your rule to only throw validation errors and not throw exceptions
                         // such as 404, 500 inside the request class.
                         // $controllersInfo[$index]['rules'] = $this->rulesByRegex($requestClassName);
+                        // throw $e;
                     }
                     $controllersInfo[$index]['docBlock'] = $this->lrdDocComment($reflectionMethod->getDocComment());
                 }
