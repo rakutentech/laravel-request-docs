@@ -74,12 +74,13 @@ class LaravelRequestDocs
             }
 
             try {
+                $actionControllerName = $route->action['controller'] ?? $route->action["0"];
                 /// Show Pnly Controller Name
-                $controllerFullPath = explode('@', $route->action['controller'])[0];
-                $getStartWord = strrpos(explode('@', $route->action['controller'])[0], '\\') + 1;
+                $controllerFullPath = explode('@', $actionControllerName)[0];
+                $getStartWord = strrpos(explode('@', $actionControllerName)[0], '\\') + 1;
                 $controllerName = substr($controllerFullPath, $getStartWord);
 
-                $method = explode('@', $route->action['controller'])[1];
+                $method = explode('@', $actionControllerName)[1] ?? '__invoke';
                 $httpMethod = $route->methods[0];
                 foreach ($controllersInfo as $controllerInfo) {
                     if ($controllerInfo['uri'] == $route->uri && $controllerInfo['httpMethod'] == $httpMethod) {
