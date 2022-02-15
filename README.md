@@ -5,13 +5,13 @@
 </p>
 
 <p align="center">
-  The Hassle-Free API documentation generation tool for Laravel. <br>
+  The Hassle-Free automatic API documentation generation for Laravel. <br>
   A Swagger alernative.
 </p>
 
 **Fast:** Install on any Laravel Project
 
-**Hassle Free:** Auto Generate API Documentation with request rules and parameters
+**Hassle Free:** Auto Generate API Documentation for request rules and parameters
 
 **Analyze:** In build SQL query time analyzer, response time and headers output.
 
