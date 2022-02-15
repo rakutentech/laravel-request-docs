@@ -135,10 +135,11 @@ class LaravelRequestDocs
                         // doesn't work well when the same rule is defined as array ['required', 'integer'] or in multiple lines such as
                         // If your rules are not populated using this library, then fix your rule to only throw validation errors and not throw exceptions
                         // such as 404, 500 inside the request class.
-                        // $controllersInfo[$index]['rules'] = $this->rulesByRegex($requestClassName);
+                        $controllersInfo[$index]['rules'] = $this->rulesByRegex($requestClassName);
 
-                        //TODO: enable debug mode so unsupported coding practices can be fixed by the developer
-                        // throw $e;
+                        if (config('request-docs.debug')) {
+                            throw $e;
+                        }
                     }
                     $controllersInfo[$index]['docBlock'] = $this->lrdDocComment($reflectionMethod->getDocComment());
                 }
@@ -206,8 +207,11 @@ class LaravelRequestDocs
         $rules = [];
 
         for ($i = $data->getStartLine() - 1; $i <= $data->getEndLine() - 1; $i++) {
-            preg_match_all("/(?:'|\").*?(?:'|\")/", $lines[$i], $matches);
-            $rules[] =  $matches;
+            // check if => in string, only pick up rules that are coded on single line
+            if (Str::contains($lines[$i], '=>')) {
+                preg_match_all("/(?:'|\").*?(?:'|\")/", $lines[$i], $matches);
+                $rules[] =  $matches;
+            }
         }
 
         $rules = collect($rules)
