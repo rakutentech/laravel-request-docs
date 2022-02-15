@@ -74,7 +74,6 @@ class LaravelRequestDocs
             }
 
             try {
-
                 $actionControllerName = $route->action['controller'] ?? $route->action["0"];
                 /// Show Pnly Controller Name
                 $controllerFullPath = explode('@', $actionControllerName)[0];
