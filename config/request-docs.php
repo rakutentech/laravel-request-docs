@@ -29,5 +29,9 @@ return [
         "#^telescope#",
         "#^docs#",
         "#^request-docs#",
-    ]
+    ],
+    'auth_email' => '',
+    'auth_password' => '',
+    'auth_login_url' => '',
+    'beforeGeneration' => '' //it must be function if you set
 ];

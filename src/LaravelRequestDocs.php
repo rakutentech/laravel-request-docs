@@ -17,6 +17,10 @@ class LaravelRequestDocs
     public function getDocs()
     {
         $docs = [];
+        $beforeGeneration = config('request-docs.beforeGeneration');
+        if (is_callable($beforeGeneration)){
+            $beforeGeneration();
+        }
         $excludePatterns = config('request-docs.hide_matching') ?? [];
         $controllersInfo = $this->getControllersInfo();
         $controllersInfo = $this->appendRequestRules($controllersInfo);

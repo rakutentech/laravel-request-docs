@@ -435,9 +435,13 @@
         }
         var docs = {!! json_encode($docs) !!};
         var app_url = {!! json_encode(config('app.url')) !!};
+        var auth_email = {!! json_encode(config('request-docs.auth_email')) !!};
+        var auth_password = {!! json_encode(config('request-docs.auth_password')) !!};
+        var auth_login_url = {!! json_encode(config('request-docs.auth_login_url')) !!};
 
         //remove trailing slash if any
-        app_url = app_url.replace(/\/$/, '')
+        app_url = app_url.replace(/\/$/, '');
+        auth_login_url = auth_login_url.replace(/\/$/, '');
         docs.map(function(doc, index) {
             doc.response = null
             doc.responseCode = 200
@@ -484,7 +488,7 @@
                 doc.body = JSON.stringify(body, null, 2)
             }
 
-        })
+        });
         Vue.use(VueMarkdown);
 
         var app = new Vue({
@@ -493,9 +497,30 @@
                 docs: docs,
                 token: '',
                 search: '',
-                showRoute: false
+                showRoute: false,
+                authToken: null,
+            },
+            created: function () {
+                this.login();
             },
             methods: {
+                login() {
+                    axios({
+                        method: "post",
+                        url: `${app_url}/${auth_login_url}`,
+                        data: {
+                            email: auth_email,
+                            password: auth_password
+                        },
+                        decompress: true,
+                        withCredentials: true,
+                    }).then(response => {
+                        this.authToken = response.data.data.access_token;
+                        axios.defaults.headers.common['Authorization'] = `Bearer ${this.authToken}`;
+                    }).catch(error => {
+                        console.log("error", error);
+                    });
+                },
                 filter(uri) {
                     if (!this.search) {
                         return true
@@ -522,6 +547,11 @@
                     return Prism.highlight(code, Prism.languages.atom, "js");
                 },
                 request(doc) {
+
+                    if (!this.authToken) {
+                        this.login();
+                    }
+
                     // convert string to lower case
                     var method = doc['methods'][0].toLowerCase()
 
