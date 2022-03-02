@@ -344,6 +344,14 @@
                 </button>
 
                 <button
+                    class="hover:bg-red-500 font-semibold hover:text-white mt-2 pl-5 pr-5 border-gray-700 hover:border-transparent shadow-inner border-2 rounded-full"
+                    v-if="docs[{{$index}}]['try']"
+                    v-on:click="refresh({{$index}})"
+                >
+                    Refresh
+                </button>
+
+                <button
                     v-if="docs[{{$index}}]['try']"
                     @click="request(docs[{{$index}}])"
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold mt-2 border-blue-800 border-2 shadow-inner mb-1 pl-5 pr-5 rounded-full"
@@ -516,48 +524,98 @@
          </div>
       </div>
       <script>
-        var guessValue = function(attribute, rules) {
+        var guessValue = function(attribute, rules, source) {
             // match max:1
             var validations = {
                 max: 100,
                 min: 1,
                 isInteger: null,
+                isEmail: null,
                 isString: null,
                 isArray: null,
                 isDate: null,
                 isIn: null,
+                isRequiredIf: null,
                 value: '',
             }
+
+            var isRuleApplied = function (rules, regex) {
+                return rules.findIndex(item => item.match(regex)) !== -1
+            }
+
+            var getAppliedRule = function (rules, regex) {
+                return rules.find(item => item.match(regex)).match(regex);
+            }
+
             rules.map(function(rule) {
-                validations.isRequired = rule.match(/required/)
-                validations.isDate = rule.match(/date/)
-                validations.isArray = rule.match(/array/)
-                validations.isString = rule.match(/string/)
-                if (rule.match(/integer/)) {
+                var rules = rule.split('|');
+                validations.isRequired = isRuleApplied(rules, /^required$/)
+                validations.isDate = isRuleApplied(rules, /^date$/)
+                validations.isArray = isRuleApplied(rules, /^array$/)
+                validations.isString = isRuleApplied(rules, /^string$/)
+                validations.isEmail = isRuleApplied(rules, /^email$/)
+                validations.isIn = isRuleApplied(rules, /^in:(.+)$/)
+                validations.isRequiredIf = isRuleApplied(rules, /^required_if:(.+)$/)
+
+                if (isRuleApplied(rules, /^integer$/)) {
                     validations.isInteger = true
                 }
-                if (rule.match(/min:([0-9]+)/)) {
-                    validations.min = rule.match(/min:([0-9]+)/)[1]
+
+                if (isRuleApplied(rules, /^min:([0-9]+)$/)) {
+                    validations.min = getAppliedRule(rules, /^min:([0-9]+)$/)[1]
                     if (!validations.min) {
                         validations.min = 1
                     }
                 }
-                if (rule.match(/max:([0-9]+)/)) {
-                    validations.max = rule.match(/max:([0-9]+)/)[1]
+
+                if (isRuleApplied(rules, /^max:([0-9]+)$/)) {
+                    validations.max = getAppliedRule(rules, /^max:([0-9]+)$/)[1]
                     if (!validations.max) {
                         validations.max = 100
                     }
+                }
+
+                if (validations.isIn) {
+                    validations.in = (getAppliedRule(rules, /^in:(.+)$/)[1]).split(',')
+                }
+
+                if (validations.isRequiredIf) {
+                    validations.required_if = (getAppliedRule(rules, /^required_if:(.+)$/)[1]).split(',')
                 }
             })
 
             if (validations.isString) {
                 validations.value = faker.name.findName()
             }
+
             if (validations.isInteger) {
                 validations.value = Math.floor(Math.random() * (validations.max - validations.min + 1) + validations.min)
             }
+
             if (validations.isDate) {
                 validations.value = new Date(faker.date.between(new Date(), new Date())).toISOString().slice(0, 10)
+            }
+
+            if (validations.isEmail) {
+                validations.value = faker.internet.email().toLowerCase()
+            }
+
+            if (validations.isIn) {
+                validations.value = faker.random.arrayElement(validations.in)
+            }
+
+            if (validations.isRequiredIf) {
+                if (validations.required_if.length !== 2) {
+                    throw "Required if needs 2 parameters"
+                    return;
+                }
+
+                var srcAttribute = validations.required_if[0]
+                if (!source.hasOwnProperty(srcAttribute)) {
+                    source[srcAttribute] = guessValue(srcAttribute, rules, source);
+                }
+
+                validations.isRequired = (source[srcAttribute] == validations.required_if[1])
             }
 
             return validations
@@ -567,7 +625,8 @@
 
         //remove trailing slash if any
         app_url = app_url.replace(/\/$/, '')
-        docs.map(function(doc, index) {
+
+        function refreshDoc(doc) {
             doc.response = null
             doc.responseCode = 200
             doc.queries = []
@@ -582,28 +641,40 @@
             doc.memory = null
             // check in array
             if (doc.methods[0] == 'GET') {
-                var idx = 1
+                var params = {}
                 Object.keys(doc.rules).map(function(attribute) {
+
+                    if (params.hasOwnProperty(attribute)) {
+                        return;
+                    }
+
                     // check contains in string
                     if (attribute.indexOf('.*') !== -1) {
                         return
                     }
-                    let value = guessValue(attribute, doc.rules[attribute])
+
+                    let value = guessValue(attribute, doc.rules[attribute], params)
                     if (!value.isRequired) {
-                        //return
+                        return;
                     }
 
                     let attr = attribute
                     if (value.isArray) {
                         attr = attribute + "[]"
                     }
-                    if (idx === 1) {
-                        doc.url += "\n"+ "?"+attr+"="+value.value+"\n"
-                    } else {
-                        doc.url += "&"+attr+"="+value.value+"\n"
-                    }
-                    idx++
+                    params[attr] = value.value
                 })
+
+                var attributes = Object.keys(params)
+                if (attributes.length > 0) {
+                    var qs = []
+
+                    attributes.map(function (attribute) {
+                        qs.push(attribute + "=" + params[attribute] + "\n")
+                    })
+
+                    doc.url += "\n" + "?" + qs.join("&")
+                }
             }
 
             // assume to be POST, PUT, DELETE
@@ -614,7 +685,13 @@
                     if (attribute.indexOf('.*') !== -1) {
                         return
                     }
-                    let value = guessValue(attribute, doc.rules[attribute])
+
+                    let value = guessValue(attribute, doc.rules[attribute], body)
+
+                    if (!value.isRequired) {
+                        return;
+                    }
+
                     if (value.isArray) {
                         body[attribute] = [value.value]
                     } else {
@@ -623,8 +700,12 @@
                 })
                 doc.body = JSON.stringify(body, null, 2)
             }
+        }
 
+        docs.map(function(doc, index) {
+            refreshDoc(doc);
         })
+
         Vue.use(VueMarkdown);
 
         var app = new Vue({
@@ -656,6 +737,14 @@
                     for (doc of this.docs) {
                         doc['isHidden'] = !doc['uri'].includes(this.filterTerm)
                     }
+                },
+                refresh(index) {
+                    var doc = this.docs[index]
+                    var tryOption = this.docs[index]['try']
+                    var cancelOption = this.docs[index]['cancel']
+                    refreshDoc(doc)
+                    doc['try'] = tryOption
+                    doc['cancel'] = cancelOption
                 },
                 request(doc) {
 
