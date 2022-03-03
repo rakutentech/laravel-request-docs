@@ -2,11 +2,8 @@
 
 namespace Rakutentech\LaravelRequestDocs;
 
-use ErrorException;
 use Route;
 use ReflectionMethod;
-use Illuminate\Http\Request;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Exception;
 use Throwable;
@@ -127,7 +124,8 @@ class LaravelRequestDocs
                 } catch (Throwable $th) {
                     //throw $th;
                 }
-                if ($requestClass instanceof FormRequest) {
+
+                if ($requestClass && method_exists($requestClass, 'rules')) {
                     try {
                         $controllersInfo[$index]['rules'] = $this->flattenRules($requestClass->rules());
                     } catch (Exception $e) {
