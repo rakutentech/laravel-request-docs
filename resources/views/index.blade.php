@@ -444,7 +444,7 @@
                             <prism-editor
                                 v-if="docs[{{$index}}]['responseHeaders']"
                                 class="my-prism-editor shadow-inner border-gray-400 border-2 rounded"
-                                style="width:75%;min-height:100px;max-height:200px;background:#fefefe;color: rgb(66, 63, 63);resize:both"
+                                style="width:75%;min-height:100px;height:200px;background:#fefefe;color: rgb(66, 63, 63);resize:both"
                                 readonly
                                 v-model="docs[{{$index}}]['responseHeaders']"
                                 :highlight="highlighterAtom"
@@ -455,7 +455,7 @@
                             <prism-editor
                                 v-if="docs[{{$index}}]['response']"
                                 class="my-prism-editor shadow-inner border-gray-400 border-2 rounded"
-                                style="min-height:100px;max-height:300px;background:#2d2d2d;color: #ccc;resize:both"
+                                style="min-height:100px;height:300px;background:#2d2d2d;color: #ccc;resize:both"
                                 readonly
                                 v-model="docs[{{$index}}]['response']"
                                 :highlight="highlighter"
@@ -503,7 +503,7 @@
                                     <prism-editor
                                         v-model="sqlFormatter.format(query['sql'])"
                                         class="my-prism-editor"
-                                        style="padding:10px 0px 10px 0px;min-height:20px;max-height:350px;background:rgb(52 33 33);color: #ccc;resize:both;"
+                                        style="padding:10px 0px 10px 0px;min-height:20px;height:350px;background:rgb(52 33 33);color: #ccc;resize:both;"
                                         readonly
                                         :highlight="highlighter"
                                         line-numbers></prism-editor>

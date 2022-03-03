@@ -136,4 +136,6 @@ Fixing lints
 - v1.12 Bug Fix of id, and Laravel 9 support
 - v1.13 Laravel 9 support
 - v1.15 Adds Filter and fall back to regexp upon Exception
+- v1.17 Donot restrict to FormRequest
+- v1.18 Fix where prism had fixed height. Allow text area resize.
 
