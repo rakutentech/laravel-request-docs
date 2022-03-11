@@ -109,6 +109,25 @@ Example of using it in controller
     {
 ```
 
+## Comment using attributes (>= php 8)
+Extra comments can also be added to controller methods using attributes. Currently supported attributes are
+- `Rakutentech\LaravelRequestDocs\Attributes\RouteDescription`
+- `Rakutentech\LaravelRequestDocs\Attributes\RouteDeprecated`
+
+```php
+#[RouteDescription('Title', 'Description')]
+public function create(FooCreateRequest $request)
+{
+    ...
+}
+
+#[RouteDeprecated('With comment')]
+public function oldEndpoint()
+{
+    ...
+}
+```
+
 # Testing
 
 ```bash
