@@ -6,6 +6,7 @@ use Route;
 use ReflectionMethod;
 use Illuminate\Support\Str;
 use Exception;
+use Rakutentech\LaravelRequestDocs\Attributes\RouteAttribute;
 use Throwable;
 
 class LaravelRequestDocs
@@ -95,7 +96,7 @@ class LaravelRequestDocs
                     'method'                => $method,
                     'httpMethod'            => $httpMethod,
                     'rules'                 => [],
-                    'docBlock'              => ""
+                    'docBlock'              => $this->getRouteComments($controllerFullPath, $method),
                 ];
             } catch (Exception $e) {
                 continue;
@@ -139,7 +140,6 @@ class LaravelRequestDocs
                             throw $e;
                         }
                     }
-                    $controllersInfo[$index]['docBlock'] = $this->lrdDocComment($reflectionMethod->getDocComment());
                 }
             }
         }
@@ -230,5 +230,28 @@ class LaravelRequestDocs
             })->toArray();
 
         return $rules;
+    }
+
+    private function getRouteComments(string $controller, string $method): string
+    {
+        $reflectionMethod = new ReflectionMethod($controller, $method);
+        $lrdComment = $this->lrdDocComment($reflectionMethod->getDocComment());
+        if (!method_exists($reflectionMethod, 'getAttributes')) {
+            return $lrdComment;
+        }
+
+        $attributes = $reflectionMethod->getAttributes(RouteAttribute::class, \ReflectionAttribute::IS_INSTANCEOF);
+        if (count($attributes) === 0) {
+            return $lrdComment;
+        }
+
+        $attributeComments = [];
+        foreach($attributes as $attibute) {
+            /** @var RouteAttribute */
+            $comment = $attibute->newInstance();
+            $attributeComments[] = $comment->toMarkdown();
+        }
+
+        return implode("\n\n", $attributeComments);
     }
 }
