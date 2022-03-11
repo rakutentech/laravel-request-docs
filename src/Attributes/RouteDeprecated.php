@@ -14,6 +14,6 @@ class RouteDeprecated extends RouteAttribute
 
     public function toMarkdown(): string
     {
-        return '**Deprecated!** ' . $this->comment;
+        return '**Deprecated!**' . (strlen($this->comment > 0) ? ' ' . $this->comment : '');
     }
 }
