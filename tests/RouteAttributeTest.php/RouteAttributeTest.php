@@ -17,7 +17,6 @@ class RouteAttributeTest extends TestCase
     {
         parent::setUp();
 
-
         Route::get('lrd/tests/attributes', [AttributesController::class, 'first']);
         Route::get('lrd/tests/attributes/deprecated', [AttributesController::class, 'deprecated']);
         Route::get('lrd/tests/attributes/deprecated/with-comment', [AttributesController::class, 'alsoDeprecated']);
