@@ -87,10 +87,13 @@ class LaravelRequestDocs
                     }
                 }
 
+                $middlewares = isset($route->action['middleware'])
+                    ? (!is_array($route->action['middleware']) ? [$route->action['middleware']] : $route->action['middleware'])
+                    : [];
                 $controllersInfo[] = [
                     'uri'                   => $route->uri,
                     'methods'               => $route->methods,
-                    'middlewares'           => !is_array($route->action['middleware']) ? [$route->action['middleware']] : $route->action['middleware'],
+                    'middlewares'           => $middlewares,
                     'controller'            => $controllerName,
                     'controller_full_path'  => $controllerFullPath,
                     'method'                => $method,
