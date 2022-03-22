@@ -104,9 +104,16 @@
             <hr class="border-b border-gray-300">
             <table class="table-fixed text-sm mt-5" style="width: max-content">
                 <tbody>
+                    @php $old = ''; @endphp
                     @foreach ($docs as $index => $doc)
                     <tr>
                         <td>
+                            @if(($doc['controller'] !== $old || $old === '') && config('request-docs.show_controller_name'))
+                                <a href="#{{$doc['methods'][0] .'-'. $doc['uri']}}" class="text-lg text-blue-600 block">{{ $doc['controller'] }}</a>
+                            @endif
+                            @php
+                                $old = $doc['controller'];
+                            @endphp
                             <a href="#{{$doc['methods'][0] .'-'. $doc['uri']}}" @click="highlightSidebar({{$index}})" v-if="!docs[{{$index}}]['isHidden']">
                                 <span class="
                                     font-medium
@@ -180,7 +187,11 @@
                     <p class="text-xs pb-2 font-medium text-gray-500">Default headers sent on every request. Format <code>Key:Value</code></p>
                     <prism-editor
                         class="my-prism-editor"
-                        style="min-height:100px;background:#2d2d2d;color: #ccc;resize:both" v-model="requestHeaders" :highlight="highlighter" line-numbers></prism-editor>
+                        style="min-height:200px;background:#2d2d2d;color: #ccc;resize:both;max-width: 1500px"
+                        v-model="requestHeaders"
+                        :highlight="highlighter"
+                        line-numbers
+                    ></prism-editor>
                 </div>
             </section>
             <h1 class="pl-2 pr-2 break-normal text-black break-normal font-sans text-black font-medium">
