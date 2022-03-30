@@ -133,7 +133,7 @@ class LaravelRequestDocs
                 if ($requestClass && method_exists($requestClass, 'rules')) {
                     try {
                         $controllersInfo[$index]['rules'] = $this->flattenRules($requestClass->rules());
-                    } catch (Exception $e) {
+                    } catch (Throwable $e) {
                         // disabled. This only works when the rules are defined as 'required|integer' and that too in single line
                         // doesn't work well when the same rule is defined as array ['required', 'integer'] or in multiple lines such as
                         // If your rules are not populated using this library, then fix your rule to only throw validation errors and not throw exceptions
