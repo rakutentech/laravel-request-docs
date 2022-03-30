@@ -139,4 +139,5 @@ Fixing lints
 - v1.17 Donot restrict to FormRequest
 - v1.18 Fix where prism had fixed height. Allow text area resize.
 - v1.18 Updated UI and pushed unit tests
+- v1.19 Exception -> Throwable for type error
 
