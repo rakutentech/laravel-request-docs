@@ -32,5 +32,100 @@ return [
         "#^telescope#",
         "#^docs#",
         "#^request-docs#",
+    ],
+
+    "open_api" => [
+        // default version that this library provides
+        "version" => "3.0.0",
+        // changeable
+        "document_version" => "1.0.0",
+        // license that you want to display
+        "license" => "Apache 2.0",
+        "license_url" => "https://www.apache.org/licenses/LICENSE-2.0.html",
+        "server_url" => env('APP_URL', 'http://localhost'),
+
+        // for now putting default responses for all. This can be changed later based on specific needs
+        "responses" => [
+            '200' => [
+                'description' => 'Successful operation',
+                'content'     => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => 'object',
+                        ],
+                    ],
+                ],
+            ],
+            '400' => [
+                'description' => 'Bad Request',
+                'content'     => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => 'object',
+                        ],
+                    ],
+                ],
+            ],
+            '401' => [
+                'description' => 'Unauthorized',
+                'content'     => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => 'object',
+                        ],
+                    ],
+                ],
+            ],
+            '403' => [
+                'description' => 'Forbidden',
+                'content'     => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => 'object',
+                        ],
+                    ],
+                ],
+            ],
+            '404' => [
+                'description' => 'Not Found',
+                'content'     => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => 'object',
+                        ],
+                    ],
+                ],
+            ],
+            '422' => [
+                'description' => 'Unprocessable Entity',
+                'content'     => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => 'object',
+                        ],
+                    ],
+                ],
+            ],
+            '500' => [
+                'description' => 'Internal Server Error',
+                'content'     => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => 'object',
+                        ],
+                    ],
+                ],
+            ],
+            'default' => [
+                'description' => 'Unexpected error',
+                'content'     => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => 'object',
+                        ],
+                    ],
+                ],
+            ],
+        ],
     ]
 ];

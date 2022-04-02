@@ -96,6 +96,14 @@
                 <div class="flex justify-between items-center">
                     <a href="{{config('request-docs.url')}}" class="font-bold text-xl text-indigo-600">{{ config('request-docs.document_name') }}</a>
                 </div>
+                <div class="flex justify-between items-center pl-2">
+                    |
+                </div>
+                <div class="flex justify-between items-center pl-2">
+                    <a href="{{config('request-docs.url')}}?openapi=true" class="hover:bg-red-600 bg-red-500 text-white pl-5 pr-5 border-transparent shadow-inner border-2 rounded">
+                        Export to Postman (Open API {{config('request-docs.open_api.version', '3.0.0')}})
+                    </a>
+                </div>
             </div>
         </nav>
       <div id="app" v-cloak class="w-full flex lg:pt-10">

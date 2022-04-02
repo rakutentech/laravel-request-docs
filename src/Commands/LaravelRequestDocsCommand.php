@@ -4,6 +4,7 @@ namespace Rakutentech\LaravelRequestDocs\Commands;
 
 use Illuminate\Console\Command;
 use Rakutentech\LaravelRequestDocs\LaravelRequestDocs;
+use Rakutentech\LaravelRequestDocs\LaravelRequestDocsToOpenApi;
 
 use File;
 
@@ -15,9 +16,10 @@ class LaravelRequestDocsCommand extends Command
 
     private $laravelRequestDocs;
 
-    public function __construct(LaravelRequestDocs $laravelRequestDocs)
+    public function __construct(LaravelRequestDocs $laravelRequestDocs, LaravelRequestDocsToOpenApi $laravelRequestDocsToOpenApi)
     {
         $this->laravelRequestDocs = $laravelRequestDocs;
+        $this->laravelRequestDocsToOpenApi = $laravelRequestDocsToOpenApi;
         parent::__construct();
     }
 
@@ -37,6 +39,12 @@ class LaravelRequestDocsCommand extends Command
                 ->with(compact('docs'))
                 ->render()
         );
+
+        File::put(
+            $destinationPath . '/lrd-openapi.json',
+            $this->laravelRequestDocsToOpenApi->openApi($docs)->toJson()
+        );
         $this->comment("Static HTML generated: $destinationPath");
+        $this->comment("OpenApi JSON generated: $destinationPath");
     }
 }
