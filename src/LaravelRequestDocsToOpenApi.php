@@ -118,11 +118,13 @@ class LaravelRequestDocsToOpenApi
         return "object";
     }
 
-    public function toJson() : string {
+    public function toJson() : string
+    {
         return collect($this->openApi)->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 
-    public function toArray() : array {
+    public function toArray() : array
+    {
         return $this->openApi;
     }
 }
