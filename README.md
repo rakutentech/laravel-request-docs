@@ -6,14 +6,17 @@
 
 <p align="center">
   The Hassle-Free automatic API documentation generation for Laravel. <br>
-  A Swagger alernative.
+  A Swagger alernative. <br>
+  Supports Open API 3.0.0
 </p>
 
 **Fast:** Install on any Laravel Project
 
 **Hassle Free:** Auto Generate API Documentation for request rules and parameters
 
-**Analyze:** In build SQL query time analyzer, response time and headers output.
+**Analyze:** In built SQL query time analyzer, response time and headers output.
+
+**Supports:** Postmane and OpenAPI 3.0.0 exports.
 
 ## Features
 
@@ -23,6 +26,7 @@
 - Support for SQL query, response time and memory consumption by request on Laravel
 - Intelligent auto request builder using ``faker.js``
 - Display extra documentation using markdown
+- Export laravel API, routes, rules and documentation to Postman and OpenAPI 3.0.0
 # Read on Medium
 
 Automatically generate api documentation for Laravel without writing annotations.
@@ -31,9 +35,9 @@ Read more: https://medium.com/web-developer/laravel-automatically-generate-api-d
 
 ## Requirements
 
-| Lang    | Version           |
+| Lang    | Versions          |
 | :------ | :---------------- |
-| PHP     | 7.4 or 8.0        |
+| PHP     | 7.4 or 8.0 or 8.1 |
 | Laravel | 6.* or 8.* or 9.* |
 
 # Installation
@@ -53,15 +57,21 @@ php artisan vendor:publish --tag=request-docs-config
 
 # Usage
 
+## Dashboard
+
 View in the browser on ``/request-docs/``
 
-or generate a static HTML
+Generate a static HTML and open api specification
 
 ```php
 php artisan lrd:generate
 ```
 
 Docs HTML is generated inside ``docs/``.
+
+## Just want Open API
+
+View in the browser on ``/request-docs/?openapi=true``
 
 # Design pattern
 
@@ -140,4 +150,5 @@ Fixing lints
 - v1.18 Fix where prism had fixed height. Allow text area resize.
 - v1.18 Updated UI and pushed unit tests
 - v1.19 Exception -> Throwable for type error
+- v1.20 Feature support open api 3.0.0 #10
 
