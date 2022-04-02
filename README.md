@@ -16,7 +16,7 @@
 
 **Analyze:** In built SQL query time analyzer, response time and headers output.
 
-**Supports:** Postmane and OpenAPI 3.0.0 exports.
+**Supports:** Postman and OpenAPI 3.0.0 exports.
 
 ## Features
 
