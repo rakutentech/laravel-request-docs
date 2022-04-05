@@ -249,7 +249,7 @@ class LaravelRequestDocs
         $params = [];
 
         foreach (explode("\n", $docComment) as $comment) {
-            if ( Str::contains($comment, '@QAparam') ) {
+            if (Str::contains($comment, '@QAparam')) {
                 $comment = trim(Str::replace(['@QAparam', '*'], '', $comment));
 
                 $comment = explode(' ', $comment);
