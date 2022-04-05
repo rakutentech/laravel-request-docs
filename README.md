@@ -119,6 +119,26 @@ Example of using it in controller
     {
 ```
 
+# Custom Params
+
+You write extra params with rules with @QAparam comment line
+
+```php
+    /**
+     * @QAparam search string
+     */
+    public function index(MyIndexRequest $request): Resource
+    {
+```
+
+```php
+    /**
+     * @QAparam search string nullable max:32
+     */
+    public function index(MyIndexRequest $request): Resource
+    {
+```
+
 # Testing
 
 ```bash

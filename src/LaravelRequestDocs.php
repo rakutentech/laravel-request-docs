@@ -117,6 +117,7 @@ class LaravelRequestDocs
             $method           = $controllerInfo['method'];
             $reflectionMethod = new ReflectionMethod($controller, $method);
             $params           = $reflectionMethod->getParameters();
+            $customRules = $this->customParamsDocComment($reflectionMethod->getDocComment());
 
             foreach ($params as $param) {
                 if (!$param->getType()) {
@@ -144,8 +145,14 @@ class LaravelRequestDocs
                             throw $e;
                         }
                     }
-                    $controllersInfo[$index]['docBlock'] = $this->lrdDocComment($reflectionMethod->getDocComment());
                 }
+
+                $controllersInfo[$index]['docBlock'] = $this->lrdDocComment($reflectionMethod->getDocComment());
+
+                $controllersInfo[$index]['rules'] = array_merge(
+                    $controllersInfo[$index]['rules'] ?? [],
+                    $customRules,
+                );
             }
         }
         return $controllersInfo;
@@ -235,5 +242,24 @@ class LaravelRequestDocs
             })->toArray();
 
         return $rules;
+    }
+
+    private function customParamsDocComment($docComment): array
+    {
+        $params = [];
+
+        foreach (explode("\n", $docComment) as $comment) {
+            if ( Str::contains($comment, '@QAparam') ) {
+                $comment = trim(Str::replace(['@QAparam', '*'], '', $comment));
+
+                $comment = explode(' ', $comment);
+
+                if (count($comment) > 0) {
+                    $params[$comment[0]] = array_values(array_filter($comment, fn($item) => $item != $comment[0]));
+                }
+            }
+        }
+
+        return $params;
     }
 }
