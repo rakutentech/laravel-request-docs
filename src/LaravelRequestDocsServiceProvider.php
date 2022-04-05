@@ -20,7 +20,7 @@ class LaravelRequestDocsServiceProvider extends PackageServiceProvider
             ->name('laravel-request-docs')
             ->hasConfigFile('request-docs')
             ->hasViews()
-            //->hasAssets()
+            ->hasAssets()
             ->hasCommand(LaravelRequestDocsCommand::class);
 
         Route::get(config('request-docs.url'), [\Rakutentech\LaravelRequestDocs\Controllers\LaravelRequestDocsController::class, 'index'])

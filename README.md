@@ -171,4 +171,5 @@ Fixing lints
 - v1.18 Updated UI and pushed unit tests
 - v1.19 Exception -> Throwable for type error
 - v1.20 Feature support open api 3.0.0 #10
+- v1.21 Abililty to add custom params
 
