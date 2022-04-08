@@ -33,6 +33,7 @@ class LaravelRequestDocsToOpenApi
     {
         $this->openApi['paths'] = [];
         foreach ($docs as $doc) {
+			$requestHasFile = false;
             $httpMethod = strtolower($doc['httpMethod']);
             $isGet    = $httpMethod == 'get';
             $isPost   = $httpMethod == 'post';
@@ -44,12 +45,27 @@ class LaravelRequestDocsToOpenApi
 
             $this->openApi['paths'][$doc['uri']][$httpMethod]['responses'] = config('request-docs.open_api.responses', []);
 
-            if ($isGet) {
+			foreach ($doc['rules'] as $attribute => $rules) {
+                foreach ($rules as $rule) {
+					if ($isPost || $isPut || $isDelete) {
+						$requestHasFile = $this->attributeIsFile($rule);
+
+						if ($requestHasFile) {
+							break 2;
+						}
+					}
+				}
+			}
+
+			$contentType = $requestHasFile ? 'multipart/form-data' : 'application/json';
+
+			if ($isGet) {
                 $this->openApi['paths'][$doc['uri']][$httpMethod]['parameters'] = [];
             }
             if ($isPost || $isPut || $isDelete) {
-                $this->openApi['paths'][$doc['uri']][$httpMethod]['requestBody'] = $this->makeRequestBodyItem();
+                $this->openApi['paths'][$doc['uri']][$httpMethod]['requestBody'] = $this->makeRequestBodyItem($contentType);
             }
+
             foreach ($doc['rules'] as $attribute => $rules) {
                 foreach ($rules as $rule) {
                     if ($isGet) {
@@ -57,13 +73,17 @@ class LaravelRequestDocsToOpenApi
                         $this->openApi['paths'][$doc['uri']][$httpMethod]['parameters'][] = $parameter;
                     }
                     if ($isPost || $isPut || $isDelete) {
-                        $this->openApi['paths'][$doc['uri']][$httpMethod]['requestBody']['content']['application/json']['schema']['properties'][$attribute] = $this->makeRequestBodyContentPropertyItem($rule);
+                        $this->openApi['paths'][$doc['uri']][$httpMethod]['requestBody']['content'][$contentType]['schema']['properties'][$attribute] = $this->makeRequestBodyContentPropertyItem($rule);
                     }
                 }
             }
         }
     }
 
+	protected function attributeIsFile(string $rule)
+	{
+		return str_contains($rule, 'file') || str_contains($rule, 'image');
+	}
 
     protected function makeQueryParameterItem(string $attribute, string $rule): array
     {
@@ -80,12 +100,12 @@ class LaravelRequestDocsToOpenApi
         return $parameter;
     }
 
-    protected function makeRequestBodyItem(): array
+    protected function makeRequestBodyItem(string $contentType): array
     {
         $requestBody = [
             'description' => "Request body",
             'content'     => [
-                'application/json' => [
+                $contentType => [
                     'schema' => [
                         'type' => 'object',
                         'properties' => [],
@@ -98,15 +118,19 @@ class LaravelRequestDocsToOpenApi
 
     protected function makeRequestBodyContentPropertyItem(string $rule): array
     {
+		$type = $this->getAttributeType($rule);
+
         return [
-            'type' => $this->getAttributeType($rule),
+            'type' => $type,
+			'nullable' => str_contains($rule, 'nullable'),
+			'format' => $this->attributeIsFile($rule) ? 'binary' : $type,
         ];
     }
 
 
     protected function getAttributeType(string $rule): string
     {
-        if (str_contains($rule, 'string')) {
+        if (str_contains($rule, 'string') || $this->attributeIsFile($rule)) {
             return 'string';
         }
         if (str_contains($rule, 'array')) {
@@ -114,6 +138,9 @@ class LaravelRequestDocsToOpenApi
         }
         if (str_contains($rule, 'integer')) {
             return 'integer';
+        }
+		if (str_contains($rule, 'boolean')) {
+            return 'boolean';
         }
         return "object";
     }
