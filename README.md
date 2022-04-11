@@ -172,4 +172,5 @@ Fixing lints
 - v1.19 Exception -> Throwable for type error
 - v1.20 Feature support open api 3.0.0 #10
 - v1.21 Abililty to add custom params
+- v1.22 Boolean|File|Image support
 
