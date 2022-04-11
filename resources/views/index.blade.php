@@ -290,6 +290,9 @@
                                 @if (str_contains($rule, 'boolean'))
                                 <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-green-400 rounded">Boolean</span>
                                 @endif
+								@if (str_contains($rule, 'file') || str_contains($rule, 'image'))
+                                <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-green-400 rounded">File</span>
+                                @endif
                             @endforeach
                         </td>
                         <td class="border pl-3 pt-1 pb-1 pr-2 bg-gray-100 text-center">
@@ -310,7 +313,7 @@
                             <div class="font-mono">
                                 @foreach ($rules as $rule)
                                     @foreach (explode('|', $rule) as $r)
-                                        @if (!in_array($r, ['required', 'integer', 'string', 'boolean', 'array', 'nullable', 'bail']))
+                                        @if (!in_array($r, ['required', 'integer', 'string', 'boolean', 'array', 'nullable', 'bail', 'file', 'image']))
                                             {{$r}}
                                             @if (!$loop->last)
                                             <span class="text-gray-900 font-bold">|</span>
@@ -524,6 +527,8 @@
                 isArray: null,
                 isDate: null,
                 isIn: null,
+				isBoolean: null,
+				isFile: null,
                 value: '',
             }
             rules.map(function(rule) {
@@ -531,6 +536,8 @@
                 validations.isDate = rule.match(/date/)
                 validations.isArray = rule.match(/array/)
                 validations.isString = rule.match(/string/)
+				validations.isBoolean = rule.match(/boolean/)
+				validations.isFile = rule.match(/file|image/)
                 if (rule.match(/integer/)) {
                     validations.isInteger = true
                 }
@@ -556,6 +563,12 @@
             }
             if (validations.isDate) {
                 validations.value = new Date(faker.date.between(new Date(), new Date())).toISOString().slice(0, 10)
+            }
+			if (validations.isBoolean) {
+                validations.value = true
+            }
+			if (validations.isFile) {
+                validations.value = {}
             }
 
             return validations
