@@ -647,7 +647,10 @@
                 filterTerm: ''
             },
             created: function () {
-                axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                if (csrfToken) {
+                    axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
                 axios.defaults.headers.common['Authorization'] = 'Bearer '
                 this.requestHeaders = JSON.stringify(axios.defaults.headers.common, null, 2)
             },
