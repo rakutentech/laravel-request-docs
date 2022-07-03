@@ -147,13 +147,14 @@ class LaravelRequestDocs
                     }
                 }
 
-                $controllersInfo[$index]['docBlock'] = $this->lrdDocComment($reflectionMethod->getDocComment());
-
                 $controllersInfo[$index]['rules'] = array_merge(
                     $controllersInfo[$index]['rules'] ?? [],
                     $customRules,
                 );
             }
+            
+            $controllersInfo[$index]['docBlock'] = $this->lrdDocComment($reflectionMethod->getDocComment());
+
         }
         return $controllersInfo;
     }
