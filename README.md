@@ -94,7 +94,7 @@ For extra documentation you can use markdown inside your controller method as we
 
 ![Preview](https://imgur.com/y8jT3jj.png)
 
-**Resonse profile**
+**Response profile**
 
 ![Preview](https://imgur.com/U0Je956.png)
 
