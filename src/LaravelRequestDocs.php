@@ -4,6 +4,7 @@ namespace Rakutentech\LaravelRequestDocs;
 
 use Route;
 use ReflectionMethod;
+use ReflectionClass;
 use Illuminate\Support\Str;
 use Exception;
 use Throwable;
@@ -126,7 +127,8 @@ class LaravelRequestDocs
                 $requestClassName = $param->getType()->getName();
                 $requestClass = null;
                 try {
-                    $requestClass = new $requestClassName();
+                    $reflection = new ReflectionClass($requestClassName);
+                    $requestClass = $reflection->newInstanceWithoutConstructor();
                 } catch (Throwable $th) {
                     //throw $th;
                 }
