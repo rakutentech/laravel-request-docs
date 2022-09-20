@@ -133,9 +133,9 @@
             <table class="table-fixed text-sm mt-5" style="width: max-content">
                 <tbody>
                     @foreach ($docs as $index => $doc)
-                    <tr>
+                    <tr v-if="!docs[{{$index}}]['isHidden']">
                         <td>
-                            <a href="#{{$doc['methods'][0] .'-'. $doc['uri']}}" @click="highlightSidebar({{$index}})" v-if="!docs[{{$index}}]['isHidden']">
+                            <a href="#{{$doc['methods'][0] .'-'. $doc['uri']}}" @click="highlightSidebar({{$index}})" >
                                 <span class="
                                     font-medium
                                     inline-flex
