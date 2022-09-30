@@ -230,9 +230,9 @@ class LaravelRequestDocs
                 return count($item[0]) > 0;
             })
             ->transform(function ($item) {
-                $fieldName = Str::of($item[0][0])->replace(['"', "'"], '');
+                $fieldName = str_replace(['"', "'"], '', $item[0][0]);
                 $definedFieldRules = collect(array_slice($item[0], 1))->transform(function ($rule) {
-                    return Str::of($rule)->replace(['"', "'"], '')->__toString();
+                    return (string) str_replace(['"', "'"], '', $rule);
                 })->toArray();
 
                 return ['key' => $fieldName, 'rules' => $definedFieldRules];
