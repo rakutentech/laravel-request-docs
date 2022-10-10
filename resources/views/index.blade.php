@@ -284,6 +284,9 @@
                                 @if (str_contains($rule, 'string'))
                                 <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-green-100 bg-green-500 rounded">String</span>
                                 @endif
+                                @if (str_contains($rule, 'json'))
+                                <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-green-100 bg-green-500 rounded">JSON</span>
+                                @endif
                                 @if (str_contains($rule, 'array'))
                                 <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-800 bg-blue-200 rounded">Array</span>
                                 @endif
