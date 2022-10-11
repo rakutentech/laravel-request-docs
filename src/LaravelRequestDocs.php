@@ -134,13 +134,13 @@ class LaravelRequestDocs
                     //throw $th;
                 }
 
-                foreach (config('request-docs.request_methods') as $rquestMethod) {
-                    if ($requestClass && method_exists($requestClass, $rquestMethod)) {
+                foreach (config('request-docs.request_methods') as $requestMethod) {
+                    if ($requestClass && method_exists($requestClass, $requestMethod)) {
                         try {
-                            $controllersInfo[$index]['rules'] = array_merge($controllersInfo[$index]['rules'], $this->flattenRules($requestClass->$rquestMethod()));
+                            $controllersInfo[$index]['rules'] = array_merge($controllersInfo[$index]['rules'], $this->flattenRules($requestClass->$requestMethod()));
 
                         } catch (Throwable $e) {
-                            $controllersInfo[$index]['rules'] = array_merge($controllersInfo[$index]['rules'], $this->rulesByRegex($requestClassName, $rquestMethod));
+                            $controllersInfo[$index]['rules'] = array_merge($controllersInfo[$index]['rules'], $this->rulesByRegex($requestClassName, $requestMethod));
                             if (config('request-docs.debug')) {
                                 throw $e;
                             }
