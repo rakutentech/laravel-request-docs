@@ -130,7 +130,7 @@
             </section>
             <h1 class="font-medium mx-3 mt-3" style="width: max-content;min-width:350px;">Routes List</h1>
             <hr class="border-b border-gray-300">
-            <table class="table-fixed text-sm mt-5" style="width: max-content">
+            <table class="table-fixed text-sm mt-5 mb-5" style="width: max-content">
                 <tbody>
                     @foreach ($docs as $index => $doc)
                     <tr v-if="!docs[{{$index}}]['isHidden']">
