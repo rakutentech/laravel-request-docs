@@ -22,7 +22,7 @@
 
       <script src="https://unpkg.com/vue-markdown@2.2.4/dist/vue-markdown.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/sql-formatter/3.1.0/sql-formatter.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-      <script src="{{asset('./vendor/request-docs/dist/app.js')}}"></script>
+      
       <style>
         [v-cloak] {
             display: none;
