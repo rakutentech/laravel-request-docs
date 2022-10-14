@@ -187,8 +187,8 @@
             <hr class="border-b border-gray-300">
             <br>
             @foreach ($docs as $index => $doc)
-            <section class="pt-5 pl-2 pr-2 pb-5 border mb-10 rounded bg-white shadow" v-if="!docs[{{$index}}]['isHidden']">
-                <div class="font-sans" id="{{$doc['httpMethod'] .'-'. $doc['uri']}}">
+            <section class="pt-5 pl-2 pr-2 pb-5 border-2 mb-10 rounded bg-white shadow" v-if="!docs[{{$index}}]['isHidden']">
+                <div class="border-2 rounded" id="{{$doc['httpMethod'] .'-'. $doc['uri']}}">
                 <h1 class="text-sm break-normal text-black bg-indigo-50 break-normal font-sans pb-1 pt-1 text-black">
                     <span class="w-20
                         font-medium
@@ -197,6 +197,8 @@
                         justify-center
                         px-2
                         py-1
+                        ml-2
+                        mr-2
                         text-xs
                         font-bold
                         leading-none
@@ -207,15 +209,13 @@
                         text-{{in_array('PATCH', $doc['methods']) ? 'black': ''}}-100 bg-{{in_array('PATCH', $doc['methods']) ? 'yellow': ''}}-500
                         text-{{in_array('DELETE', $doc['methods']) ? 'white': ''}} bg-{{in_array('DELETE', $doc['methods']) ? 'black': ''}}
                         ">
-                        {{$doc['methods'][0]}}
+                        {{$doc['methods'][0]}} 
                     </span>
                     <span class="">
                         <a href="#{{$doc['uri']}}">{{$doc['uri']}}</a>
                     </span>
                 </h1>
                 </div>
-                <hr class="border-b border-grey-light">
-
                 <table class="table-fixed text-sm mt-5">
                     <tbody>
                         <tr>
@@ -250,7 +250,7 @@
                     <vue-markdown class="mt-2">{!! $doc['docBlock'] !!}</vue-markdown>
                 </div>
                 @if (!empty($doc['rules']))
-                <div class="border-2 mr-4 mt-4 p-4 rounded text-sm">
+                <div class="border-2 mr-4 mt-4 p-4 rounded">
                 <h3 class="font-bold">Attributes</h3>
                 <hr>
                 <table class="table-fixed align-left text-sm mt-3">
