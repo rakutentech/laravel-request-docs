@@ -245,12 +245,15 @@
                     </tbody>
                 </table>
                 <div v-if="docs[{{$index}}]['docBlock']" class="border-2 mr-4 mt-4 p-4 rounded text-sm">
-                    <h3 class="font-bold">LRD Docs</h3>
-                    <vue-markdown>{!! $doc['docBlock'] !!}</vue-markdown>
+                    <h3 class="font-bold">Description</h3>
+                    <hr>
+                    <vue-markdown class="mt-2">{!! $doc['docBlock'] !!}</vue-markdown>
                 </div>
-                <br>
                 @if (!empty($doc['rules']))
-                <table class="table-fixed align-left text-sm mt-5">
+                <div class="border-2 mr-4 mt-4 p-4 rounded text-sm">
+                <h3 class="font-bold">Attributes</h3>
+                <hr>
+                <table class="table-fixed align-left text-sm mt-3">
                     <thead class="border">
                     <tr class="border">
                         <th class="border border-gray-300 pl-2 pr-16 pt-1 pb-1 w-min text-left bg-gray-200">No.</th>
@@ -333,6 +336,7 @@
                     @endforeach
                     </tbody>
                 </table>
+                </div>
                 @endif
                 <button
                     class="hover:bg-red-500 font-semibold hover:text-white mt-2 pl-5 pr-5 border-gray-700 hover:border-transparent shadow-inner border-2 rounded-full"
