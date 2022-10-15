@@ -53,7 +53,9 @@ class LaravelRequestDocs
         foreach ($methods as $method) {
             foreach ($docs as $key => $doc) {
                 if (in_array($method, $doc['methods'])) {
-                    $sorted[] = $doc;
+                    if (!in_array($doc, $sorted)){
+                        $sorted[] = $doc;
+                    }
                 }
             }
         }
