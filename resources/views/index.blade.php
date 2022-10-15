@@ -322,7 +322,7 @@
                             <div class="font-mono">
                                 @foreach ($rules as $rule)
                                     @foreach (explode('|', $rule) as $r)
-                                        @if (!in_array($r, ['required', 'integer', 'string', 'boolean', 'array', 'nullable', 'bail', 'file', 'image']))
+                                        @if (!in_array($r, ['required', 'integer', 'string', 'boolean', 'array', 'nullable', 'bail', 'file', 'image', 'numeric']))
                                             {{$r}}
                                             @if (!$loop->last)
                                             <span class="text-gray-900 font-bold">|</span>
