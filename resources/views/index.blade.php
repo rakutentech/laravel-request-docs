@@ -563,6 +563,9 @@
                         validations.max = 100
                     }
                 }
+                if (rule.match(/numeric/)) {
+                    validations.isInteger = true
+                }
             })
 
             if (validations.isString) {
