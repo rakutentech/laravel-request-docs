@@ -22,7 +22,7 @@
 
       <script src="https://unpkg.com/vue-markdown@2.2.4/dist/vue-markdown.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/sql-formatter/3.1.0/sql-formatter.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-      
+
       <style>
         [v-cloak] {
             display: none;
@@ -107,7 +107,7 @@
             </div>
         </nav>
       <div id="app" v-cloak class="w-full flex lg:pt-10">
-         <aside class="text-sm ml-1.5 text-grey-darkest break-all bg-gray-200 pl-2 h-screen sticky top-1 overflow-auto">
+         <aside class="text-sm ml-1.5 text-grey-darkest break-all bg-gray-200 pl-2 h-screen sticky top-1 overflow-auto w-10/12">
             <section class="pt-5 pl-2 pr-2 pb-5 border mb-10 rounded bg-white shadow">
                 <div class="font-sans">
                     <h2 class="text-sm break-normal text-black break-normal font-sans pb-1 pt-1 text-black">
@@ -209,7 +209,7 @@
                         text-{{in_array('PATCH', $doc['methods']) ? 'black': ''}}-100 bg-{{in_array('PATCH', $doc['methods']) ? 'yellow': ''}}-500
                         text-{{in_array('DELETE', $doc['methods']) ? 'white': ''}} bg-{{in_array('DELETE', $doc['methods']) ? 'black': ''}}
                         ">
-                        {{$doc['methods'][0]}} 
+                        {{$doc['methods'][0]}}
                     </span>
                     <span class="">
                         <a href="#{{$doc['uri']}}">{{$doc['uri']}}</a>
