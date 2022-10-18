@@ -36,6 +36,7 @@ return [
         '#^api-docs#',
         '#^sanctum#',
         '#^_ignition#',
+        '#^_tt#',
     ],
 
     'request_methods' => [
