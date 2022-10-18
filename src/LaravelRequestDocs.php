@@ -53,7 +53,7 @@ class LaravelRequestDocs
         foreach ($methods as $method) {
             foreach ($docs as $key => $doc) {
                 if (in_array($method, $doc['methods'])) {
-                    if (!in_array($doc, $sorted)){
+                    if (!in_array($doc, $sorted)) {
                         $sorted[] = $doc;
                     }
                 }
@@ -140,7 +140,6 @@ class LaravelRequestDocs
                     if ($requestClass && method_exists($requestClass, $requestMethod)) {
                         try {
                             $controllersInfo[$index]['rules'] = array_merge($controllersInfo[$index]['rules'], $this->flattenRules($requestClass->$requestMethod()));
-
                         } catch (Throwable $e) {
                             $controllersInfo[$index]['rules'] = array_merge($controllersInfo[$index]['rules'], $this->rulesByRegex($requestClassName, $requestMethod));
                             if (config('request-docs.debug')) {
