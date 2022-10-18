@@ -22,7 +22,7 @@
 
       <script src="https://unpkg.com/vue-markdown@2.2.4/dist/vue-markdown.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/sql-formatter/3.1.0/sql-formatter.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-      <script src="{{asset('./vendor/request-docs/dist/app.js')}}"></script>
+      
       <style>
         [v-cloak] {
             display: none;
@@ -130,7 +130,7 @@
             </section>
             <h1 class="font-medium mx-3 mt-3" style="width: max-content;min-width:350px;">Routes List</h1>
             <hr class="border-b border-gray-300">
-            <table class="table-fixed text-sm mt-5" style="width: max-content">
+            <table class="table-fixed text-sm mt-5 mb-5" style="width: max-content">
                 <tbody>
                     @foreach ($docs as $index => $doc)
                     <tr v-if="!docs[{{$index}}]['isHidden']">
@@ -187,8 +187,8 @@
             <hr class="border-b border-gray-300">
             <br>
             @foreach ($docs as $index => $doc)
-            <section class="pt-5 pl-2 pr-2 pb-5 border mb-10 rounded bg-white shadow" v-if="!docs[{{$index}}]['isHidden']">
-                <div class="font-sans" id="{{$doc['httpMethod'] .'-'. $doc['uri']}}">
+            <section class="pt-5 pl-2 pr-2 pb-5 border-2 mb-10 rounded bg-white shadow" v-if="!docs[{{$index}}]['isHidden']">
+                <div class="border-2 rounded" id="{{$doc['httpMethod'] .'-'. $doc['uri']}}">
                 <h1 class="text-sm break-normal text-black bg-indigo-50 break-normal font-sans pb-1 pt-1 text-black">
                     <span class="w-20
                         font-medium
@@ -197,6 +197,8 @@
                         justify-center
                         px-2
                         py-1
+                        ml-2
+                        mr-2
                         text-xs
                         font-bold
                         leading-none
@@ -207,15 +209,13 @@
                         text-{{in_array('PATCH', $doc['methods']) ? 'black': ''}}-100 bg-{{in_array('PATCH', $doc['methods']) ? 'yellow': ''}}-500
                         text-{{in_array('DELETE', $doc['methods']) ? 'white': ''}} bg-{{in_array('DELETE', $doc['methods']) ? 'black': ''}}
                         ">
-                        {{$doc['methods'][0]}}
+                        {{$doc['methods'][0]}} 
                     </span>
                     <span class="">
                         <a href="#{{$doc['uri']}}">{{$doc['uri']}}</a>
                     </span>
                 </h1>
                 </div>
-                <hr class="border-b border-grey-light">
-
                 <table class="table-fixed text-sm mt-5">
                     <tbody>
                         <tr>
@@ -245,12 +245,15 @@
                     </tbody>
                 </table>
                 <div v-if="docs[{{$index}}]['docBlock']" class="border-2 mr-4 mt-4 p-4 rounded text-sm">
-                    <h3 class="font-bold">LRD Docs</h3>
-                    <vue-markdown>{!! $doc['docBlock'] !!}</vue-markdown>
+                    <h3 class="font-bold">Description</h3>
+                    <hr>
+                    <vue-markdown class="mt-2">{!! $doc['docBlock'] !!}</vue-markdown>
                 </div>
-                <br>
                 @if (!empty($doc['rules']))
-                <table class="table-fixed align-left text-sm mt-5">
+                <div class="border-2 mr-4 mt-4 p-4 rounded">
+                <h3 class="font-bold">Attributes</h3>
+                <hr>
+                <table class="table-fixed align-left text-sm mt-3">
                     <thead class="border">
                     <tr class="border">
                         <th class="border border-gray-300 pl-2 pr-16 pt-1 pb-1 w-min text-left bg-gray-200">No.</th>
@@ -319,7 +322,7 @@
                             <div class="font-mono">
                                 @foreach ($rules as $rule)
                                     @foreach (explode('|', $rule) as $r)
-                                        @if (!in_array($r, ['required', 'integer', 'string', 'boolean', 'array', 'nullable', 'bail', 'file', 'image']))
+                                        @if (!in_array($r, ['required', 'integer', 'string', 'boolean', 'array', 'nullable', 'bail', 'file', 'image', 'numeric']))
                                             {{$r}}
                                             @if (!$loop->last)
                                             <span class="text-gray-900 font-bold">|</span>
@@ -333,6 +336,7 @@
                     @endforeach
                     </tbody>
                 </table>
+                </div>
                 @endif
                 <button
                     class="hover:bg-red-500 font-semibold hover:text-white mt-2 pl-5 pr-5 border-gray-700 hover:border-transparent shadow-inner border-2 rounded-full"
@@ -558,6 +562,9 @@
                     if (!validations.max) {
                         validations.max = 100
                     }
+                }
+                if (rule.match(/numeric/)) {
+                    validations.isInteger = true
                 }
             })
 
