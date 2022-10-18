@@ -53,7 +53,9 @@ class LaravelRequestDocs
         foreach ($methods as $method) {
             foreach ($docs as $key => $doc) {
                 if (in_array($method, $doc['methods'])) {
-                    $sorted[] = $doc;
+                    if (!in_array($doc, $sorted)) {
+                        $sorted[] = $doc;
+                    }
                 }
             }
         }
@@ -119,6 +121,7 @@ class LaravelRequestDocs
             $reflectionMethod = new ReflectionMethod($controller, $method);
             $params           = $reflectionMethod->getParameters();
             $customRules = $this->customParamsDocComment($reflectionMethod->getDocComment());
+            $controllersInfo[$index]['rules'] = [];
 
             foreach ($params as $param) {
                 if (!$param->getType()) {
@@ -133,18 +136,15 @@ class LaravelRequestDocs
                     //throw $th;
                 }
 
-                if ($requestClass && method_exists($requestClass, 'rules')) {
-                    try {
-                        $controllersInfo[$index]['rules'] = $this->flattenRules($requestClass->rules());
-                    } catch (Throwable $e) {
-                        // disabled. This only works when the rules are defined as 'required|integer' and that too in single line
-                        // doesn't work well when the same rule is defined as array ['required', 'integer'] or in multiple lines such as
-                        // If your rules are not populated using this library, then fix your rule to only throw validation errors and not throw exceptions
-                        // such as 404, 500 inside the request class.
-                        $controllersInfo[$index]['rules'] = $this->rulesByRegex($requestClassName);
-
-                        if (config('request-docs.debug')) {
-                            throw $e;
+                foreach (config('request-docs.request_methods') as $requestMethod) {
+                    if ($requestClass && method_exists($requestClass, $requestMethod)) {
+                        try {
+                            $controllersInfo[$index]['rules'] = array_merge($controllersInfo[$index]['rules'], $this->flattenRules($requestClass->$requestMethod()));
+                        } catch (Throwable $e) {
+                            $controllersInfo[$index]['rules'] = array_merge($controllersInfo[$index]['rules'], $this->rulesByRegex($requestClassName, $requestMethod));
+                            if (config('request-docs.debug')) {
+                                throw $e;
+                            }
                         }
                     }
                 }
@@ -211,9 +211,9 @@ class LaravelRequestDocs
         return $rules;
     }
 
-    public function rulesByRegex($requestClassName)
+    public function rulesByRegex($requestClassName, $methodName)
     {
-        $data = new ReflectionMethod($requestClassName, 'rules');
+        $data = new ReflectionMethod($requestClassName, $methodName);
         $lines = file($data->getFileName());
         $rules = [];
 
