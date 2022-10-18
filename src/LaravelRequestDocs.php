@@ -121,6 +121,9 @@ class LaravelRequestDocs
             try {
                 $reflectionMethod = new ReflectionMethod($controller, $method);
             } catch (Throwable $e) {
+                if (config('request-docs.debug')) {
+                    throw $e;
+                }
                 continue;
             }
             $params           = $reflectionMethod->getParameters();
