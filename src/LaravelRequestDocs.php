@@ -118,7 +118,11 @@ class LaravelRequestDocs
         foreach ($controllersInfo as $index => $controllerInfo) {
             $controller       = $controllerInfo['controller_full_path'];
             $method           = $controllerInfo['method'];
-            $reflectionMethod = new ReflectionMethod($controller, $method);
+            try {
+                $reflectionMethod = new ReflectionMethod($controller, $method);
+            } catch (Throwable $e) {
+                continue;
+            }
             $params           = $reflectionMethod->getParameters();
             $customRules = $this->customParamsDocComment($reflectionMethod->getDocComment());
             $controllersInfo[$index]['rules'] = [];
