@@ -16,6 +16,23 @@ return [
         // \App\Http\Middleware\NotFoundWhenProduction::class,
     ],
 
+    /*
+    * Last login path name used for check the url is login to auto set the token in header
+    * http://localhost:8080/api/login
+    */
+    'last_login_path_name' => 'login',
+
+    /*
+    * Last logout path name used for check the url is logout to auto remove the token from header
+    * http://localhost:8080/api/logout
+    */
+    'last_logout_path_name' => 'logout',
+
+    /*
+    * Check the token key name inside the login response to set it in header
+    */
+    'token_response_name' => 'token',
+
     /**
      * Path to to static HTML if using command line.
      */
