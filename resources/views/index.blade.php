@@ -689,6 +689,11 @@
                     // remove \n from string that is used for display
                     var url = doc.url.replace(/\n/g, '')
 
+                    const isLoginUrl = url.split('/').pop() === '{{config('request-docs.last_login_path_name')}}';
+                    const isLogoutUrl = url.split('/').pop() === '{{config('request-docs.last_logout_path_name')}}';
+                    const tokenResponseName = '{{config('request-docs.token_response_name')}}';
+
+
                     try {
                         var json = JSON.parse(doc.body.replace(/\n/g, ''))
                     } catch (e) {
@@ -726,6 +731,15 @@
                                 doc.memory = response.data['_lrd']['memory']
                                 delete response.data['_lrd']
                             }
+
+                            if(isLoginUrl) {
+                                this.setAuthRequestHeaders(response.data[tokenResponseName]);
+                            }
+
+                            if(isLogoutUrl) {
+                                this.setAuthRequestHeaders();
+                            }
+
                             doc.response = JSON.stringify(response.data, null, 2)
                             doc.responseCode = response.status
                             doc.responseHeaders = JSON.stringify(response.headers, null, 2)
@@ -752,6 +766,11 @@
                         doc.responseTime = endTime - startTime;
                       })
                 },
+                setAuthRequestHeaders(token = null) {
+                    axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                    axios.defaults.headers.common['Authorization'] = 'Bearer ' + (token?token:'');
+                    this.requestHeaders = JSON.stringify(axios.defaults.headers.common, null, 2)
+                }
             },
           });
       </script>
