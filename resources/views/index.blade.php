@@ -216,6 +216,7 @@
                     </span>
                 </h1>
                 </div>
+                @if (!config('request-docs.show_development_metadata'))
                 <table class="table-fixed text-sm mt-5">
                     <tbody>
                         <tr>
@@ -244,6 +245,7 @@
                         @endforeach
                     </tbody>
                 </table>
+                @endif
                 <div v-if="docs[{{$index}}]['docBlock']" class="border-2 mr-4 mt-4 p-4 rounded text-sm">
                     <h3 class="font-bold">Description</h3>
                     <hr>

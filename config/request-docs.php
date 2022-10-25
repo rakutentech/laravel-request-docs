@@ -25,6 +25,11 @@ return [
         'Authorization' => 'Bearer',
     ],
 
+    /*
+    * Show development relevant metadata on endpoints
+    */
+    'show_development_metadata' => true,
+
     /**
      * Path to to static HTML if using command line.
      */
