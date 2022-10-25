@@ -216,7 +216,7 @@
                     </span>
                 </h1>
                 </div>
-                @if (!config('request-docs.show_development_metadata'))
+                @if (config('request-docs.show_development_metadata'))
                 <table class="table-fixed text-sm mt-5">
                     <tbody>
                         <tr>
