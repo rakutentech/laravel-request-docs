@@ -660,9 +660,7 @@
                 filterTerm: ''
             },
             created: function () {
-                axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                axios.defaults.headers.common['Authorization'] = 'Bearer '
-                this.requestHeaders = JSON.stringify(axios.defaults.headers.common, null, 2)
+                this.requestHeaders = JSON.stringify({!! json_encode(config('request-docs.default_request_headers')) !!}, null, 2)
             },
             methods: {
                 highlightSidebar(idx) {

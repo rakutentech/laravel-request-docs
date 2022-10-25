@@ -16,6 +16,15 @@ return [
         // \App\Http\Middleware\NotFoundWhenProduction::class,
     ],
 
+    /*
+    * Default headers shown on the request headers editor
+    */
+    'default_request_headers' => [
+        'Accept' => 'application/json',
+        'X-CSRF-TOKEN' => '',
+        'Authorization' => 'Bearer',
+    ],
+
     /**
      * Path to to static HTML if using command line.
      */
