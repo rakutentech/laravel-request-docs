@@ -212,7 +212,7 @@
                         {{$doc['methods'][0]}}
                     </span>
                     <span class="">
-                        <a href="#{{$doc['uri']}}">{{$doc['uri']}}</a>
+                        <a href="#{{$doc['httpMethod'] .'-'. $doc['uri']}}">{{$doc['uri']}}</a>
                     </span>
                 </h1>
                 </div>
