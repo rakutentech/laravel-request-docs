@@ -212,10 +212,11 @@
                         {{$doc['methods'][0]}}
                     </span>
                     <span class="">
-                        <a href="#{{$doc['uri']}}">{{$doc['uri']}}</a>
+                        <a href="#{{$doc['httpMethod'] .'-'. $doc['uri']}}">{{$doc['uri']}}</a>
                     </span>
                 </h1>
                 </div>
+                @if (config('request-docs.show_development_metadata'))
                 <table class="table-fixed text-sm mt-5">
                     <tbody>
                         <tr>
@@ -244,6 +245,7 @@
                         @endforeach
                     </tbody>
                 </table>
+                @endif
                 <div v-if="docs[{{$index}}]['docBlock']" class="border-2 mr-4 mt-4 p-4 rounded text-sm">
                     <h3 class="font-bold">Description</h3>
                     <hr>
@@ -660,9 +662,7 @@
                 filterTerm: ''
             },
             created: function () {
-                axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                axios.defaults.headers.common['Authorization'] = 'Bearer '
-                this.requestHeaders = JSON.stringify(axios.defaults.headers.common, null, 2)
+                this.requestHeaders = JSON.stringify({!! json_encode(config('request-docs.default_request_headers')) !!}, null, 2)
             },
             methods: {
                 highlightSidebar(idx) {
