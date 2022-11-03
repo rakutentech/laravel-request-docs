@@ -47,7 +47,15 @@
         "psalm": "vendor/bin/psalm",
         "phpcs": "vendor/bin/phpcs",
         "test": "./vendor/bin/testbench package:test --parallel --no-coverage",
-        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
+        "post-install-cmd": [
+            "php artisan vendor:publish --tag=request-docs-assets --force",
+            "php artisan vendor:publish --tag=request-docs-config"
+          ],
+          "post-update-cmd": [
+            "php artisan vendor:publish --tag=request-docs-assets --force",
+            "php artisan vendor:publish --tag=request-docs-config"
+          ]
     },
     "config": {
         "sort-packages": true

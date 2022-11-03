@@ -32,6 +32,17 @@ class LaravelRequestDocsController extends Controller
                 JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
             );
         }
+        if ($request->json) {
+            return response()->json(
+                $docs,
+                Response::HTTP_OK,
+                [
+                    'Content-type'=> 'application/json; charset=utf-8'
+                ],
+                JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+            );
+        }
+        // nextjs static page rendered via blade
         return view('request-docs::index')->with(compact('docs'));
     }
 }

@@ -1,0 +1,32 @@
+on: [push]
+
+name: "CI"
+
+jobs:
+  test:
+    name: Test
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-versions: [16, 18]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-versions }}
+
+      - name: NPM Install
+        working-directory: ./ui
+        run: npm install
+
+      - name: Build, lint and export
+        working-directory: ./ui
+        run: npm run export
+
+
+
