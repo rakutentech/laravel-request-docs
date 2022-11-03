@@ -1,3 +1,6 @@
+# MODERNIZATION OF UI RENEWAL is in PROGRESS https://github.com/rakutentech/laravel-request-docs/pull/103
+We request to have code freeze on new pull requests, and request to please submit issues with regards to the UI that we can cover in the new UI renewal.
+
 <p align="center">
   <a href="https://github.com/rakutentech/laravel-request-docs">
     <img alt="Laravel Request Docs" src="https://imgur.com/9eDTUaI.png" width="360">
