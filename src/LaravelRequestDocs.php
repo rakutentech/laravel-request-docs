@@ -85,7 +85,7 @@ class LaravelRequestDocs
                 foreach ($controllersInfo as $controllerInfo) {
                     if ($controllerInfo['uri'] == $route->uri && $controllerInfo['httpMethod'] == $httpMethod) {
                         // is duplicate
-                        continue;
+                        continue 2;
                     }
                 }
 
