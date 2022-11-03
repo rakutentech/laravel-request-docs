@@ -1,6 +1,6 @@
 on: [push]
 
-name: "CI"
+name: "CI PHP"
 
 jobs:
   test:
