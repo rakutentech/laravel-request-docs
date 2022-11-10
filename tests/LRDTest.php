@@ -1,16 +1,29 @@
 <?php
 
 namespace Rakutentech\LaravelRequestDocs\Tests;
-use Route;
+
+use Illuminate\Support\Facades\Config;
 
 class LRDTest extends TestCase
 {
-    public function testDocsCount()
+    public function testGetDocs()
     {
         $docs = $this->lrd->getDocs();
-        $routes = collect(Route::getRoutes());
 
-        $this->assertSame($routes->count(), count($docs));
+        $this->assertSame($this->countRoutesWithLRDDoc(), count($docs));
+
+        $docSize = 9;
+        $firstDoc = $docs[0];
+        $this->assertCount($docSize, $firstDoc);
+        $this->assertArrayHasKey('uri', $firstDoc);
+        $this->assertArrayHasKey('methods', $firstDoc);
+        $this->assertArrayHasKey('middlewares', $firstDoc);
+        $this->assertArrayHasKey('controller', $firstDoc);
+        $this->assertArrayHasKey('controller_full_path', $firstDoc);
+        $this->assertArrayHasKey('method', $firstDoc);
+        $this->assertArrayHasKey('httpMethod', $firstDoc);
+        $this->assertArrayHasKey('rules', $firstDoc);
+        $this->assertArrayHasKey('docBlock', $firstDoc);
     }
 
     public function testDocsCanFetchAllMethods()
@@ -25,18 +38,12 @@ class LRDTest extends TestCase
         $this->assertSame(['DELETE', 'GET', 'HEAD', 'POST', 'PUT'], $methods);
     }
 
-    public function testDocsCanFetchInfo()
+    public function testOnlyRouteURIStartWith()
     {
+        Config::set('request-docs.only_route_uri_start_with', 'welcome');
         $docs = $this->lrd->getDocs();
         foreach ($docs as $doc) {
-            $this->assertNotEmpty($doc['rules']);
-            $this->assertNotEmpty($doc['methods']);
-            // $this->assertNotEmpty($doc['middlewares']); //todo: add middlewares to test
-            $this->assertNotEmpty($doc['controller']);
-            $this->assertNotEmpty($doc['controller_full_path']);
-            $this->assertNotEmpty($doc['method']);
-            $this->assertNotEmpty($doc['httpMethod']);
-            $this->assertNotEmpty($doc['rules']);
+            $this->assertStringStartsWith('welcome', $doc['uri']);
         }
     }
 }

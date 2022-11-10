@@ -11,7 +11,7 @@ use Throwable;
 
 class LaravelRequestDocs
 {
-    public function getDocs()
+    public function getDocs(): array
     {
         $docs = [];
         $excludePatterns = config('request-docs.hide_matching') ?? [];
@@ -68,6 +68,7 @@ class LaravelRequestDocs
         $routes = collect(Route::getRoutes());
         $onlyRouteStartWith = config('request-docs.only_route_uri_start_with') ?? '';
 
+        /** @var \Illuminate\Routing\Route $route */
         foreach ($routes as $route) {
             if ($onlyRouteStartWith && !Str::startsWith($route->uri, $onlyRouteStartWith)) {
                 continue;
@@ -75,13 +76,14 @@ class LaravelRequestDocs
 
             try {
                 $actionControllerName = $route->action['controller'] ?? $route->action["0"];
-                /// Show Pnly Controller Name
+                /// Show Only Controller Name
                 $controllerFullPath = explode('@', $actionControllerName)[0];
                 $getStartWord = strrpos(explode('@', $actionControllerName)[0], '\\') + 1;
                 $controllerName = substr($controllerFullPath, $getStartWord);
 
                 $method = explode('@', $actionControllerName)[1] ?? '__invoke';
                 $httpMethod = $route->methods[0];
+
                 foreach ($controllersInfo as $controllerInfo) {
                     if ($controllerInfo['uri'] == $route->uri && $controllerInfo['httpMethod'] == $httpMethod) {
                         // is duplicate
@@ -113,7 +115,7 @@ class LaravelRequestDocs
         return $controllersInfo;
     }
 
-    public function appendRequestRules(array $controllersInfo)
+    public function appendRequestRules(array $controllersInfo): array
     {
         foreach ($controllersInfo as $index => $controllerInfo) {
             $controller       = $controllerInfo['controller_full_path'];
@@ -121,8 +123,9 @@ class LaravelRequestDocs
             try {
                 $reflectionMethod = new ReflectionMethod($controller, $method);
             } catch (Throwable $e) {
+                // Skip to next if controller is not exists.
                 if (config('request-docs.debug')) {
-                    throw $e;
+                    throw $e; // @codeCoverageIgnore
                 }
                 continue;
             }
@@ -185,16 +188,6 @@ class LaravelRequestDocs
             }
         }
         return $lrdComment;
-    }
-
-    // get text between first and last tag
-    private function getTextBetweenTags($docComment, $tag1, $tag2)
-    {
-        $docComment = trim($docComment);
-        $start = strpos($docComment, $tag1);
-        $end = strpos($docComment, $tag2);
-        $text = substr($docComment, $start + strlen($tag1), $end - $start - strlen($tag1));
-        return $text;
     }
 
     public function flattenRules($mixedRules)

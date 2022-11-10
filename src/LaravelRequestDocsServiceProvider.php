@@ -22,6 +22,11 @@ class LaravelRequestDocsServiceProvider extends PackageServiceProvider
             ->hasViews()
             ->hasAssets()
             ->hasCommand(LaravelRequestDocsCommand::class);
+    }
+
+    public function packageBooted()
+    {
+        parent::packageBooted();
 
         Route::get(config('request-docs.url'), [\Rakutentech\LaravelRequestDocs\Controllers\LaravelRequestDocsController::class, 'index'])
             ->name('request-docs.index')

@@ -19,9 +19,11 @@
         "php": "^7.4|^8.0",
         "illuminate/contracts": "^8.37|^9.0",
         "kitloong/laravel-app-logger": "^1.0",
-        "spatie/laravel-package-tools": "^1.4.3"
+        "spatie/laravel-package-tools": "^1.4.3",
+        "ext-json": "*"
     },
     "require-dev": {
+        "barryvdh/laravel-ide-helper": "^2.12",
         "brianium/paratest": "^6.2",
         "friendsofphp/php-cs-fixer": "^3.5",
         "nunomaduro/collision": "^5.3|^6.0",
@@ -43,6 +45,7 @@
     },
     "scripts": {
         "psalm": "vendor/bin/psalm",
+        "phpcs": "vendor/bin/phpcs",
         "test": "./vendor/bin/testbench package:test --parallel --no-coverage",
         "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
     },
