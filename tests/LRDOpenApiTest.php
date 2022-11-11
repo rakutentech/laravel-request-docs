@@ -1,7 +1,6 @@
 <?php
 
 namespace Rakutentech\LaravelRequestDocs\Tests;
-use Route;
 
 class LRDOpenApiTest extends TestCase
 {
@@ -9,15 +8,14 @@ class LRDOpenApiTest extends TestCase
     {
         $docs = $this->lrd->getDocs();
         $openApi = $this->lrdToOpenApi->openApi($docs)->toArray();
-        $routes = collect(Route::getRoutes());
 
-        $this->assertSame($routes->count(), count($docs));
+        $this->assertSame($this->countRoutesWithLRDDoc(), count($docs));
 
         $countRoutes = 0;
         foreach ($openApi["paths"] as $path) {
             $countRoutes += count(array_keys($path));
         }
 
-        $this->assertSame($routes->count(), $countRoutes);
+        $this->assertSame($this->countRoutesWithLRDDoc(), $countRoutes);
     }
 }
