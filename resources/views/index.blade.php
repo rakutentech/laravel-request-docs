@@ -114,7 +114,7 @@
                         Filter
                     </h2>
                     <p class="text-xs pb-2 font-medium text-gray-500">Hide non matching</code></p>
-                    <input type="text" v-model="filterTerm" @input="filterDocs" class="w-full p-2 border-2 border-gray-300 rounded" placeholder="/api/search">
+                    <input type="text" v-model="filterTerm" @input="filterDocs" class="w-full p-2 border-2 border-gray-300 rounded" placeholder="search route or description">
                 </div>
             </section>
             <section class="pt-5 pl-2 pr-2 pb-5 border mb-10 rounded bg-white shadow">
