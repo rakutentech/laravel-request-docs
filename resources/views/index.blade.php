@@ -678,7 +678,7 @@
                 },
                 filterDocs() {
                     for (doc of this.docs) {
-                        doc['isHidden'] = !doc['uri'].includes(this.filterTerm)
+                        doc['isHidden'] = (!doc['docBlock'].toLowerCase().includes(this.filterTerm.toLowerCase()) && !doc['uri'].includes(this.filterTerm))
                     }
                 },
                 request(doc) {
