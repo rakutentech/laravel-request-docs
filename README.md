@@ -179,4 +179,5 @@ Fixing lints
 - v1.22 Boolean|File|Image support
 - v1.23 Bug fix for lrd doc block #76
 - v1.27 A few fixes on width and added request_methods
+- v1.30 Minor search box filter added
 
