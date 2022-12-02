@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from "next"
 
 type Data = {
   name: string
@@ -25,7 +25,7 @@ export default function handler(
             "method": "chart",
             "httpMethod": "GET",
             "rules": [],
-            "docBlock": ""
+            "docBlock": "# Hello markdown \n## Documentation for /my route"
         },
         {
             "uri": "api/documentation",
@@ -815,6 +815,6 @@ export default function handler(
             "rules": [],
             "docBlock": ""
         }
-    ];
-    res.status(200).json(JSON.parse(JSON.stringify(response)));
+    ]
+    res.status(200).json(JSON.parse(JSON.stringify(response)))
 }

@@ -1,3 +1,13 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended"
+  ],
+  "rules": {
+    "jsx-quotes": ["warn", "prefer-double"],
+    "quotes": ["warn", "double"],
+    "semi": ["warn", "never"],
+    "react/prop-types": ["error", { "ignore": ["children", "className"] }]
+  }
 }
