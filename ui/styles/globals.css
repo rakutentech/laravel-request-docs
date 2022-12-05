@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  .markdown-doc h1 {
+    @apply text-base font-semibold;
+  }
+  .markdown-doc h2 {
+    @apply text-sm font-semibold;
+  }
+  .markdown-doc h3 {
+    @apply font-semibold;
+  }
+  .markdown-doc ul li {
+    @apply ml-8;
+    list-style-type: circle;
+  } 
+  .markdown-doc table {
+    @apply border-0 border-t border-base-content/20 border-collapse my-2;
+  }
+  .markdown-doc table tr th,
+  .markdown-doc table tr td {
+    @apply border-0 border-b border-base-content/20 border-collapse pr-6 py-2;
+  }
+  .markdown-doc code {
+    @apply bg-base-content/10 rounded px-1 font-medium text-[0.85rem] text-base-content/80;
+  }
+  .markdown-doc pre:has(code) {
+    @apply bg-base-content/10 rounded-lg p-3 font-medium text-[0.85rem] my-2;
+  }
+  .markdown-doc pre:has(code) code {
+    @apply bg-transparent;
+  }
+}

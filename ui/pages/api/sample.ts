@@ -25,7 +25,7 @@ export default function handler(
             "method": "chart",
             "httpMethod": "GET",
             "rules": [],
-            "docBlock": "# Hello markdown \n## Documentation for /my route"
+            "docBlock": "# Hello markdown\n _italic_ or **bold** or `pre-text` \n\n ## Documentation for /my route\n\n* ~~test~~\n* [ ] Check\n\n| heading | b | c | d |\n| - | :- | -: | :-: |\n| cell 1 | cell 2 | 3 | 4 |\n ```js\nalert('Hello');"
         },
         {
             "uri": "api/documentation",
@@ -284,6 +284,7 @@ export default function handler(
                 "last_name": [
                     "required"
                 ],
+                "nick_name": [],
                 "email": [
                     "required"
                 ],

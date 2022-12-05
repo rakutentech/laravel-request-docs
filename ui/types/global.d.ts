@@ -1,4 +1,4 @@
-interface APIInfo {
+interface IAPIInfo {
   uri: string;
   methods: string[];
   middlewares: string[];
@@ -6,10 +6,10 @@ interface APIInfo {
   controller_full_path: string;
   method: string;
   httpMethod: string;
-  rules: APIRule;
+  rules: IAPIRule;
   docBlock: string;
 }
 
-interface APIRule {
+interface IAPIRule {
   [key: string]: string[];
 }

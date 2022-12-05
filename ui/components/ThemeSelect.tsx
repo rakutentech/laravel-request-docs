@@ -8,7 +8,8 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid"
 const themes = [
   { id: "light", name: "Light" },
   { id: "corporate", name: "Corporate" },
-  { id: "dark", name: "Dark" },
+  { id: "forest", name: "Forest" },
+  { id: "dracula", name: "Dracula" },
   { id: "night", name: "Night" },
 ]
 
@@ -17,12 +18,18 @@ function classNames(...classes: string[]) {
 }
 
 function setTheme(theme: string) {
-  localStorage.setItem("__lrd-theme", theme)
+  if (typeof localStorage !== "undefined") {
+    localStorage.setItem("__lrd-theme", theme)
+  }
   document.documentElement.setAttribute("data-theme", theme)
 }
 
 function getTheme() {
-  return localStorage.getItem("__lrd-theme") ?? themes[0].id
+  let theme
+  if (typeof localStorage !== "undefined") {
+    theme = localStorage.getItem("__lrd-theme")
+  }
+  return theme ?? themes[0].id
 }
 
 export default function ThemeSelect() {
@@ -38,15 +45,15 @@ export default function ThemeSelect() {
           <>
             <Popover.Button
               className={classNames(
-                open ? "text-base-content" : "text-base-content/70",
-                "group inline-flex content-evenly item-center rounded-md font-medium hover:text-base-content focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                open ? "text-base-content" : "text-base-content/80",
+                "group inline-flex content-evenly item-center rounded-md font-medium hover:text-base-content focus:outline focus:outline-2 focus:outline-primary focus:outline-offset-2"
               )}>
               <SwatchIcon className="h-5 w-5" />
               <span className="text-sm ml-1">Themes</span>
               <ChevronDownIcon
                 className={classNames(
-                  open ? "text-gray-600" : "text-gray-400",
-                  "ml-2 h-5 w-5 group-hover:text-gray-500"
+                  open ? "text-base-content" : "text-base-content/80",
+                  "ml-2 h-5 w-5 group-hover:text-base-content"
                 )}
                 aria-hidden="true"
               />
@@ -68,8 +75,8 @@ export default function ThemeSelect() {
                         type="button"
                         key={item.id}
                         className={classNames(
-                          currentTheme === item.id ? "ring-2" : "",
-                          "overflow-hidden rounded-lg outline-none ring-primary ring-offset-2 hover:ring-2"
+                          currentTheme === item.id ? "outline outline-2" : "",
+                          "overflow-hidden rounded-lg outline-primary hover:outline hover:outline-2"
                         )}
                         onClick={() => setCurrentTheme(item.id)}
                       >
