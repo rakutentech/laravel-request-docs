@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        php-versions: [7.4, 8.0.6, 8.1]
+        php-versions: [7.4, 8.0.6, 8.1, 8.2]
 
     steps:
       - name: Checkout
@@ -30,10 +30,14 @@ jobs:
 
       - name: PHPUNIT Tests
         run: |
-            ./vendor/bin/phpunit
+            ./vendor/bin/phpunit --coverage-clover=coverage.xml
+
       - name: PHPLint
         run: |
             ./vendor/bin/phpcs --standard=phpcs.xml --extensions=php --ignore=tests/migrations config/ src/
 
-
-
+      - name: Upload to codecov
+        uses: codecov/codecov-action@v3
+        with:
+          name: PHP ${{ matrix.php-versions }}
+          files: coverage.xml
