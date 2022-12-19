@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createRef, useCallback, useEffect, useState } from "react"
+import React, { createRef, useEffect, useState } from "react"
 import SideBar from "../components/SideBar"
 import APICard from "../components/APICard"
 import { getAPIInfoId } from "../utils/utils"
@@ -30,8 +30,10 @@ function useAPIInfoData(): IAPIInfo[] {
 export default function Home() {
   const data = useAPIInfoData()
   const [activeItemID, setActiveItemID] = useState(getAPIInfoId(data[0]))
+  const baseURL = process.env.NEXT_PUBLIC_BASE_URL ||
+    (typeof window !== "undefined") ? `${window.location.protocol}//${window.location.host}` : ""
 
-    const refs = data.reduce((refsObj, item) => {
+  const refs = data.reduce((refsObj, item) => {
     refsObj[getAPIInfoId(item)] = createRef<HTMLElement>()
     return refsObj
   }, {} as { [key: string]: React.RefObject<HTMLElement> })
@@ -41,9 +43,9 @@ export default function Home() {
       behavior: "smooth",
       block: "center",
     })
-    window.location.hash = id
+    if (typeof window !== "undefined") window.location.hash = id
   }
-  
+
   return (
     <div className="mt-2" id="main-container">
       <div className="drawer drawer-mobile">
@@ -59,6 +61,7 @@ export default function Home() {
                   refs={refs}
                   activeItemID={activeItemID}
                   setActiveItemID={setActiveItemID}
+                  baseURL={baseURL}
                 />
               ))}
             </div>

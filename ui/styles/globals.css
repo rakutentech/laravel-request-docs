@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 @layer base {
+  *:focus {
+    @apply outline-none ring-primary/50 ring-4 ring-offset-0;
+  }
   .markdown-doc h1 {
     @apply text-base font-semibold;
   }

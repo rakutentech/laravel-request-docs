@@ -10,9 +10,12 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ["var(--font-sans)", "sans-serif"],
-        mono: ["var(--font-mono)", "monospace"]
-      }
-    }
+        mono: ["var(--font-mono)", "monospace"],
+      },
+    },
+  },
+  variants: {
+    outline: ["responsive", "focus-within", "focus"],
   },
   plugins: [require("daisyui")],
   daisyui: {

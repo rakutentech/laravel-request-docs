@@ -1,23 +1,22 @@
 import React from "react"
-import { Quicksand } from "@next/font/google"
+import { Quicksand, Antonio } from "@next/font/google"
 import Image from "next/image"
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH
 
-const logoFont = Quicksand({ subsets: ["latin"] })
+const brandFont = Quicksand({ subsets: ["latin"] })
+const logoFont = Antonio({ subsets: ["latin"] })
 export default function Logo() {
   return (
-    <div className={logoFont.className}>
-      <div className="group flex">
-        <div className="mr-2">
-          <Image className="" src={`${basePath ?? ""}/laravel.svg`} width={40} height={42} alt="Logo" />
-        </div>
-        <div className="cursor-default font-semibold flex flex-col my-auto leading-none bg-clip-text text-transparent bg-gradient-to-tl from-primary to-secondary">
-          <span className="text-sm  mb-[-.65rem] p-0 h-fit">
-            <span>Laravel</span>
-          </span>
-          <span className="lowercase text-lg h-fit">request docs</span>
-        </div>
+    <div className="group flex align-middle text-base">
+      <div className={logoFont.className + " mr-2 text-3xl font-black leading-none uppercase"}>
+        lrd
+      </div>
+      <div className={brandFont.className + " flex flex-col my-auto leading-none cursor-default font-black"}>
+        <span className="text-sm  mb-[-.65rem] p-0 h-fit">
+          <span>Laravel</span>
+        </span>
+        <span className="lowercase text-lg h-fit">request docs</span>
       </div>
     </div>
   )
