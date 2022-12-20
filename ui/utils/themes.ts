@@ -27,7 +27,6 @@ export function getThemeId() {
   if (typeof localStorage !== "undefined") {
     themeId = localStorage.getItem(LocalStorageKeys.THEME)
   }
-  console.log(`getThemeId: ${JSON.stringify({ themeId })}`)
   return themeId ?? themes[0].id
 }
 

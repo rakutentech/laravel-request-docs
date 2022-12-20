@@ -126,8 +126,8 @@ export default function KeyValueEditor(props: KeyValueEditorProps) {
 
   return (
     <div className="overflow-hidden ring-1 ring-base-content/20 rounded-md">
-      <Table className="w-full divide-y divide-base-content/20 text-xs auto">
-        <Table.Head className="bg-base-content/10">
+      <Table className="w-full divide-y divide-base-content/20 text-sm auto">
+        <Table.Head className="bg-base-content/10 text-xs">
           <Table.Row className="divide-x divide-base-content/20">
             <Table.HeadCell className="text-left px-4 uppercase text-base-content/75">Key</Table.HeadCell>
             <Table.HeadCell className="text-left px-4 uppercase text-base-content/75">Value</Table.HeadCell>
