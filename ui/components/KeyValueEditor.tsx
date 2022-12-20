@@ -13,17 +13,20 @@ interface KeyValueEditorProps {
 
 interface AddKeyValueFormProps {
   data?: IKeyValueParams;
+  setData?: (data: IKeyValueParams) => void;
   intent: Intent;
-  onChange: (data: IKeyValueParams) => void;
+  onChange: (data: IKeyValueParams, setKeyValueData: (data: IKeyValueParams) => void) => void;
+}
+
+const initialKeyValueData: IKeyValueParams = {
+  key: "",
+  value: "",
+  disabled: false,
 }
 
 function AddKeyValueForm(props: AddKeyValueFormProps) {
   const { data, intent, onChange } = props
   const [keyValueData, setKeyValueData] = useState(data as IKeyValueParams)
-  useEffect(() => {
-    console.log("AddKeyValueForm mount")
-    setKeyValueData(data as IKeyValueParams)
-  }, [data])
   return (
     <Table.Row className="divide-x divide-base-content/20">
       <td className="border-b-0">
@@ -36,7 +39,7 @@ function AddKeyValueForm(props: AddKeyValueFormProps) {
           onChange={(e) => setKeyValueData({ ...keyValueData, key: e.target.value })}
           onBlur={(e) => {
             console.log("onBlur Key", e.target.value, keyValueData)
-            onChange(keyValueData)
+            onChange(keyValueData, setKeyValueData)
           }}
         />
       </td>
@@ -50,7 +53,7 @@ function AddKeyValueForm(props: AddKeyValueFormProps) {
           onChange={(e) => setKeyValueData({ ...keyValueData, value: e.target.value })}
           onBlur={(e) => {
             console.log("onBlur Value", e.target.value, keyValueData)
-            onChange(keyValueData)
+            onChange(keyValueData, setKeyValueData)
           }}
         />
       </td>
@@ -92,6 +95,7 @@ export default function KeyValueEditor(props: KeyValueEditorProps) {
   const { api, intent } = props
   const localStorageKey = getLocalStorageKey(api, intent)
   const [data, setData] = useState<IKeyValueParams[]>(getLocalStorageData(localStorageKey))
+
   return (
     <div className="overflow-hidden ring-1 ring-base-content/20 rounded-md">
       <Table className="w-full divide-y divide-base-content/20 text-xs">
@@ -115,12 +119,12 @@ export default function KeyValueEditor(props: KeyValueEditorProps) {
             )
           })
           }
-          <AddKeyValueForm intent={intent} onChange={(val) => {
+          <AddKeyValueForm data={initialKeyValueData} intent={intent} onChange={(val, setChildData) => {
             if (!val.key || !val.value) return
             const newData = [...data, val]
             setData(newData)
-            console.log("AddKeyValueForm onChange", val)
             localStorage.setItem(localStorageKey, JSON.stringify(newData))
+            setChildData({ key: "", value: "" } as IKeyValueParams)
           }} />
         </Table.Body>
       </Table>
