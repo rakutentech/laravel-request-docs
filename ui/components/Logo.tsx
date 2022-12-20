@@ -1,8 +1,5 @@
 import React from "react"
 import { Quicksand, Antonio } from "@next/font/google"
-import Image from "next/image"
-
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH
 
 const brandFont = Quicksand({ subsets: ["latin"] })
 const logoFont = Antonio({ subsets: ["latin"] })

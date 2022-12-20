@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState, useSyncExternalStore } from "react"
+import React, { useEffect, useState } from "react"
 import Table from "./Table"
 import { TrashIcon, NoSymbolIcon } from "@heroicons/react/24/outline"
 
@@ -19,40 +19,38 @@ interface AddKeyValueFormProps {
 
 function AddKeyValueForm(props: AddKeyValueFormProps) {
   const { data, intent, onChange } = props
-  const [key, setKey] = useState(data?.key || "")
-  const [value, setValue] = useState(data?.value || "")
-
+  const [keyValueData, setKeyValueData] = useState(data as IKeyValueParams)
+  useEffect(() => {
+    console.log("AddKeyValueForm mount")
+    setKeyValueData(data as IKeyValueParams)
+  }, [data])
   return (
     <Table.Row className="divide-x divide-base-content/20">
       <td className="border-b-0">
         <input
           type="text"
-          value={key}
+          value={keyValueData?.key}
           name={`${intent}_key`}
-          className="w-full h-full pl-4 py-2 focus:ring-2"
+          className="w-full h-full pl-4 py-2 focus:ring-2 bg-transparent"
           placeholder="Key"
-          onChange={(e) => setKey(e.target.value)}
+          onChange={(e) => setKeyValueData({ ...keyValueData, key: e.target.value })}
           onBlur={(e) => {
-            console.log("onBlur Key", e.target.value, key, data)
-            onChange({
-              ...(data || {}) as IKeyValueParams, key: key
-            })
+            console.log("onBlur Key", e.target.value, keyValueData)
+            onChange(keyValueData)
           }}
         />
       </td>
       <td className="border-b-0">
         <input
           type="text"
-          value={value}
+          value={keyValueData?.value}
           name={`${intent}_value`}
-          className="w-full h-full pl-4 py-2 focus:ring-2"
+          className="w-full h-full pl-4 py-2 focus:ring-2 bg-transparent"
           placeholder="Value"
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(e) => setKeyValueData({ ...keyValueData, value: e.target.value })}
           onBlur={(e) => {
-            console.log("onBlur Value", e.target.value, value, data)
-            onChange({
-              ...(data || {}) as IKeyValueParams, value: e.target.value
-            })
+            console.log("onBlur Value", e.target.value, keyValueData)
+            onChange(keyValueData)
           }}
         />
       </td>
@@ -61,7 +59,14 @@ function AddKeyValueForm(props: AddKeyValueFormProps) {
           <span className="sr-only">Disable</span>
           <NoSymbolIcon className="h-5 w-5" aria-hidden="true" />
         </button>
-        <button type="button" className="flex p-2 items-center justify-center">
+        <button
+          type="button"
+          className="flex p-2 items-center justify-center"
+          onClick={() => {
+            console.log("Delete")
+
+          }}
+        >
           <span className="sr-only">Delete</span>
           <TrashIcon className="h-5 w-5" aria-hidden="true" />
         </button>
@@ -87,7 +92,6 @@ export default function KeyValueEditor(props: KeyValueEditorProps) {
   const { api, intent } = props
   const localStorageKey = getLocalStorageKey(api, intent)
   const [data, setData] = useState<IKeyValueParams[]>(getLocalStorageData(localStorageKey))
-
   return (
     <div className="overflow-hidden ring-1 ring-base-content/20 rounded-md">
       <Table className="w-full divide-y divide-base-content/20 text-xs">
@@ -112,10 +116,10 @@ export default function KeyValueEditor(props: KeyValueEditorProps) {
           })
           }
           <AddKeyValueForm intent={intent} onChange={(val) => {
-            console.log("AddKeyValueForm onChange", val)
             if (!val.key || !val.value) return
             const newData = [...data, val]
             setData(newData)
+            console.log("AddKeyValueForm onChange", val)
             localStorage.setItem(localStorageKey, JSON.stringify(newData))
           }} />
         </Table.Body>
