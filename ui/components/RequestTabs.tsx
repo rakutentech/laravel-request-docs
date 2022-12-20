@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
+import RequestHeaders from "./RequestHeaders";
 
 interface RequestTabsProps {
   item: IAPIInfo;
@@ -8,16 +9,20 @@ interface RequestTabsProps {
 
 const getTabs = (method: string) => {
   const res = [
-    { name: "Header", href: "#", default: false },
+    { name: "Headers", href: "#", default: false },
+    { name: "Params", href: "#", default: false },
+    { name: "Body", href: "#", default: false },
   ]
   switch (method) {
     case "POST":
     case "PUT":
     case "PATCH":
-      res.push({ name: "Body", href: "#", default: true })
+      // res.push({ name: "Body", href: "#", default: true })
+      res[res.findIndex((r) => r.name === "Body")].default = true
       break
     default:
-      res.push({ name: "Param", href: "#", default: true })
+      // res.push({ name: "Param", href: "#", default: true })
+      res[res.findIndex((r) => r.name === "Params")].default = true
       break
   }
   return res
@@ -71,6 +76,17 @@ export default function RequestTabs({ item }: RequestTabsProps) {
             ))}
           </nav>
         </div>
+      </div>
+      <div>
+        {activeTab === "Headers" && (
+          <RequestHeaders api={item} />
+        )}
+        {activeTab === "Params" && (
+          <RequestHeaders api={item} />
+        )}
+        {activeTab === "Body" && (
+          <RequestHeaders api={item} />
+        )}
       </div>
     </div>
   )

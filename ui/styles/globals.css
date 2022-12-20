@@ -35,4 +35,7 @@
   .markdown-doc pre:has(code) code {
     @apply bg-transparent;
   }
+  .monaco-editor {
+    @apply font-mono;
+  }
 }

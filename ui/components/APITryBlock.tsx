@@ -6,6 +6,7 @@ import { EyeDropperIcon } from "@heroicons/react/24/outline"
 import { ChevronRightIcon } from "@heroicons/react/20/solid"
 import AddressBar from "./AddressBar"
 import RequestTabs from "./RequestTabs"
+import CodeEditor from "./CodeEditor"
 
 interface APITryBlockProps {
   item: IAPIInfo;
