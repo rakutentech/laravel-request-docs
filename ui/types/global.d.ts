@@ -17,7 +17,8 @@ interface IAPIRule {
 interface IKeyValueParams {
   key: string;
   value: string;
-  disabled: boolean;
+  disabled?: boolean;
+  deleted?: boolean;
 }
 
 interface IAPISettings {

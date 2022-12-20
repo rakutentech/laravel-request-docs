@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react"
 import Table from "./Table"
 import { TrashIcon, NoSymbolIcon } from "@heroicons/react/24/outline"
+import { classNames } from "../utils/utils"
 
 type Intent = "Headers" | "Params" | "Body"
 
@@ -15,32 +16,42 @@ interface AddKeyValueFormProps {
   data?: IKeyValueParams;
   setData?: (data: IKeyValueParams) => void;
   intent: Intent;
-  onChange: (data: IKeyValueParams, setKeyValueData: (data: IKeyValueParams) => void) => void;
+  className?: string;
+  onChange: (
+    data: IKeyValueParams,
+    setKeyValueData?: (data: IKeyValueParams) => void,
+  ) => void;
+  newRow?: boolean;
 }
 
 const initialKeyValueData: IKeyValueParams = {
   key: "",
   value: "",
   disabled: false,
+  deleted: false,
 }
 
 function AddKeyValueForm(props: AddKeyValueFormProps) {
-  const { data, intent, onChange } = props
-  const [keyValueData, setKeyValueData] = useState(data as IKeyValueParams)
+  const { data, intent, onChange, newRow, className } = props
+  const [keyValueData, setKeyValueData] = useState(data || initialKeyValueData)
   return (
-    <Table.Row className="divide-x divide-base-content/20">
+    <Table.Row className={classNames("divide-x divide-base-content/20", className || "")}>
       <td className="border-b-0">
         <input
           type="text"
           value={keyValueData?.key}
           name={`${intent}_key`}
-          className="w-full h-full pl-4 py-2 focus:ring-2 bg-transparent"
+          className={classNames(
+            "w-full h-full pl-4 py-2 focus:ring-2 bg-transparent",
+            keyValueData?.disabled ? "text-base-content/40" : "",
+          )}
           placeholder="Key"
           onChange={(e) => setKeyValueData({ ...keyValueData, key: e.target.value })}
           onBlur={(e) => {
             console.log("onBlur Key", e.target.value, keyValueData)
             onChange(keyValueData, setKeyValueData)
           }}
+          disabled={keyValueData?.disabled}
         />
       </td>
       <td className="border-b-0">
@@ -48,31 +59,48 @@ function AddKeyValueForm(props: AddKeyValueFormProps) {
           type="text"
           value={keyValueData?.value}
           name={`${intent}_value`}
-          className="w-full h-full pl-4 py-2 focus:ring-2 bg-transparent"
+          className={classNames(
+            "w-full h-full pl-4 py-2 focus:ring-2 bg-transparent",
+            keyValueData?.disabled ? "text-base-content/40" : "",
+          )}
           placeholder="Value"
           onChange={(e) => setKeyValueData({ ...keyValueData, value: e.target.value })}
           onBlur={(e) => {
             console.log("onBlur Value", e.target.value, keyValueData)
             onChange(keyValueData, setKeyValueData)
           }}
+          disabled={keyValueData?.disabled}
         />
       </td>
-      <td className="border-b-0 px-2 w-fit flex">
-        <button type="button" className="flex p-2 items-center justify-center">
-          <span className="sr-only">Disable</span>
-          <NoSymbolIcon className="h-5 w-5" aria-hidden="true" />
-        </button>
-        <button
-          type="button"
-          className="flex p-2 items-center justify-center"
-          onClick={() => {
-            console.log("Delete")
-
-          }}
-        >
-          <span className="sr-only">Delete</span>
-          <TrashIcon className="h-5 w-5" aria-hidden="true" />
-        </button>
+      <td className="border-b-0 px-2 w-fit h-8 flex">
+        {!newRow && (// Disable and Delete buttons are not shown for new row
+          <>
+            <button
+              type="button"
+              className="flex p-2 items-center justify-center"
+              onClick={() => {
+                console.log("Disable before setting", { ...keyValueData, disabled: true })
+                setKeyValueData({ ...keyValueData, disabled: true })
+                console.log("Disable", keyValueData)
+                onChange({ ...keyValueData, disabled: true }, setKeyValueData)
+              }}
+            >
+              <span className="sr-only">Disable</span>
+              <NoSymbolIcon className="h-5 w-5" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              className="flex p-2 items-center justify-center"
+              onClick={() => {
+                setKeyValueData({ ...keyValueData, deleted: true })
+                onChange({ ...keyValueData, deleted: true }, setKeyValueData)
+              }}
+            >
+              <span className="sr-only">Delete</span>
+              <TrashIcon className="h-5 w-5" aria-hidden="true" />
+            </button>
+          </>
+        )}
       </td>
     </Table.Row>
   )
@@ -98,33 +126,40 @@ export default function KeyValueEditor(props: KeyValueEditorProps) {
 
   return (
     <div className="overflow-hidden ring-1 ring-base-content/20 rounded-md">
-      <Table className="w-full divide-y divide-base-content/20 text-xs">
-        <Table.Head className="bg-base-content/5">
+      <Table className="w-full divide-y divide-base-content/20 text-xs auto">
+        <Table.Head className="bg-base-content/10">
           <Table.Row className="divide-x divide-base-content/20">
             <Table.HeadCell className="text-left px-4 uppercase text-base-content/75">Key</Table.HeadCell>
             <Table.HeadCell className="text-left px-4 uppercase text-base-content/75">Value</Table.HeadCell>
-            <Table.HeadCell className="text-left px-4 uppercase text-base-content/75 w-fit">Actions</Table.HeadCell>
+            <Table.HeadCell className="text-left px-4 uppercase text-base-content/75 w-0">Actions</Table.HeadCell>
           </Table.Row>
         </Table.Head>
         <Table.Body className="divide-y divide-base-content/20">
-          {data?.map((item, index) => {
-            return (
-              <AddKeyValueForm key={index} data={item} intent={intent} onChange={(val) => {
-                const newData = [...data]
+          {data.map((item, index) => (
+            <AddKeyValueForm
+              key={index}
+              data={item}
+              intent={intent}
+              className={classNames(item.deleted ? "hidden" : "")}
+              onChange={(val, setChildData) => {
+                let newData = [...data]
+                if (JSON.stringify(newData) === JSON.stringify(val)) return
                 newData[index] = val
-                setData(newData)
+                if (val.deleted) {
+                  localStorage.setItem(localStorageKey, JSON.stringify(newData.filter((_, i) => i !== index)))
+                  setData(newData)
+                  return
+                }
                 localStorage.setItem(localStorageKey, JSON.stringify(newData))
-              }} />
-
-            )
-          })
-          }
-          <AddKeyValueForm data={initialKeyValueData} intent={intent} onChange={(val, setChildData) => {
+                setData(newData)
+              }} />)
+          )}
+          <AddKeyValueForm newRow data={initialKeyValueData} intent={intent} onChange={(val, setChildData) => {
             if (!val.key || !val.value) return
             const newData = [...data, val]
             setData(newData)
             localStorage.setItem(localStorageKey, JSON.stringify(newData))
-            setChildData({ key: "", value: "" } as IKeyValueParams)
+            if (setChildData) setChildData(initialKeyValueData)
           }} />
         </Table.Body>
       </Table>
