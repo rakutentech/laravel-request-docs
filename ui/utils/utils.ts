@@ -10,8 +10,12 @@ export function getLocalStorageKey(api: IAPIInfo, intent: RequestIntent) {
 
 export function getLocalStorageJSONData(key: string) {
   const localStorageData = localStorage.getItem(key)
-  if (localStorageData) {
-    return JSON.parse(localStorageData)
+  if (localStorageData && localStorageData !== "undefined") {
+    try {
+      return JSON.parse(localStorageData)
+    } catch (e) {
+      console.error(e)
+    }
   }
   return undefined
 }

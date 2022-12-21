@@ -6,15 +6,11 @@ import { EyeDropperIcon } from "@heroicons/react/24/outline"
 import { ChevronRightIcon } from "@heroicons/react/20/solid"
 import AddressBar from "./AddressBar"
 import RequestTabs from "./RequestTabs"
-import CodeEditor from "./CodeEditor"
+import { classNames } from "../utils/utils"
 
 interface APITryBlockProps {
   item: IAPIInfo;
   baseURL: string;
-}
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ")
 }
 
 export default function APITryBlock({ item, baseURL }: APITryBlockProps) {
@@ -25,18 +21,18 @@ export default function APITryBlock({ item, baseURL }: APITryBlockProps) {
         <Disclosure>
           {({ open }) => (
             <>
-              <Disclosure.Button className={classNames("flex w-full items-center justify-between px-4 py-2 bg-base-content/5", 
+              <Disclosure.Button className={classNames("flex w-full items-center justify-between px-4 py-2 bg-base-content/10",
                 "hover:bg-primary/10 rounded-md text-left text-base-content group/try")}>
                 <h4 className={classNames(
-                  open ? "font-semibold" : "",
+                  open ? "font-bold" : "",
                   "flex items-center space-x-2 text-base group-hover/try:text-primary"
                 )}>
                   <EyeDropperIcon className="h-4 w-4" />
                   <span>Try</span>
                 </h4>
                 <ChevronRightIcon
-                  className={`${open ? "rotate-90 transform" : ""
-                    } h-5 w-5 text-base-content/50 group-hover/try:text-primary`}
+                  className={classNames(open ? "rotate-90 transform" : "",
+                    "h-5 w-5 text-base-content/50 group-hover/try:text-primary")}
                 />
               </Disclosure.Button>
               <Transition

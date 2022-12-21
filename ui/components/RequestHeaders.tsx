@@ -14,7 +14,7 @@ export default function RequestHeaders({ api }: { api: IAPIInfo }) {
     getLocalStorageJSONData(localStorageKey)
   )
   const value = useMemo(() => {
-    const raw = JSON.parse(JSON.stringify(code))
+    const raw = JSON.parse(JSON.stringify(code || []))
     return JSON.stringify(
       raw.filter((item: IKeyValueParams) => !item.deleted && !item.disabled)
         .reduce((acc: any, item: IKeyValueParams) => ({ ...acc, ...{[item.key]: item.value }}), { }),
@@ -33,7 +33,7 @@ export default function RequestHeaders({ api }: { api: IAPIInfo }) {
     }
     let newValue = [] as IKeyValueParams[]
     setCode((prevState: IKeyValueParams[]) => {
-      const keySet = new Set([...Object.keys(raw), ...prevState.map((item) => item.key)])
+      const keySet = new Set([...Object.keys(raw), ...(prevState?.map((item) => item.key) || [])])
       newValue = Array.from(keySet).reduce<IKeyValueParams[]>((acc: any, item: string) => {
         const temp = acc || []
         const prevStateItem = prevState.find((i) => i.key === item)
@@ -50,7 +50,7 @@ export default function RequestHeaders({ api }: { api: IAPIInfo }) {
   }
 
   useEffect(() => {
-    localStorage.setItem(localStorageKey, JSON.stringify(code))
+    localStorage.setItem(localStorageKey, JSON.stringify(code || []))
   }, [code, localStorageKey])
 
   return (

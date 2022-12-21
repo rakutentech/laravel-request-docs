@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from "react"
 import Table from "./Table"
 import { TrashIcon, NoSymbolIcon } from "@heroicons/react/24/outline"
-import { classNames } from "../utils/utils"
+import { classNames, getLocalStorageJSONData } from "../utils/utils"
+import SwitchButton from "./ui/Switch"
 
 type Intent = "Headers" | "Params" | "Body"
 
@@ -72,25 +73,21 @@ function AddKeyValueForm(props: AddKeyValueFormProps) {
           disabled={keyValueData?.disabled}
         />
       </td>
-      <td className="border-b-0 px-2 w-fit h-8 flex">
+      <td className="border-b-0 px-2 pt-1 w-fit h-8 flex items-center">
         {!newRow && (// Disable and Delete buttons are not shown for new row
           <>
-            <button
-              type="button"
-              className="flex p-2 items-center justify-center"
-              onClick={() => {
-                console.log("Disable before setting", { ...keyValueData, disabled: true })
-                setKeyValueData({ ...keyValueData, disabled: true })
-                console.log("Disable", keyValueData)
-                onChange({ ...keyValueData, disabled: true }, setKeyValueData)
+            <SwitchButton
+              checked={!keyValueData?.disabled}
+              onChange={(enabled) => {
+                console.log("Switch", enabled)
+                setKeyValueData({ ...keyValueData, disabled: !enabled })
+                onChange({ ...keyValueData, disabled: !enabled }, setKeyValueData)
               }}
-            >
-              <span className="sr-only">Disable</span>
-              <NoSymbolIcon className="h-5 w-5" aria-hidden="true" />
-            </button>
+              label={keyValueData?.disabled ? "Enable" : "Disable"}
+            />
             <button
               type="button"
-              className="flex p-2 items-center justify-center"
+              className="flex p-2 items-center justify-center hover:text-primary focus:text-primary"
               onClick={() => {
                 setKeyValueData({ ...keyValueData, deleted: true })
                 onChange({ ...keyValueData, deleted: true }, setKeyValueData)
@@ -110,19 +107,13 @@ const getLocalStorageKey = (api: IAPIInfo, intent: Intent) => {
   return `__lrd_${api.httpMethod}_${api.uri}_${intent}`
 }
 
-const getLocalStorageData = (key: string): IKeyValueParams[] => {
-  const localStorageData = localStorage.getItem(key)
-  if (localStorageData) {
-    return JSON.parse(localStorageData)
-  }
-  return []
-}
+
 
 
 export default function KeyValueEditor(props: KeyValueEditorProps) {
   const { api, intent } = props
   const localStorageKey = getLocalStorageKey(api, intent)
-  const [data, setData] = useState<IKeyValueParams[]>(getLocalStorageData(localStorageKey))
+  const [data, setData] = useState<IKeyValueParams[]>(getLocalStorageJSONData(localStorageKey) || [])
 
   return (
     <div className="overflow-hidden ring-1 ring-base-content/20 rounded-md">
