@@ -1,22 +1,20 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
-import Table from "./Table"
-import { TrashIcon, NoSymbolIcon } from "@heroicons/react/24/outline"
-import { classNames, getLocalStorageJSONData } from "../utils/utils"
+import React, { useState } from "react"
+import Table from "./ui/Table"
+import { TrashIcon } from "@heroicons/react/24/outline"
+import { classNames } from "@/utils/utils"
 import SwitchButton from "./ui/Switch"
 
-type Intent = "Headers" | "Params" | "Body"
-
 interface KeyValueEditorProps {
-  api: IAPIInfo;
-  intent: Intent;
+  className?: string;
+  value: IKeyValueParams[];
+  onChange: (value: IKeyValueParams[]) => void;
 }
 
 interface AddKeyValueFormProps {
   data?: IKeyValueParams;
   setData?: (data: IKeyValueParams) => void;
-  intent: Intent;
   className?: string;
   onChange: (
     data: IKeyValueParams,
@@ -33,15 +31,19 @@ const initialKeyValueData: IKeyValueParams = {
 }
 
 function AddKeyValueForm(props: AddKeyValueFormProps) {
-  const { data, intent, onChange, newRow, className } = props
+  const { data, onChange, newRow, className } = props
   const [keyValueData, setKeyValueData] = useState(data || initialKeyValueData)
+
   return (
     <Table.Row className={classNames("divide-x divide-base-content/20", className || "")}>
       <td className="border-b-0">
+        {/** TODO:  
+           * Support using keyboard to navigate between rows
+          */}
         <input
           type="text"
           value={keyValueData?.key}
-          name={`${intent}_key`}
+          name={"key" + (newRow ? "_new" : "")}
           className={classNames(
             "w-full h-full pl-4 py-2 focus:ring-2 bg-transparent",
             keyValueData?.disabled ? "text-base-content/40" : "",
@@ -59,7 +61,7 @@ function AddKeyValueForm(props: AddKeyValueFormProps) {
         <input
           type="text"
           value={keyValueData?.value}
-          name={`${intent}_value`}
+          name={"value" + (newRow ? "_new" : "")}
           className={classNames(
             "w-full h-full pl-4 py-2 focus:ring-2 bg-transparent",
             keyValueData?.disabled ? "text-base-content/40" : "",
@@ -73,7 +75,7 @@ function AddKeyValueForm(props: AddKeyValueFormProps) {
           disabled={keyValueData?.disabled}
         />
       </td>
-      <td className="border-b-0 px-2 pt-1 w-fit h-8 flex items-center">
+      <td className="border-b-0 px-2 w-fit h-[2.5rem] flex items-center">
         {!newRow && (// Disable and Delete buttons are not shown for new row
           <>
             <SwitchButton
@@ -87,7 +89,7 @@ function AddKeyValueForm(props: AddKeyValueFormProps) {
             />
             <button
               type="button"
-              className="flex p-2 items-center justify-center hover:text-primary focus:text-primary"
+              className="flex px-2 items-center justify-center hover:text-primary focus:text-primary"
               onClick={() => {
                 setKeyValueData({ ...keyValueData, deleted: true })
                 onChange({ ...keyValueData, deleted: true }, setKeyValueData)
@@ -103,53 +105,43 @@ function AddKeyValueForm(props: AddKeyValueFormProps) {
   )
 }
 
-const getLocalStorageKey = (api: IAPIInfo, intent: Intent) => {
-  return `__lrd_${api.httpMethod}_${api.uri}_${intent}`
-}
-
-
-
-
 export default function KeyValueEditor(props: KeyValueEditorProps) {
-  const { api, intent } = props
-  const localStorageKey = getLocalStorageKey(api, intent)
-  const [data, setData] = useState<IKeyValueParams[]>(getLocalStorageJSONData(localStorageKey) || [])
-
+  const { value: data, onChange: setData } = props
+  const headCellClass = "sticky bg-base-content/10 backdrop-blur-2xl backdrop-filter top-0 z-10 text-left px-4 uppercase text-base-content/75"
   return (
-    <div className="overflow-hidden ring-1 ring-base-content/20 rounded-md">
+    <div className={classNames(
+      props.className || "",
+      "ring-1 ring-base-content/20"
+    )}>
       <Table className="w-full divide-y divide-base-content/20 text-sm auto">
-        <Table.Head className="bg-base-content/10 text-xs">
-          <Table.Row className="divide-x divide-base-content/20">
-            <Table.HeadCell className="text-left px-4 uppercase text-base-content/75">Key</Table.HeadCell>
-            <Table.HeadCell className="text-left px-4 uppercase text-base-content/75">Value</Table.HeadCell>
-            <Table.HeadCell className="text-left px-4 uppercase text-base-content/75 w-0">Actions</Table.HeadCell>
+        <Table.Head className="text-xs">
+          <Table.Row>
+            <Table.HeadCell className={classNames(headCellClass, "rounded-tl-md")}>Key</Table.HeadCell>
+            <Table.HeadCell className={headCellClass}>Value</Table.HeadCell>
+            <Table.HeadCell className={classNames(headCellClass, "w-0 rounded-tr-md")}>Actions</Table.HeadCell>
           </Table.Row>
         </Table.Head>
         <Table.Body className="divide-y divide-base-content/20">
-          {data.map((item, index) => (
+          {data?.map((item, index) => (
             <AddKeyValueForm
               key={index}
               data={item}
-              intent={intent}
               className={classNames(item.deleted ? "hidden" : "")}
-              onChange={(val, setChildData) => {
+              onChange={(val, _) => {
                 let newData = [...data]
                 if (JSON.stringify(newData) === JSON.stringify(val)) return
                 newData[index] = val
-                if (val.deleted) {
-                  localStorage.setItem(localStorageKey, JSON.stringify(newData.filter((_, i) => i !== index)))
-                  setData(newData)
-                  return
-                }
-                localStorage.setItem(localStorageKey, JSON.stringify(newData))
                 setData(newData)
               }} />)
           )}
-          <AddKeyValueForm newRow data={initialKeyValueData} intent={intent} onChange={(val, setChildData) => {
-            if (!val.key || !val.value) return
-            const newData = [...data, val]
+          {/** TODO:  
+           * Change tab action on Key input when adding a new row
+           * Currently tab is jumping
+          */}
+          <AddKeyValueForm newRow data={initialKeyValueData} onChange={(val, setChildData) => {
+            if (!val.key && !val.value) return
+            const newData = [...(data || []), { key: val.key || "", value: val.value || "" }]
             setData(newData)
-            localStorage.setItem(localStorageKey, JSON.stringify(newData))
             if (setChildData) setChildData(initialKeyValueData)
           }} />
         </Table.Body>

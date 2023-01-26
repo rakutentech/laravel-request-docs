@@ -1,7 +1,7 @@
 import React from "react"
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/outline"
 
-import Table from "./Table"
+import Table from "./ui/Table"
 
 export interface APIParamTableProps {
   params: IAPIRule;

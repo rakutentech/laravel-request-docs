@@ -1,7 +1,7 @@
 "use client"
 
-import React, { createContext, ReducerAction } from "react"
-import { getTheme, ITheme, saveTheme, setTheme } from "../utils/themes"
+import React, { createContext } from "react"
+import { getTheme, ITheme, saveTheme, setTheme } from "@/utils/themes"
 
 const initialState = {
   theme: getTheme(),

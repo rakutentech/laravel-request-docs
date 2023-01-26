@@ -1,7 +1,9 @@
 "use client"
 
 import React, { useState } from "react"
-import RequestHeaders from "./RequestHeaders";
+import RequestHeaders from "./RequestHeaders"
+import RequestBody from "./RequestBody"
+import RequestParams from "./RequestParams"
 
 interface RequestTabsProps {
   item: IAPIInfo;
@@ -82,10 +84,10 @@ export default function RequestTabs({ item }: RequestTabsProps) {
           <RequestHeaders api={item} />
         )}
         {activeTab === "Params" && (
-          <RequestHeaders api={item} />
+          <RequestParams api={item} />
         )}
         {activeTab === "Body" && (
-          <RequestHeaders api={item} />
+          <RequestBody api={item} />
         )}
       </div>
     </div>

@@ -2,7 +2,7 @@
 
 import React, { RefObject, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { getAPIInfoId } from "../utils/utils"
+import { getAPIInfoId } from "@/utils/utils"
 import APIDocBlock from "./APIDocBlock"
 import APIParamTable from "./APIParamTable"
 import APIRefTable from "./APIRefTable"
@@ -48,7 +48,7 @@ export default function APICard({ item, activeItemID, setActiveItemID, refs, bas
     const observer = new IntersectionObserver(
         handleIntersection,
         observerConfig)
-    if(!!refs[elementID].current) observer.observe(refs[elementID].current)
+    if(refs[elementID].current) observer.observe(refs[elementID].current as HTMLElement)
     return () => observer.disconnect() // Cleanup the observer if  component unmount.
   }, [activeItemID, elementID, refs, setActiveItemID])
 

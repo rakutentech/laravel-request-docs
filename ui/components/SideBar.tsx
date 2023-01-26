@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { getAPIInfoId } from "../utils/utils"
+import { getAPIInfoId } from "@/utils/utils"
 
 interface Props {
   children?: React.ReactNode;

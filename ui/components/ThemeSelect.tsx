@@ -5,8 +5,8 @@ import { Popover, Transition } from "@headlessui/react"
 import { SwatchIcon } from "@heroicons/react/24/outline"
 import { ChevronDownIcon } from "@heroicons/react/20/solid"
 import { GlobalStateContext } from "./GlobalState"
-import { classNames } from "../utils/utils"
-import { setTheme, themes } from "../utils/themes"
+import { classNames } from "@/utils/utils"
+import { setTheme, themes } from "@/utils/themes"
 import { useMonaco } from "@monaco-editor/react"
 
 export default function ThemeSelect() {

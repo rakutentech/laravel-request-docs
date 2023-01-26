@@ -27,7 +27,7 @@ function useAPIInfoData(): IAPIInfo[] {
   return apiInfoData
 }
 
-export default function Home() {
+export default function Index() {
   const data = useAPIInfoData()
   const [activeItemID, setActiveItemID] = useState(getAPIInfoId(data[0]))
   const baseURL = process.env.NEXT_PUBLIC_BASE_URL ||

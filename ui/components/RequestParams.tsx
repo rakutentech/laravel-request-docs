@@ -9,7 +9,7 @@ import KeyValueEditor from "./KeyValueEditor"
 const tabs = ["Key-Value Edit", "Bulk Edit"]
 
 export default function RequestHeaders({ api }: { api: IAPIInfo }) {
-  const localStorageKey = getLocalStorageKey(api, "Headers")
+  const localStorageKey = getLocalStorageKey(api, "Params")
   const [code, setCode] = React.useState<IKeyValueParams[]>(
     getLocalStorageJSONData(localStorageKey)
   )
