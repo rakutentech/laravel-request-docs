@@ -38,10 +38,10 @@ Read more: https://medium.com/web-developer/laravel-automatically-generate-api-d
 
 ## Requirements
 
-| Lang    | Versions          |
-| :------ | :---------------- |
-| PHP     | 7.4 or 8.0 or 8.1 |
-| Laravel | 6.* or 8.* or 9.* |
+| Lang    | Versions                  |
+| :------ |:--------------------------|
+| PHP     | 7.4 or 8.0 or 8.1 or 8.2  |
+| Laravel | 6.* or 8.* or 9.* or 10.* |
 
 # Installation
 
