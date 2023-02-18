@@ -4,41 +4,15 @@ return [
     // change it to true will make lrd to throw exception if rules in request class need to be changed
     // keep it false
     'debug' => false,
-    'document_name' => 'LRD',
 
     /*
-    * Route where request docs will be served from
+    * Route where request docs will be served from laravel app.
     * localhost:8080/request-docs
     */
     'url' => 'request-docs',
     'middlewares' => [
-        //Example
-        // \App\Http\Middleware\NotFoundWhenProduction::class,
+        // \Rakutentech\LaravelRequestDocs\NotFoundWhenProduction::class,
     ],
-
-    /*
-    * Default headers shown on the request headers editor
-    */
-    'default_request_headers' => [
-        'Accept' => 'application/json',
-        'X-CSRF-TOKEN' => '',
-        'Authorization' => 'Bearer',
-    ],
-
-    /*
-    * Show development relevant metadata on endpoints
-    */
-    'show_development_metadata' => true,
-
-    /**
-     * Path to to static HTML if using command line.
-     */
-    'docs_path' => base_path('docs/request-docs/'),
-
-    /**
-     * Sorting route by and there is two types default(route methods), route_names.
-     */
-    'sort_by' => 'route_names',
 
     //Use only routes where ->uri start with next string Using Str::startWith( . e.g. - /api/mobile
     'only_route_uri_start_with' => '',
@@ -53,12 +27,19 @@ return [
         '#^_tt#',
     ],
 
+    'hide_meta_data' => false,
+
+    // https://github.com/rakutentech/laravel-request-docs/pull/92
+    // When rules are put in other method than rules()
     'request_methods' => [
         'rules',
         'onCreate',
         'onUpdate',
     ],
 
+    // No need to touch below
+    // open api config
+    // used to generate open api json
     'open_api' => [
         // default version that this library provides
         'version' => '3.0.0',
