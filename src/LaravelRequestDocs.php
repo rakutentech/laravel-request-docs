@@ -200,7 +200,12 @@ class LaravelRequestDocs
                 if (!$param->getType()) {
                     continue;
                 }
-                $requestClassName = $param->getType()->getName();
+                if (class_exists(ReflectionUnionType::class) && $paramType instanceof ReflectionUnionType) {
+                    $requestClassName = $param->getName();
+                } else {
+                    $requestClassName = $param->getType()->getName();
+                }
+
                 $requestClass = null;
                 try {
                     $reflection = new ReflectionClass($requestClassName);
