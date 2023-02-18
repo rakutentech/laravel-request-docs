@@ -21,10 +21,10 @@ class WelcomeController
     }
 
     /**
-     * @QAparam search_string string
-     * @QAparam search_array array
-     * @QAparam search_integer integer
-     * @QAparam search_boolean boolean
+     * @LRDparam search_string string
+     * @LRDparam search_array array
+     * @LRDparam search_integer integer
+     * @LRDparam search_boolean boolean
      */
     public function edit(WelcomeEditRequest $request)
     {

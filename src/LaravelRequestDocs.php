@@ -38,6 +38,9 @@ class LaravelRequestDocs
 
     public function sortDocs(array $docs, $sortBy = 'default'): array
     {
+        if ($sortBy === 'default') {
+            return $docs;
+        }
         if ($sortBy === 'route_names') {
             sort($docs);
             return $docs;
@@ -49,17 +52,77 @@ class LaravelRequestDocs
             'PUT',
             'PATCH',
             'DELETE',
+            'HEAD',
         ];
         foreach ($methods as $method) {
             foreach ($docs as $key => $doc) {
                 if (in_array($method, $doc['methods'])) {
                     if (!in_array($doc, $sorted)) {
+                        $doc['methods'] = [$method];
                         $sorted[] = $doc;
                     }
                 }
             }
         }
         return $sorted;
+    }
+
+    public function filterByMethods($docs, $get, $post, $put, $path, $delete, $head)
+    {
+        $filtered = [];
+        foreach ($docs as $key => $doc) {
+            if ($get && in_array('GET', $doc['methods'])) {
+                $_doc = $doc;
+                $_doc['methods'] = ['GET'];
+                $filtered[] = $_doc;
+            }
+        }
+        foreach ($docs as $key => $doc) {
+            if ($post && in_array('POST', $doc['methods'])) {
+                $_doc = $doc;
+                $_doc['methods'] = ['POST'];
+                $filtered[] = $_doc;
+            }
+        }
+        foreach ($docs as $key => $doc) {
+            if ($put && in_array('PUT', $doc['methods'])) {
+                $_doc = $doc;
+                $_doc['methods'] = ['PUT'];
+                $filtered[] = $_doc;
+            }
+        }
+        foreach ($docs as $key => $doc) {
+            if ($path && in_array('PATCH', $doc['methods'])) {
+                $_doc = $doc;
+                $_doc['methods'] = ['PATCH'];
+                $filtered[] = $_doc;
+            }
+        }
+        foreach ($docs as $key => $doc) {
+            if ($delete && in_array('DELETE', $doc['methods'])) {
+                $_doc = $doc;
+                $_doc['methods'] = ['DELETE'];
+                $filtered[] = $_doc;
+            }
+        }
+        foreach ($docs as $key => $doc) {
+            if ($head && in_array('HEAD', $doc['methods'])) {
+                $_doc = $doc;
+                $_doc['methods'] = ['HEAD'];
+                $filtered[] = $_doc;
+            }
+        }
+
+        return $filtered;
+    }
+
+    public function groupDocs($docs, $group = 'default')
+    {
+        if ($group == 'default') {
+            return $docs;
+        }
+        $grouped = [];//unimplemented
+        return $docs;  //unimplemented, returning as it is
     }
 
     public function getControllersInfo(): array
@@ -99,13 +162,13 @@ class LaravelRequestDocs
                 $controllersInfo[] = [
                     'uri'                   => $route->uri,
                     'methods'               => $route->methods,
-                    'middlewares'           => $middlewares,
-                    'controller'            => $controllerName,
-                    'controller_full_path'  => $controllerFullPath,
-                    'method'                => $method,
+                    'middlewares'           => config('request-docs.hide_meta_data') ? [] : $middlewares,
+                    'controller'            => config('request-docs.hide_meta_data') ? '' : $controllerName,
+                    'controller_full_path'  => config('request-docs.hide_meta_data') ? '' : $controllerFullPath,
+                    'method'                => config('request-docs.hide_meta_data') ? '' : $method,
                     'httpMethod'            => $httpMethod,
                     'rules'                 => [],
-                    'docBlock'              => ""
+                    'docBlock'              => "",
                 ];
             } catch (Exception $e) {
                 continue;
@@ -137,7 +200,12 @@ class LaravelRequestDocs
                 if (!$param->getType()) {
                     continue;
                 }
-                $requestClassName = $param->getType()->getName();
+                if (class_exists(ReflectionUnionType::class) && $paramType instanceof ReflectionUnionType) {
+                    $requestClassName = $param->getName();
+                } else {
+                    $requestClassName = $param->getType()->getName();
+                }
+
                 $requestClass = null;
                 try {
                     $reflection = new ReflectionClass($requestClassName);
@@ -218,6 +286,11 @@ class LaravelRequestDocs
         $rules = [];
 
         for ($i = $data->getStartLine() - 1; $i <= $data->getEndLine() - 1; $i++) {
+            // check if line is a comment
+            $trimmed = trim($lines[$i]);
+            if (Str::startsWith($trimmed, '//') || Str::startsWith($trimmed, '#')) {
+                continue;
+            }
             // check if => in string, only pick up rules that are coded on single line
             if (Str::contains($lines[$i], '=>')) {
                 preg_match_all("/(?:'|\").*?(?:'|\")/", $lines[$i], $matches);
@@ -250,8 +323,8 @@ class LaravelRequestDocs
         $params = [];
 
         foreach (explode("\n", $docComment) as $comment) {
-            if (Str::contains($comment, '@QAparam')) {
-                $comment = trim(Str::replace(['@QAparam', '*'], '', $comment));
+            if (Str::contains($comment, '@LRDparam')) {
+                $comment = trim(Str::replace(['@LRDparam', '*'], '', $comment));
 
                 $comment = explode(' ', $comment);
 

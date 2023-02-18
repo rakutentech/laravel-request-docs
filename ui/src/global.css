@@ -1,0 +1,85 @@
+@import "@fontsource/roboto";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    font-family: 'Roboto', sans-serif;
+}
+
+.ace_editor {
+    @apply rounded;
+}
+.ace_editor, .ace_text-input, .ace_editor div {
+    font-family: monospace !important;
+}
+
+.main-grid {
+    
+}
+.sidebar-wrapper {
+    @apply pt-10 bg-base-200;
+    position: relative;
+    width: 100%;
+    
+}
+aside {
+    @apply h-screen;
+    position: fixed;
+    overflow-y: scroll;
+    width: 30%;
+}
+
+aside > ul {
+    @apply menu menu-compact flex flex-col p-0 px-4;
+}
+
+aside > ui > li {
+    @apply menu-title uppercase font-bold text-sm tracking-wider pb-1;
+}
+
+.title {
+    @apply uppercase font-bold text-sm tracking-wider;
+}
+
+td {
+    overflow: scroll;
+}
+
+.table th.param-cell {
+    @apply font-normal;
+    @apply truncate;
+    border-left: 1px solid rgb(124, 124, 187);
+    padding-left: 0px;
+
+}
+.method-GET {
+    @apply text-info;
+}
+.method-POST {
+    @apply text-success;
+}
+.method-PUT {
+    @apply text-warning;
+}
+.method-DELETE {
+    @apply text-error;
+}
+.method-PATCH {
+    @apply text-warning;
+}
+.method-HEAD {
+    @apply text-info;
+}
+.badge-200 {
+    @apply bg-success;
+}
+.badge-422 {
+    @apply bg-warning;
+}
+.badge-400 {
+    @apply bg-error;
+}
+.badge-500 {
+    @apply bg-error;
+}

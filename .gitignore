@@ -13,3 +13,6 @@ node_modules
 .php-cs-fixer.cache
 .DS_Store
 _ide_helper.php
+./ui/.astro
+.parcel-cache
+.vscode

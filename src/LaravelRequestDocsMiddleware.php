@@ -6,10 +6,12 @@ use Closure;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Support\Facades\DB;
 use KitLoong\AppLogger\QueryLog\LogWriter as QueryLogger;
+use Log;
 
 class LaravelRequestDocsMiddleware extends QueryLogger
 {
     private array $queries = [];
+    private array $logs = [];
 
     public function handle($request, Closure $next)
     {
@@ -18,11 +20,20 @@ class LaravelRequestDocsMiddleware extends QueryLogger
         }
 
         $this->listenDB();
+        $this->listenToLogs();
         $response = $next($request);
+
+        try {
+            $response->getData();
+        } catch (\Exception $e) {
+            // not a json response
+            return $response;
+        }
 
         $content = $response->getData();
         $content->_lrd = [
             'queries' => $this->queries,
+            'logs' => $this->logs,
             'memory' => (string) round(memory_get_peak_usage(true) / 1048576, 2) . "MB",
         ];
         $jsonContent = json_encode($content);
@@ -44,6 +55,12 @@ class LaravelRequestDocsMiddleware extends QueryLogger
     {
         DB::listen(function (QueryExecuted $query) {
             $this->queries[] = $this->getMessages($query);
+        });
+    }
+    public function listenToLogs()
+    {
+        Log::listen(function ($message) {
+            $this->logs[] = $message;
         });
     }
 }

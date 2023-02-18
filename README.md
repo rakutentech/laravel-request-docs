@@ -1,9 +1,6 @@
-# MODERNIZATION OF UI RENEWAL is in PROGRESS https://github.com/rakutentech/laravel-request-docs/pull/103
-We request to have code freeze on new pull requests, and request to please submit issues with regards to the UI that we can cover in the new UI renewal.
-
 <p align="center">
   <a href="https://github.com/rakutentech/laravel-request-docs">
-    <img alt="Laravel Request Docs" src="https://imgur.com/9eDTUaI.png" width="360">
+    <img alt="Laravel Request Docs" src="https://imgur.com/2NvLKn2.png">
   </a>
 </p>
 
@@ -23,13 +20,18 @@ We request to have code freeze on new pull requests, and request to please submi
 
 ## Features
 
+- Light and Dark mode
+- Automatic rules fetching from injected Request and by regexp
 - Automatic routes fetching from Laravel Routes
-- Automatic rules fetching from injected Request
+- Support for Laravel logs
+- Support for SQL query and query time
+- Support for HTTP response time and memory consumption
 - Support for Authorization Headers
-- Support for SQL query, response time and memory consumption by request on Laravel
-- Intelligent auto request builder using ``faker.js``
 - Display extra documentation using markdown
+- Saves history previous requests
+- Added filters to sort, group and filter routes by methods, controllers, middlewares, routes (also see Roadmap 2.x)
 - Export laravel API, routes, rules and documentation to Postman and OpenAPI 3.0.0
+
 # Read on Medium
 
 Automatically generate api documentation for Laravel without writing annotations.
@@ -64,18 +66,6 @@ php artisan vendor:publish --tag=request-docs-config
 
 View in the browser on ``/request-docs/``
 
-Generate a static HTML and open api specification
-
-```php
-php artisan lrd:generate
-```
-
-Docs HTML is generated inside ``docs/``.
-
-## Just want Open API
-
-View in the browser on ``/request-docs/?openapi=true``
-
 # Design pattern
 
 In order for this plugin to work, you need to follow the design pattern by injecting the request class inside the controller.
@@ -85,25 +75,31 @@ For extra documentation you can use markdown inside your controller method as we
 
 # Screenshots
 
-**Generated API documentation**
+**Light and Dark Modes**
 
-![Preview](https://imgur.com/8DvBBhs.png)
+Light mode
+![Preview](https://imgur.com/2s1SrKm.png)
+
+Dark mode
+![Preview](https://imgur.com/76sk7Lq.png)
 
 **Try API**
 
-![Preview](https://imgur.com/kcKVSzm.png)
+Uses localstorage to save history of previous requests and request headers
+
+![Preview](https://imgur.com/q3d7pw2.png)
 
 **SQL query profile**
 
-![Preview](https://imgur.com/y8jT3jj.png)
+![Preview](https://imgur.com/8PLLlHv.png)
 
 **Response profile**
 
-![Preview](https://imgur.com/U0Je956.png)
+![Preview](https://imgur.com/fd09jw1.png)
 
-**Customize Headers**
+**Settings to sort, group and filter**
 
-![Preview](https://imgur.com/5ydtRd8.png)
+![Preview](https://imgur.com/qHq1pjr.png)
 
 
 # Extra
@@ -114,29 +110,22 @@ Example of using it in controller
 ```php
     /**
      * @lrd:start
-     * #Hello markdown
-     * ## Documentation for /my route
+     * Hello markdown
+     * ## Free text to write documentation in markdown
      * @lrd:end
      */
     public function index(MyIndexRequest $request): Resource
     {
 ```
 
-# Custom Params
+# Params not in rules
 
-You write extra params with rules with @QAparam comment line
-
-```php
-    /**
-     * @QAparam search string
-     */
-    public function index(MyIndexRequest $request): Resource
-    {
-```
+You write extra params with rules with @LRDparam in comment line as one line
 
 ```php
     /**
-     * @QAparam search string nullable max:32
+     * @LRDparam username string|max:32
+     * @LRDparam nickaname string|nullable|max:32
      */
     public function index(MyIndexRequest $request): Resource
     {
@@ -161,6 +150,12 @@ Fixing lints
 ./vendor/bin/php-cs-fixer fix config/
 ```
 
+# Roadmap for v2.x
+
+- [DONE] UI renewal
+- [WIP] Introduce groupby controller names, routes, middlewares
+- [WIP] Introduce fetch rules from PHP doc annotations
+
 # Changelog
 
 - Initial Release
@@ -179,5 +174,7 @@ Fixing lints
 - v1.22 Boolean|File|Image support
 - v1.23 Bug fix for lrd doc block #76
 - v1.27 A few fixes on width and added request_methods
-- v1.30 Minor search box filter added
+- v2.0 UI Renewal to React static
+    - @QAParam is now @LRDparam
+    - No special changes for users, upgrade to v2.x as usual
 

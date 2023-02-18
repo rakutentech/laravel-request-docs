@@ -1,0 +1,40 @@
+{
+  "name": "@example/basics",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "export": "rm -rf ../resources/dist && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "lint": "eslint \"src/**/*.{js,jsx,tsx}\"",
+    "lint:fix": "eslint \"src/**/*.{js,jsx,tsx}\" --fix"
+  },
+  "dependencies": {
+    "@astrojs/react": "^2.0.2",
+    "@fontsource/roboto": "^4.5.8",
+    "@heroicons/react": "^2.0.15",
+    "astro": "^2.0.6",
+    "react-ace": "^10.1.0",
+    "react-anchor-link-smooth-scroll": "^1.0.12",
+    "react-markdown": "^8.0.5",
+    "react-use-localstorage": "^3.5.3",
+    "remark-gfm": "^3.0.1",
+    "shortid": "^2.2.16"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.52.0",
+    "@typescript-eslint/parser": "^5.52.0",
+    "astro-compress": "1.1.29",
+    "autoprefixer": "^10.4.13",
+    "daisyui": "^2.50.0",
+    "eslint": "^8.34.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-react": "^7.32.2",
+    "postcss": "^8.4.21",
+    "tailwindcss": "^3.2.4"
+  }
+}

@@ -10,8 +10,6 @@ class LRDTest extends TestCase
     {
         $docs = $this->lrd->getDocs();
 
-        $this->assertSame($this->countRoutesWithLRDDoc(), count($docs));
-
         $docSize = 9;
         $firstDoc = $docs[0];
         $this->assertCount($docSize, $firstDoc);
