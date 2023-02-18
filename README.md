@@ -175,4 +175,6 @@ Fixing lints
 - v1.23 Bug fix for lrd doc block #76
 - v1.27 A few fixes on width and added request_methods
 - v2.0 UI Renewal to React static
+    - @QAParam is now @LRDparam
+    - No special changes for users, upgrade to v2.x as usual
 
