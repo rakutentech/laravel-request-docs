@@ -28,7 +28,7 @@
 - Support for HTTP response time and memory consumption
 - Support for Authorization Headers
 - Display extra documentation using markdown
-- Uses localstorage to save history of previous requests
+- Saves history previous requests
 - Added filters to sort, group and filter routes by methods, controllers, middlewares, routes (also see Roadmap 2.x)
 - Export laravel API, routes, rules and documentation to Postman and OpenAPI 3.0.0
 
