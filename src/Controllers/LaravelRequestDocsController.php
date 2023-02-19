@@ -55,12 +55,13 @@ class LaravelRequestDocsController extends Controller
             );
         }
 
-
         return response()->json(
             $docs,
             Response::HTTP_OK,
             [
-                'Content-type'=> 'application/json; charset=utf-8'
+                'Content-type'=> 'application/json; charset=utf-8',
+                'Cache-Control' => 'public, max-age=60',
+                'Expires' => gmdate('D, d M Y H:i:s \G\M\T', time() + 60),
             ],
             JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
         );
@@ -95,8 +96,8 @@ class LaravelRequestDocsController extends Controller
             }
 
             // set cache control headers
-            $headers['Cache-Control'] = 'public, max-age=31536000';
-            $headers['Expires'] = gmdate('D, d M Y H:i:s \G\M\T', time() + 31536000);
+            $headers['Cache-Control'] = 'public, max-age=1800';
+            $headers['Expires'] = gmdate('D, d M Y H:i:s \G\M\T', time() + 1800);
             return response()->file($path, $headers);
         }
         return response()->json(['error' => 'file not found'], 404);
