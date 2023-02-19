@@ -10,7 +10,7 @@ class LRDTest extends TestCase
     {
         $docs = $this->lrd->getDocs();
 
-        $docSize = 9;
+        $docSize = 10;
         $firstDoc = $docs[0];
         $this->assertCount($docSize, $firstDoc);
         $this->assertArrayHasKey('uri', $firstDoc);
