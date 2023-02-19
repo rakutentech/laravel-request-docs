@@ -3,7 +3,7 @@ on:
     branches:
       - master
 
-name: "CI Node"
+name: "CI Release Dist"
 
 jobs:
   test:
@@ -39,6 +39,9 @@ jobs:
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
+        with:
+          commit-message: (action) Update dist
+          title: '(action) update dist astro'
 
 
 

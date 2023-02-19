@@ -13,10 +13,11 @@ interface Props {
         showHead: string,
         sort: string,
         groupby: string) => void
+    handleSearch: (search: string) => void
 }
 export default function TopNav(props: Props) {
 
-    const { handleChangeSettings } = props
+    const { handleChangeSettings, handleSearch } = props
     const [theme, setTheme] = useLocalStorage('theme', '');
     const [sort, setSort] = useLocalStorage('sort', 'default');
     const [groupby, setGroupby] = useLocalStorage('groupby', 'default');
@@ -97,6 +98,9 @@ export default function TopNav(props: Props) {
                     </a>
                 </div>
                 <div className="flex-none">
+                    <div className="form-control">
+                        <input type="text" placeholder="Search" className="input input-sm input-bordered" onChange={ (e) => handleSearch(e.target.value) } />
+                    </div>                    
                     <div className="menu menu-horizontal px-6 ">
                         <label className="swap swap-rotate">
                             <input type="checkbox" onChange={toggleDarkMode} />
