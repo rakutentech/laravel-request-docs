@@ -29,7 +29,7 @@ export default function Sidebar(props: Props) {
         <>
             <aside>
                 <h2 className="title pl-5 pt-2 mb-5">
-                    API List
+                    API List  <span className='text-slate-500 capitalize'>Total {lrdDocsJson.length}</span>
                 </h2>
                 <ul>
                     {lrdDocsJson.map((lrdDocsItem) => (

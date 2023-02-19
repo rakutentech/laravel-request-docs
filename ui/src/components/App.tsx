@@ -5,6 +5,7 @@ import ApiInfo from './ApiInfo';
 import ApiAction from './ApiAction';
 import useLocalStorage from 'react-use-localstorage';
 import shortid from 'shortid';
+import Fuse from 'fuse.js';
 
 interface IAPIRule {
     [key: string]: string[];
@@ -24,6 +25,7 @@ interface IAPIInfo {
 export default function App() {
 
     const [lrdDocsJson, setLrdDocsJson] = useState<IAPIInfo[]>([]);
+    const [lrdDocsJsonCopy, setLrdDocsJsonCopy] = useState<IAPIInfo[]>([]);
     const [allParamsRegistry, setAllParamsRegistery] = useLocalStorage('allParamsRegistry', "{}");
     const [apiURL, setApiURL] = useState<string>('');
     const [host, setHost] = useState<string>('');
@@ -39,7 +41,10 @@ export default function App() {
     const [showPatch] = useLocalStorage('showPatch', 'true');
     const [showHead] = useLocalStorage('showHead', 'true');
 
-
+    const searchOptions = {
+        keys: ['uri', 'docBlock'],
+        threshold: 0.3
+    };    
 
     useEffect(() => {
         // get query param named api
@@ -72,11 +77,29 @@ export default function App() {
             .then((lrdDocsJson) => {
                 setError(null)
                 setLrdDocsJson(lrdDocsJson)
+                setLrdDocsJsonCopy(lrdDocsJson)
                 setSendingRequest(false)
             }).catch((error) => {
                 setError(error.message)
                 setSendingRequest(false)
             })
+    }
+
+    const handleSearch = (search: string) => {
+        search = search.trim()
+        if (!search) {
+            setLrdDocsJson(lrdDocsJsonCopy)
+            return
+        }
+        const fuse = new Fuse(lrdDocsJson, searchOptions);
+
+        const filteredData = fuse.search(search);
+        const filteredLrdJson: IAPIInfo[] = []
+        for (let i = 0; i < filteredData.length; i++) {
+            filteredLrdJson.push(filteredData[i].item)
+        }
+
+        setLrdDocsJson(filteredLrdJson)
     }
 
     const handleChangeSettings = (showGet: string,
@@ -92,7 +115,7 @@ export default function App() {
     }
     return (
         <>
-            <TopNav handleChangeSettings={handleChangeSettings} />
+            <TopNav handleChangeSettings={handleChangeSettings} handleSearch={handleSearch} />
             {sendingRequest && (
                 <progress className="progress progress-success w-full"></progress>
             )}
