@@ -214,7 +214,7 @@ class LaravelRequestDocs
                     //throw $th;
                 }
 
-                foreach (config('request-docs.request_methods') as $requestMethod) {
+                foreach (config('request-docs.rules_methods') as $requestMethod) {
                     if ($requestClass && method_exists($requestClass, $requestMethod)) {
                         try {
                             $controllersInfo[$index]['rules'] = array_merge($controllersInfo[$index]['rules'], $this->flattenRules($requestClass->$requestMethod()));

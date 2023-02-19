@@ -31,10 +31,8 @@ return [
 
     // https://github.com/rakutentech/laravel-request-docs/pull/92
     // When rules are put in other method than rules()
-    'request_methods' => [
-        'rules',
-        'onCreate',
-        'onUpdate',
+    'rules_methods' => [
+        'rules'
     ],
 
     // No need to touch below
