@@ -193,7 +193,10 @@ class LaravelRequestDocs
                 continue;
             }
             $params           = $reflectionMethod->getParameters();
-            $customRules = $this->customParamsDocComment($reflectionMethod->getDocComment());
+            $docComment       = $reflectionMethod->getDocComment();
+            $customRules      = $this->customParamsDocComment($docComment);
+            $customResponses  = $this->customResponsesDocComment($docComment);
+            $controllersInfo[$index]['responses'] = $customResponses;
             $controllersInfo[$index]['rules'] = [];
 
             foreach ($params as $param) {
@@ -326,14 +329,38 @@ class LaravelRequestDocs
             if (Str::contains($comment, '@LRDparam')) {
                 $comment = trim(Str::replace(['@LRDparam', '*'], '', $comment));
 
-                $comment = explode(' ', $comment);
+                $comment = $this->multiexplode([' ', '|'], $comment);
 
                 if (count($comment) > 0) {
                     $params[$comment[0]] = array_values(array_filter($comment, fn($item) => $item != $comment[0]));
                 }
             }
         }
-
         return $params;
     }
+    private function customResponsesDocComment($docComment): array
+    {
+        $params = [];
+
+        foreach (explode("\n", $docComment) as $comment) {
+            if (Str::contains($comment, '@LRDresponses')) {
+                $comment = trim(Str::replace(['@LRDresponses', '*'], '', $comment));
+
+                $comment = $this->multiexplode([' ', '|'], $comment);
+
+                $params = $comment;
+            }
+        }
+        if (count($params) == 0) {
+            $params = config('request-docs.default_responses') ?? [];
+        }
+        return $params;
+    }
+
+    private function multiexplode($delimiters, $string) {
+
+        $ready = str_replace($delimiters, $delimiters[0], $string);
+        $launch = explode($delimiters[0], $ready);
+        return  $launch;
+    }    
 }
