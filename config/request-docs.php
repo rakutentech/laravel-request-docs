@@ -31,11 +31,11 @@ return [
 
     // https://github.com/rakutentech/laravel-request-docs/pull/92
     // When rules are put in other method than rules()
-    'request_methods' => [
-        'rules',
-        'onCreate',
-        'onUpdate',
+    'rules_methods' => [
+        'rules'
     ],
+    // Can be overridden as // @LRDResponses 200|400|401
+    'default_responses' => [ "200", "400", "401", "403", "404", "405", "422", "429", "500", "503"],
 
     // No need to touch below
     // open api config

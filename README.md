@@ -58,6 +58,7 @@ You can publish the config file with:
 
 ```bash
 php artisan vendor:publish --tag=request-docs-config
+php artisan route:cache
 ```
 
 # Usage
@@ -111,7 +112,7 @@ Example of using it in controller
     /**
      * @lrd:start
      * Hello markdown
-     * ## Free text to write documentation in markdown
+     * Free `code` or *text* to write documentation in markdown
      * @lrd:end
      */
     public function index(MyIndexRequest $request): Resource
@@ -125,7 +126,10 @@ You write extra params with rules with @LRDparam in comment line as one line
 ```php
     /**
      * @LRDparam username string|max:32
+     * // either space or pipe
      * @LRDparam nickaname string|nullable|max:32
+     * // override the default response codes
+     * @LRDparam responses 200,422
      */
     public function index(MyIndexRequest $request): Resource
     {
@@ -175,6 +179,6 @@ Fixing lints
 - v1.23 Bug fix for lrd doc block #76
 - v1.27 A few fixes on width and added request_methods
 - v2.0 UI Renewal to React static
-    - @QAParam is now @LRDparam
+    - `@QAParam` is now `@LRDparam`
     - No special changes for users, upgrade to v2.x as usual
 

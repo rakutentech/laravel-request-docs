@@ -8,6 +8,11 @@ npm install
 npm run dev
 ```
 
+**Open in Browser** http://localhost:3000?api=http://localhost:3000/sample.json
+
+
+### Developing with Laravel
+
 #### Step 1
 
 **Optional** Enable CORS on Laravel to allow localhost:3000

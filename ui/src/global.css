@@ -71,15 +71,30 @@ td {
 .method-HEAD {
     @apply text-info;
 }
-.badge-200 {
+.badge-200,.badge-201,.badge-202,.response-204 {
     @apply bg-success;
 }
-.badge-422 {
+.badge-422,.badge-429 {
     @apply bg-warning;
 }
-.badge-400 {
+.badge-400,.badge-401,.badge-402,.badge-403,.badge-404,.badge-405 {
     @apply bg-error;
 }
-.badge-500 {
+.badge-500,.badge-501,.badge-502,.badge-503 {
     @apply bg-error;
+}
+.response {
+    @apply w-10/12 rounded bg-base-300 pl-3 pt-1 pb-1 mb-2 font-bold;
+}
+.response-200,.response-201,.response-202,.response-204 {
+    @apply bg-success text-green-800;
+}
+.response-422,.response-429 {
+    @apply bg-yellow-500 text-yellow-800;
+}
+.response-400,.response-401,.response-402,.response-403,.response-404,.response-405 {
+    @apply bg-red-300 text-red-800;
+}
+.response-500,.response-501,.response-502,.response-503 {
+    @apply bg-red-400 text-red-800;
 }

@@ -30,6 +30,7 @@ interface IAPIInfo {
     httpMethod: string;
     rules: IAPIRule;
     docBlock: string;
+    responses: string[];
 }
 
 interface Props {
@@ -67,6 +68,22 @@ export default function ApiAction(props: Props) {
     const [responseHeaders, setResponseHeaders] = useState("");
     const [activeTab, setActiveTab] = useState('info');
 
+    const responsesText: any = {
+        "200": "OK",
+        "201": "Created",
+        "202": "Accepted",
+        "204": "No Content",
+        "400": "Bad Request",
+        "401": "Unauthorized",
+        "403": "Forbidden",
+        "404": "Not Found",
+        "405": "Method Not Allowed",
+        "422": "Unprocessable Entity",
+        "429": "Too Many Requests",
+        "500": "Internal Server Error",
+        "503": "Service Unavailable",
+    }
+
     const setGetCurlCommand = (queries: string) => {
         let curl = `curl -X ${method} "${host}/${lrdDocsItem.uri}${queries}"`
 
@@ -93,6 +110,14 @@ export default function ApiAction(props: Props) {
         }
         setCurlCommand(curl)
     }
+    const explode = (str: string, maxLength: number) => {
+        let buff = "";
+        const numOfLines = Math.floor(str.length/maxLength);
+        for(let i = 0; i<numOfLines+1; i++) {
+            buff += str.substr(i*maxLength, maxLength); if(i !== numOfLines) { buff += "\\<br/>"; }
+        }
+        return buff;
+    }        
 
     const handleSendRequest = () => {
         // update localstorage
@@ -147,7 +172,6 @@ export default function ApiAction(props: Props) {
             setTimeTaken(timeTaken)
             setResponseStatus(response.status)
             setResponseHeaders(JSON.stringify(Object.fromEntries(response.headers), null, 2))
-            showResponse()
             setSendingRequest(false)
             return response.json();
         }).then((data) => {
@@ -174,10 +198,12 @@ export default function ApiAction(props: Props) {
                 delete data._lrd
             }
             setResponseData(JSON.stringify(data, null, 2))
+            showResponse()
         }).catch((error) => {
             setError("Response error: " + error)
             setResponseStatus(500)
             setSendingRequest(false)
+            showResponse()
         })
 
     }
@@ -352,8 +378,22 @@ export default function ApiAction(props: Props) {
                                             <th>Curl</th>
                                             <td>
                                                 <small>
-                                                    <pre className='p-2 bg-base-300'>{curlCommand}</pre>
+                                                    <pre className='m-1 p-2 bg-base-300'>
+                                                        <div className='' dangerouslySetInnerHTML={{__html: explode(curlCommand, 70)}} />
+                                                    </pre>
                                                 </small>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Responses</th>
+                                            <td>
+                                                {lrdDocsItem.responses.map((response) => (
+                                                    <div key={shortid.generate()}>
+                                                            <div className={`response response-${response}`}>
+                                                                - {response} &nbsp; {responsesText[response]}
+                                                            </div>
+                                                    </div>
+                                                ))}
                                             </td>
                                         </tr>
                                     </tbody>
