@@ -182,3 +182,4 @@ Fixing lints
     - `@QAParam` is now `@LRDparam`
     - No special changes for users, upgrade to v2.x as usual
 - v2.1 UI - adds search bar and few aligment fixes on table
+- v2.2 PHP 8.1 and 8.2 support added

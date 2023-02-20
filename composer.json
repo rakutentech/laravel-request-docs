@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": "^7.4|^8.0",
+        "php": "^7.4|^8.0|^8.1|^8.2",
         "illuminate/contracts": "^8.37|^9.0|^10.0",
         "kitloong/laravel-app-logger": "^1.0",
         "spatie/laravel-package-tools": "^1.4.3",
