@@ -183,7 +183,7 @@ Fixing lints
     - Upgrading users will need to republish config
 - v2.1 UI - adds search bar and few aligment fixes on table
 - v2.2 PHP 8.1 and 8.2 support added
-- v2.3 Groupby enabled for routes and controllers
+       - Groupby enabled for routes and controllers
 
 
 # Maintainers
