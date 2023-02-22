@@ -29,7 +29,7 @@
 - Support for Authorization Headers
 - Display extra documentation using markdown
 - Saves history previous requests
-- Added filters to sort, group and filter routes by methods, controllers, middlewares, routes (also see Roadmap 2.x)
+- Added filters to sort, group and filter routes by methods, controllers, middlewares, routes
 - Export laravel API, routes, rules and documentation to Postman and OpenAPI 3.0.0
 
 # Read on Medium
@@ -156,9 +156,8 @@ Fixing lints
 
 # Roadmap for v2.x
 
-- [DONE] UI renewal
-- [WIP] Introduce groupby controller names, routes, middlewares
-- [WIP] Introduce fetch rules from PHP doc annotations
+- UI renewal
+- Introduce groupby controller names, routes, middlewares
 
 # Changelog
 
@@ -181,5 +180,7 @@ Fixing lints
 - v2.0 UI Renewal to React static
     - `@QAParam` is now `@LRDparam`
     - No special changes for users, upgrade to v2.x as usual
+    - Upgrading users will need to republish config
 - v2.1 UI - adds search bar and few aligment fixes on table
 - v2.2 PHP 8.1 and 8.2 support added
+- v2.3 Groupby enabled for routes and controllers

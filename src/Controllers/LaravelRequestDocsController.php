@@ -60,8 +60,6 @@ class LaravelRequestDocsController extends Controller
             Response::HTTP_OK,
             [
                 'Content-type'=> 'application/json; charset=utf-8',
-                'Cache-Control' => 'public, max-age=60',
-                'Expires' => gmdate('D, d M Y H:i:s \G\M\T', time() + 60),
             ],
             JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
         );

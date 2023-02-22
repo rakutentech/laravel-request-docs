@@ -130,21 +130,20 @@ export default function TopNav(props: Props) {
                                         <span className="label-text">HTTP Methods</span>
                                     </label>
                                 </div>
-                                {/* Not Implemented */}
-                                {/* <h4 className="font-bold mt-10">Group By</h4>
+                                <h4 className="font-bold mt-10">Group By</h4>
                                 <div className="form-control">
                                     <label className="label">
                                         
                                         <input type="radio" onChange={handleChangeGroupby} value="default" className="radio" checked={groupby == "default"} />
                                         <span className="label-text">Default</span>
                                         
-                                        <input type="radio" onChange={handleChangeGroupby} value="controller_names" className="radio" checked={groupby == "controller_names"} />
-                                        <span className="label-text">Controllers</span>
+                                        <input type="radio" onChange={handleChangeGroupby} value="api_uri" className="radio" checked={groupby == "api_uri"} />
+                                        <span className="label-text">API URI</span>
                                         
-                                        <input type="radio" onChange={handleChangeGroupby} value="middleware_names" className="radio" checked={groupby == "middleware_names"} />
-                                        <span className="label-text">Middlewares</span>
+                                        <input type="radio" onChange={handleChangeGroupby} value="controller_full_path" className="radio" checked={groupby == "controller_full_path"} />
+                                        <span className="label-text">Controller Names</span>
                                     </label>
-                                </div> */}
+                                </div>
                                 <h4 className="font-bold mt-10">Display Settings</h4>
                                 <div className="form-control">
                                     <label className="label">
