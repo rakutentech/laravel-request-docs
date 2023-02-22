@@ -2,6 +2,7 @@
 
 namespace Rakutentech\LaravelRequestDocs;
 
+use Illuminate\Support\Collection;
 use Route;
 use ReflectionMethod;
 use ReflectionClass;
@@ -118,11 +119,15 @@ class LaravelRequestDocs
 
     public function groupDocs($docs, $group = 'default')
     {
-        if ($group == 'default') {
-            return $docs;
+        if ($group === 'api_uri') {
+            return $this->groupDocsByAPIURI($docs);
         }
-        $grouped = [];//unimplemented
-        return $docs;  //unimplemented, returning as it is
+
+        if ($group === 'controller_full_path') {
+            return $this->groupDocsByFQController($docs);
+        }
+
+        return $docs;
     }
 
     public function getControllersInfo(): array
@@ -362,5 +367,95 @@ class LaravelRequestDocs
         $ready = str_replace($delimiters, $delimiters[0], $string);
         $launch = explode($delimiters[0], $ready);
         return  $launch;
+    }
+
+    /**
+     * Parse the `$docs['uri']` and attach `group` and `group_index` details.
+     *
+     * @param  array  $docs
+     * @return array  $docs
+     */
+    private function groupDocsByAPIURI(array $docs): array
+    {
+        $patterns = config('request-docs.group_by.uri_patterns', []);
+
+        $regex = count($patterns) > 0 ? '(' . implode('|', $patterns) . ')' : '';
+
+        // A collection<string, int> to remember indexes with `group` => `index` pair.
+        $groupIndexes = collect();
+
+        foreach ($docs as $i => $doc) {
+            if ($regex !== '') {
+                // If $regex    = '^api/v[\d]+/',
+                // and $uri     = '/api/v1/users',
+                // then $prefix = '/api/v1/'.
+                $prefix = Str::match($regex, $doc['uri']);
+            }
+
+            $group = $this->getGroupByURI($prefix ?? '', $doc['uri']);
+            $groupIndexes = $this->rememberGroupIndex($groupIndexes, $group);
+            $docs[$i] = $this->attachGroupInfo($doc, $group, $groupIndexes->get($group));
+        }
+
+        return $docs;
+    }
+
+    /**
+     * Create and return group name by the `$uri`.
+     */
+    private function getGroupByURI(string $prefix, string $uri): string
+    {
+        if ($prefix === '') {
+            // No prefix, create group by the first path.
+            $paths = explode('/', $uri);
+            return $paths[0];
+        }
+
+        // Glue the prefix + "first path after prefix" to form a group.
+        $after = (Str::after($uri, $prefix));
+        $paths = explode('/', $after);
+        return $prefix . $paths[0];
+    }
+
+    /**
+     * Parse the `$docs['controller_full_path']` and attach `group` and `group_index` details.
+     */
+    private function groupDocsByFQController(array $docs): array
+    {
+        // To remember group indexes with group => index pair.
+        $groupIndexes = collect();
+
+        foreach ($docs as $i => $doc) {
+            $group = $doc['controller_full_path'];
+            $groupIndexes = $this->rememberGroupIndex($groupIndexes, $group);
+            $docs[$i] = $this->attachGroupInfo($doc, $group, $groupIndexes->get($group));
+        }
+        return $docs;
+    }
+
+    /**
+     * Set the last index number into `$groupIndexes`
+     *
+     * @param  \Illuminate\Support\Collection<string, int>  $groupIndexes  [`group` => `index`]
+     */
+    private function rememberGroupIndex(Collection $groupIndexes, string $key): Collection
+    {
+        if (!$groupIndexes->has($key)) {
+            $groupIndexes->put($key, 0);
+            return $groupIndexes;
+        }
+
+        $groupIndexes->put($key, $groupIndexes->get($key) + 1);
+        return $groupIndexes;
+    }
+
+    /**
+     * Attach `group` and `group_index` into `$doc`.
+     */
+    private function attachGroupInfo(array $doc, string $group, int $groupIndex): array
+    {
+        $doc['group'] = $group;
+        $doc['group_index'] = $groupIndex;
+        return $doc;
     }
 }
