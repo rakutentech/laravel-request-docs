@@ -16,6 +16,8 @@ interface IAPIInfo {
     httpMethod: string;
     rules: IAPIRule;
     docBlock: string;
+    group: string|null;
+    group_index: number|null;
 }
 
 interface Props {
@@ -33,17 +35,25 @@ export default function Sidebar(props: Props) {
                 </h2>
                 <ul>
                     {lrdDocsJson.map((lrdDocsItem) => (
-                        lrdDocsItem.methods.map((method) => (
-                            <li key={shortid.generate()}>
-                                <AnchorLink href={'#' + method + lrdDocsItem.uri} className="flex flex-row px-0 py-1">
-                                    <span className={`method-${method} uppercase text-xs w-12 p-0 flex flex-row-reverse`}>
-                                        {method}
-                                    </span>
-                                    <span className="flex-1 p-0 text-sm text-left break-all">
-                                        {lrdDocsItem.uri}
-                                    </span>
-                                </AnchorLink>
-                            </li>
+                        lrdDocsItem.methods.map((method, methodIndex) => (
+                            <div key={shortid.generate()}>
+                                {(lrdDocsItem.group != null && lrdDocsItem.group != "" && lrdDocsItem.group_index == 0 && methodIndex == 0) && (
+                                    <li className="pt-5 text-slate-600">
+                                        {/* Only in case of controller names full path -> just controller name */}
+                                        {lrdDocsItem.group.split('\\').pop()}
+                                    </li>
+                                )}
+                                <li>
+                                    <AnchorLink href={'#' + method + lrdDocsItem.uri} className="flex flex-row px-0 py-1">
+                                        <span className={`method-${method} uppercase text-xs w-12 p-0 flex flex-row-reverse`}>
+                                            {method}
+                                        </span>
+                                        <span className="flex-1 p-0 text-sm text-left break-all">
+                                            {lrdDocsItem.uri}
+                                        </span>
+                                    </AnchorLink>
+                                </li>
+                            </div>
                         ))
                     ))}
                     <li className='bg-transparent'></li>
