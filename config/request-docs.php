@@ -37,6 +37,15 @@ return [
     // Can be overridden as // @LRDResponses 200|400|401
     'default_responses' => [ "200", "400", "401", "403", "404", "405", "422", "429", "500", "503"],
 
+    // By default, LRD group your routes by the first /path.
+    // This is a set of regex to group your routes by prefix.
+    'group_by' => [
+        'uri_patterns' => [
+            '^api/v[\d]+/', // `/api/v1/users/store` group as `/api/v1/users`.
+            '^api/',        // `/api/users/store` group as `/api/users`.
+        ]
+    ],
+
     // No need to touch below
     // open api config
     // used to generate open api json
