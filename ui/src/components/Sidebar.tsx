@@ -1,24 +1,8 @@
 import React from 'react';
 import AnchorLink from 'react-anchor-link-smooth-scroll'
 import shortid from 'shortid';
-
-interface IAPIRule {
-    [key: string]: string[];
-}
-
-interface IAPIInfo {
-    uri: string;
-    methods: string[];
-    middlewares: string[];
-    controller: string;
-    controller_full_path: string;
-    method: string;
-    httpMethod: string;
-    rules: IAPIRule;
-    docBlock: string;
-    group: string|null;
-    group_index: number|null;
-}
+import type { IAPIInfo } from '../libs/types'
+import { ListBulletIcon  } from '@heroicons/react/24/solid'
 
 interface Props {
     lrdDocsJson: IAPIInfo[],
@@ -31,7 +15,8 @@ export default function Sidebar(props: Props) {
         <>
             <aside>
                 <h2 className="title pl-5 pt-2 mb-5">
-                    API List  <span className='text-slate-500 capitalize'>Total {lrdDocsJson.length}</span>
+                    <ListBulletIcon className='inline-block w-4 h-4 mr-1' />
+                    API List  <span className='text-slate-500 capitalize float-right mr-5'>Total {lrdDocsJson.length}</span>
                 </h2>
                 <ul>
                     {lrdDocsJson.map((lrdDocsItem) => (
@@ -56,7 +41,6 @@ export default function Sidebar(props: Props) {
                             </div>
                         ))
                     ))}
-                    <li className='bg-transparent'></li>
                     <li className='bg-transparent'></li>
                     <li className='bg-transparent'></li>
                     <li className='bg-transparent'></li>

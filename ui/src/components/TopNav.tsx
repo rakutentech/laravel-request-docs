@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 import useLocalStorage from 'react-use-localstorage';
-import { Cog6ToothIcon, ArrowUpRightIcon, MoonIcon, SunIcon, XMarkIcon, ChatBubbleLeftIcon  } from '@heroicons/react/24/solid'
+import { MagnifyingGlassIcon, Cog6ToothIcon, ArrowUpRightIcon, MoonIcon, SunIcon, XMarkIcon, ChatBubbleLeftIcon  } from '@heroicons/react/24/solid'
 
 interface Props {
     handleChangeSettings: (
@@ -99,7 +99,11 @@ export default function TopNav(props: Props) {
                 </div>
                 <div className="flex-none">
                     <div className="form-control">
-                        <input type="text" placeholder="Search" className="input input-sm input-bordered" onChange={ (e) => handleSearch(e.target.value) } />
+                    <label htmlFor="search" className="relative text-gray-400 focus-within:text-gray-600 block">
+                        <MagnifyingGlassIcon className="pointer-events-none w-4 h-4 absolute top-1/2 transform -translate-y-1/2 left-3" />
+                        <input type="text" placeholder="Filter APIs" className="input pl-10 input-sm input-bordered" onChange={ (e) => handleSearch(e.target.value) } />
+                    </label>                        
+                        
                     </div>                    
                     <div className="menu menu-horizontal px-6 ">
                         <label className="swap swap-rotate">

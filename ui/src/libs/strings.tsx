@@ -1,0 +1,50 @@
+
+export const defaultHeaders = `{
+    "Content-Type": "application/json",
+    "Accept": "application/json"
+}`
+export const explode = (str: string, maxLength: number, by: string) => {
+    let buff = "";
+    const numOfLines = Math.floor(str.length / maxLength);
+    for (let i = 0; i < numOfLines + 1; i++) {
+        buff += str.substr(i * maxLength, maxLength); if (i !== numOfLines) { buff += by; }
+    }
+    return buff;
+}
+
+export const makeCurlCommand = (host:string, url: string, method: string, queries: string, headers: any): string => {
+    
+    const get = (queries: string) => {
+        let curl = `curl -X ${method} "${host}/${url}${queries}"`
+
+        try {
+            const jsonRequestHeaders = JSON.parse(headers)
+            for (const [key, value] of Object.entries(jsonRequestHeaders)) {
+                curl += ` -H "${key}: ${value}"`
+            }
+        } catch (error: any) {
+            curl += ` -H "Content-Type: application/json"`
+        }
+
+        return curl
+    }
+    const post = (jsonBody: string) => {
+        let curl = `curl -X ${method} "${url}" -d '${jsonBody}'`
+        try {
+            const jsonRequestHeaders = JSON.parse(headers)
+            for (const [key, value] of Object.entries(jsonRequestHeaders)) {
+                curl += ` -H "${key}: ${value}"`
+            }
+        } catch (error: any) {
+            curl += ` -H "Content-Type: application/json"`
+        }
+        return curl
+    }
+    if (method === "GET" || method === "DELETE" || method === "HEAD") {
+        return get(queries)
+    }
+    if (method === "POST" || method === "PUT" || method === "PATCH") {
+        return post(queries)
+    }
+    return ""
+}
