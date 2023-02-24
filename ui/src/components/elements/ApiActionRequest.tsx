@@ -102,7 +102,7 @@ export default function ApiActionRequest(props: Props) {
                 </div>
             )}
 
-            {(method == 'POST' || method == 'PUT' || method == 'PATH') && (
+            {(method == 'POST' || method == 'PUT' || method == 'PATCH') && (
                 <div className="mockup-code">
                     <span className='pl-5 text-sm text-slate-500'>REQUEST BODY</span>
                     {/* <div className='pl-5'>Image</div>
