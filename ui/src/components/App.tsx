@@ -6,32 +6,17 @@ import ApiAction from './ApiAction';
 import useLocalStorage from 'react-use-localstorage';
 import shortid from 'shortid';
 import Fuse from 'fuse.js';
+import type { IAPIInfo } from '../libs/types'
 
-interface IAPIRule {
-    [key: string]: string[];
-}
 
-interface IAPIInfo {
-    uri: string;
-    methods: string[];
-    middlewares: string[];
-    controller: string;
-    controller_full_path: string;
-    method: string;
-    httpMethod: string;
-    rules: IAPIRule;
-    docBlock: string;
-}
 export default function App() {
 
     const [lrdDocsJson, setLrdDocsJson] = useState<IAPIInfo[]>([]);
     const [lrdDocsJsonCopy, setLrdDocsJsonCopy] = useState<IAPIInfo[]>([]);
-    const [allParamsRegistry, setAllParamsRegistery] = useLocalStorage('allParamsRegistry', "{}");
     const [apiURL, setApiURL] = useState<string>('');
     const [host, setHost] = useState<string>('');
     const [sendingRequest, setSendingRequest] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [theme] = useLocalStorage('theme', '');
     const [groupby] = useLocalStorage('groupby', 'default');
     const [sort] = useLocalStorage('sort', 'default');
     const [showGet] = useLocalStorage('showGet', 'true');
@@ -44,7 +29,11 @@ export default function App() {
     const searchOptions = {
         keys: ['uri', 'docBlock'],
         threshold: 0.3
-    };    
+    };
+
+    const getUrl = (url: string, showGet: string, showPost: string, showDelete: string, showPut: string, showPatch: string, showHead: string, sort: string, groupby: string) => {
+        return `${url}?json=true&showGet=${showGet}&showPost=${showPost}&showDelete=${showDelete}&showPut=${showPut}&showPatch=${showPatch}&showHead=${showHead}&sort=${sort}&groupby=${groupby}`
+    }
 
     useEffect(() => {
         // get query param named api
@@ -65,7 +54,7 @@ export default function App() {
         }
         setApiURL(url)
 
-        const api = `${url}?json=true&showGet=${showGet}&showPost=${showPost}&showDelete=${showDelete}&showPut=${showPut}&showPatch=${showPatch}&showHead=${showHead}&theme=${theme}&sort=${sort}&groupby=${groupby}`        
+        const api = getUrl(url, showGet, showPost, showDelete, showPut, showPatch, showHead, sort, groupby)
         generateDocs(api)
     }, [])
 
@@ -110,7 +99,7 @@ export default function App() {
         showHead: string,
         sort: string,
         groupby: string) => {
-        const url = `${apiURL}?json=true&showGet=${showGet}&showPost=${showPost}&showDelete=${showDelete}&showPut=${showPut}&showPatch=${showPatch}&showHead=${showHead}&theme=${theme}&sort=${sort}&groupby=${groupby}`
+        const url = getUrl(apiURL, showGet, showPost, showDelete, showPut, showPatch, showHead, sort, groupby)
         generateDocs(url)
     }
     return (
@@ -143,7 +132,7 @@ export default function App() {
                                             <ApiInfo lrdDocsItem={lrdDocsItem} method={method}/>
                                         </div>
                                         <div className="col-span-5 ml-5">
-                                            <ApiAction lrdDocsItem={lrdDocsItem} method={method} host={host} allParamsRegistry={allParamsRegistry} setAllParamsRegistery={setAllParamsRegistery}/>
+                                            <ApiAction lrdDocsItem={lrdDocsItem} method={method} host={host}/>
                                         </div>
                                     </div>
                                 </div>
