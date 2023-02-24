@@ -17,7 +17,6 @@ export default function App() {
     const [host, setHost] = useState<string>('');
     const [sendingRequest, setSendingRequest] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [theme] = useLocalStorage('theme', '');
     const [groupby] = useLocalStorage('groupby', 'default');
     const [sort] = useLocalStorage('sort', 'default');
     const [showGet] = useLocalStorage('showGet', 'true');
@@ -32,8 +31,8 @@ export default function App() {
         threshold: 0.3
     };
 
-    const getUrl = (url: string, showGet: string, showPost: string, showDelete: string, showPut: string, showPatch: string, showHead: string, theme: string, sort: string, groupby: string) => {
-        return `${url}?json=true&showGet=${showGet}&showPost=${showPost}&showDelete=${showDelete}&showPut=${showPut}&showPatch=${showPatch}&showHead=${showHead}&theme=${theme}&sort=${sort}&groupby=${groupby}`
+    const getUrl = (url: string, showGet: string, showPost: string, showDelete: string, showPut: string, showPatch: string, showHead: string, sort: string, groupby: string) => {
+        return `${url}?json=true&showGet=${showGet}&showPost=${showPost}&showDelete=${showDelete}&showPut=${showPut}&showPatch=${showPatch}&showHead=${showHead}&sort=${sort}&groupby=${groupby}`
     }
 
     useEffect(() => {
@@ -55,7 +54,7 @@ export default function App() {
         }
         setApiURL(url)
 
-        const api = getUrl(url, showGet, showPost, showDelete, showPut, showPatch, showHead, theme, sort, groupby)
+        const api = getUrl(url, showGet, showPost, showDelete, showPut, showPatch, showHead, sort, groupby)
         generateDocs(api)
     }, [])
 
@@ -100,7 +99,7 @@ export default function App() {
         showHead: string,
         sort: string,
         groupby: string) => {
-        const url = getUrl(apiURL, showGet, showPost, showDelete, showPut, showPatch, showHead, theme, sort, groupby)
+        const url = getUrl(apiURL, showGet, showPost, showDelete, showPut, showPatch, showHead, sort, groupby)
         generateDocs(url)
     }
     return (
