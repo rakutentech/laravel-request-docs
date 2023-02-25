@@ -185,6 +185,7 @@ Fixing lints
 - v2.2 PHP 8.1 and 8.2 support added
        - Groupby enabled for routes and controllers
 - v2.3 Bug fix for localstorage (tabs) and full UI refactored after alpha
+- v2.4 Show version on navbar and curl is using ace editor
 
 
 # Maintainers
