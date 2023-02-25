@@ -154,10 +154,9 @@ Fixing lints
 ./vendor/bin/php-cs-fixer fix config/
 ```
 
-# Roadmap for v2.x
+## Star History
 
-- UI renewal
-- Introduce groupby controller names, routes, middlewares
+[![Star History Chart](https://api.star-history.com/svg?repos=rakutentech/laravel-request-docs&type=Date)](https://star-history.com/#rakutentech/laravel-request-docs&Date)
 
 # Changelog
 
