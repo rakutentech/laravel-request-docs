@@ -133,10 +133,8 @@ class LaravelRequestDocs
             $groupDocs = $this->groupDocsByFQController($docs);
         }
 
-        $groupBy = ['group', 'group_index'];
-        return collect($groupDocs)->groupBy($groupBy)
+        return collect($groupDocs)->sortBy(['group', 'group_index'])
             ->values()
-            ->flatten(count($groupBy))
             ->toArray();
     }
 
