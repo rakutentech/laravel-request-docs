@@ -5,7 +5,7 @@ import type { IAPIInfo } from '../../libs/types'
 import { responsesText } from '../../libs/constants'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { ChevronRightIcon } from '@heroicons/react/24/solid';
+import { ChevronRightIcon, CodeBracketIcon } from '@heroicons/react/24/solid';
 import ApiActionCurl from './ApiActionCurl';
 
 interface Props {
@@ -19,12 +19,22 @@ export default function ApiActionInfo(props: Props) {
     return (
         <div className="mockup-window border">
             <div className="p-5">
-                <div className='text-sm'>
-                    {/*  eslint-disable-next-line react/no-children-prop */}
-                    <ReactMarkdown children={lrdDocsItem.docBlock} remarkPlugins={[remarkGfm]} />
-                </div>
+                {lrdDocsItem.docBlock && (
+                    <div className='text-sm mb-10 text-slate-500'>
+                        {/*  eslint-disable-next-line react/no-children-prop */}
+                        <ReactMarkdown children={lrdDocsItem.docBlock} remarkPlugins={[remarkGfm]} />
+                    </div>
+                )}
                 <table className="table table-fixed table-compact">
                     <tbody>
+                        <tr>
+                            <th>Method</th>
+                            <td>
+                                <span className={`method-${lrdDocsItem.httpMethod} uppercase`}>
+                                    {lrdDocsItem.httpMethod}
+                                </span>
+                            </td>
+                        </tr>
                         {lrdDocsItem.controller && (
                             <tr>
                                 <th>Controller</th>
@@ -43,7 +53,7 @@ export default function ApiActionInfo(props: Props) {
                                 <td>
                                     {lrdDocsItem.middlewares.map((middleware) => (
                                         <div key={shortid.generate()}>
-                                            <span className="ml-1 badge badge-normal badge-sm">{middleware}</span>
+                                            <span className="badge badge-ghost badge-md mb-1 rounded-sm">{middleware}</span>
                                             <br />
                                         </div>
                                     ))}
@@ -51,7 +61,10 @@ export default function ApiActionInfo(props: Props) {
                             </tr>
                         )}
                         <tr>
-                            <th>Responses</th>
+                            <th>
+                            Response
+                            <br />HTTP Codes
+                            </th>
                             <td>
                                 <div className="collapse">
                                     <input type="checkbox" />
@@ -72,7 +85,10 @@ export default function ApiActionInfo(props: Props) {
                             </td>
                         </tr>
                         <tr>
-                            <th>Curl</th>
+                            <th>
+                                <CodeBracketIcon className='inline-block w-4 h-4 mr-1' />
+                                Curl
+                            </th>
                             <td>
                                 <ApiActionCurl curlCommand={curlCommand} />
                             </td>

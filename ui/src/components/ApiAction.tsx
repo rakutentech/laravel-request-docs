@@ -28,11 +28,6 @@ export default function ApiAction(props: Props) {
     const [sendingRequest, setSendingRequest] = useState(false);
     const [queryParams, setQueryParams] = useState('');
     const [bodyParams, setBodyParams] = useState('');
-    const [showingInfo, setShowingInfo] = useState(true);
-    const [showingRequest, setShowingRequest] = useState(false);
-    const [showingResponse, setShowingResponse] = useState(false);
-    const [showingSQL, setShowingSQL] = useState(false);
-    const [showingLog, setShowingLog] = useState(false);
     const [responseData, setResponseData] = useState("");
     const [sqlQueriesCount, setSqlQueriesCount] = useState(0);
     const [sqlData, setSqlData] = useState("");
@@ -136,12 +131,12 @@ export default function ApiAction(props: Props) {
                 delete data._lrd
             }
             setResponseData(JSON.stringify(data, null, 2))
-            showResponse()
+            setActiveTab('response')
         }).catch((error) => {
             setError("Response error: " + error)
             setResponseStatus(500)
             setSendingRequest(false)
-            showResponse()
+            setActiveTab('response')
         })
 
     }
@@ -200,47 +195,6 @@ export default function ApiAction(props: Props) {
         }
     }
 
-    const showInfo = () => {
-        setShowingRequest(false)
-        setShowingResponse(false)
-        setShowingSQL(false)
-        setShowingInfo(true)
-        setShowingLog(false)
-        setActiveTab('info')
-    }
-    const showRequest = () => {
-        setShowingResponse(false)
-        setShowingSQL(false)
-        setShowingInfo(false)
-        setShowingRequest(true)
-        setShowingLog(false)
-        setActiveTab('request')
-    }
-    const showResponse = () => {
-        setShowingRequest(false)
-        setShowingSQL(false)
-        setShowingInfo(false)
-        setShowingResponse(true)
-        setShowingLog(false)
-        setActiveTab('response')
-    }
-    const showSQL = () => {
-        setShowingRequest(false)
-        setShowingResponse(false)
-        setShowingInfo(false)
-        setShowingSQL(true)
-        setShowingLog(false)
-        setActiveTab('sql')
-    }
-    const showLog = () => {
-        setShowingRequest(false)
-        setShowingResponse(false)
-        setShowingInfo(false)
-        setShowingSQL(false)
-        setShowingLog(true)
-        setActiveTab('log')
-    }
-
     return (
         <>
             <ApiActionTabs
@@ -248,20 +202,16 @@ export default function ApiAction(props: Props) {
                 responseStatus={responseStatus}
                 sqlQueriesCount={sqlQueriesCount}
                 logData={logData}
-                showInfo={showInfo}
-                showRequest={showRequest}
-                showResponse={showResponse}
-                showSQL={showSQL}
-                showLog={showLog} />
+                setActiveTab={setActiveTab} />
 
             <div className='mt-5'>
                 {error && (
                     <div className="alert alert-error mt-2 mb-2">{error}</div>
                 )}
-                {showingInfo && (
+                {activeTab == 'info' && (
                     <ApiActionInfo lrdDocsItem={lrdDocsItem} curlCommand={curlCommand} />
                 )}
-                {showingRequest && (
+                {activeTab == 'request' && (
                     <ApiActionRequest
                         requestUri={requestUri}
                         method={method}
@@ -277,7 +227,7 @@ export default function ApiAction(props: Props) {
                         setQueryParams={setQueryParams} />
                 )}
 
-                {showingResponse && (
+                {activeTab == 'response' && (
                     <ApiActionResponse
                         responseHeaders={responseHeaders}
                         responseData={responseData}
@@ -285,11 +235,11 @@ export default function ApiAction(props: Props) {
                         responseStatus={responseStatus}
                         serverMemory={serverMemory} />
                 )}
-                {showingSQL && (
+                {activeTab == 'sql' && (
                     <ApiActionSQL sqlData={sqlData} />
                 )}
 
-                {showingLog && (
+                {activeTab == 'logs' && (
                     <ApiActionLog logData={logData} />
                 )}
             </div>

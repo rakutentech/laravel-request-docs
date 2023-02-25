@@ -14,30 +14,24 @@ export const explode = (str: string, maxLength: number, by: string) => {
 
 export const makeCurlCommand = (host:string, url: string, method: string, queries: string, headers: any): string => {
     
-    const get = (queries: string) => {
-        let curl = `curl -X ${method} "${host}/${url}${queries}"`
-
-        try {
-            const jsonRequestHeaders = JSON.parse(headers)
-            for (const [key, value] of Object.entries(jsonRequestHeaders)) {
-                curl += ` -H "${key}: ${value}"`
-            }
-        } catch (error: any) {
-            curl += ` -H "Content-Type: application/json"`
+    let curl = `curl`
+    curl += `\n -X ${method}`        
+    try {
+        const jsonRequestHeaders = JSON.parse(headers)
+        for (const [key, value] of Object.entries(jsonRequestHeaders)) {
+            curl += `\n -H "${key}: ${value}"`
         }
-
+    } catch (error: any) {
+        curl += `\n -H "Content-Type: application/json"`
+    }
+    const get = (queries: string) => {
+        curl += `\n ${host}/${url}`
+        curl += `\n${queries}`
         return curl
     }
     const post = (jsonBody: string) => {
-        let curl = `curl -X ${method} "${url}" -d '${jsonBody}'`
-        try {
-            const jsonRequestHeaders = JSON.parse(headers)
-            for (const [key, value] of Object.entries(jsonRequestHeaders)) {
-                curl += ` -H "${key}: ${value}"`
-            }
-        } catch (error: any) {
-            curl += ` -H "Content-Type: application/json"`
-        }
+        curl += `\n ${host}/${url}`
+        curl += `\n -d '${jsonBody}'`
         return curl
     }
     if (method === "GET" || method === "DELETE" || method === "HEAD") {
