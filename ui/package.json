@@ -18,6 +18,7 @@
     "@heroicons/react": "^2.0.15",
     "astro": "^2.0.6",
     "fuse.js": "^6.6.2",
+    "git-rev-sync": "^3.0.2",
     "react-ace": "^10.1.0",
     "react-anchor-link-smooth-scroll": "^1.0.12",
     "react-markdown": "^8.0.5",
