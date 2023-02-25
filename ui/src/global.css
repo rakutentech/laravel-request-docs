@@ -98,6 +98,3 @@ td {
 .response-500,.response-501,.response-502,.response-503 {
     @apply bg-red-400 text-red-800;
 }
-.files-dropzone {
-    @apply bg-base-200 rounded p-5 mt-3 mb-3;
-}

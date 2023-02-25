@@ -8,14 +8,14 @@ npm install
 npm run dev
 ```
 
-**Open in Browser** http://localhost:3000?api=http://localhost:3000/sample.json
+**Open in Browser** http://localhost:3000/request-docs?api=http://localhost:3000/request-docs/sample.json
 
 
 ### Developing with Laravel
 
 #### Step 1
 
-**Optional** Enable CORS on Laravel to allow localhost:3000
+**Optional** Enable CORS on Laravel to allow localhost:3000/request-docs
 **Recommended** Open Chrome with `--disable-web-security` flag
 
 On Mac to open chrome command:
