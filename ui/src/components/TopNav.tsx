@@ -93,9 +93,18 @@ export default function TopNav(props: Props) {
         <header className="relative bg-none">
             <div className="navbar bg-base-200">
                 <div className="flex-1">
-                    <a className="btn btn-ghost normal-case text-xl">
-                        <span className="pl-2">Laravel Request Docs</span>
-                    </a>
+                    <div className="normal-case text-xl">
+                        <span className="pl-2">
+                            <span className='title'>Laravel Request Docs</span>
+                            <sup className='pl-2'>
+                                <small>
+                                    <a className="link link-info" href={`https://github.com/rakutentech/laravel-request-docs/releases/tag/${import.meta.env.PUBLIC_VERSION}`} target="_blank" rel="noreferrer">
+                                        version {import.meta.env.PUBLIC_VERSION}
+                                    </a>
+                                </small>
+                            </sup>
+                        </span>
+                    </div>
                 </div>
                 <div className="flex-none">
                     <div className="form-control">

@@ -3,10 +3,10 @@ import shortid from 'shortid';
 
 import type { IAPIInfo } from '../../libs/types'
 import { responsesText } from '../../libs/constants'
-import { explode } from '../../libs/strings'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { ChevronRightIcon } from '@heroicons/react/24/solid';
+import ApiActionCurl from './ApiActionCurl';
 
 interface Props {
     lrdDocsItem: IAPIInfo,
@@ -71,17 +71,12 @@ export default function ApiActionInfo(props: Props) {
                                 </div>
                             </td>
                         </tr>
-                        {/* Also not so beaufiul output */}
-                        {/* <tr>
+                        <tr>
                             <th>Curl</th>
                             <td>
-                                <small>
-                                    <pre className='m-1 p-2 bg-base-300'>
-                                        <div className='' dangerouslySetInnerHTML={{ __html: explode(curlCommand, 50, "\\<br/>") }} />
-                                    </pre>
-                                </small>
+                                <ApiActionCurl curlCommand={curlCommand} />
                             </td>
-                        </tr> */}
+                        </tr>
                     </tbody>
                 </table>
             </div>
