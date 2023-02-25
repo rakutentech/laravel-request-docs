@@ -119,15 +119,23 @@ class LaravelRequestDocs
 
     public function groupDocs($docs, $group = 'default')
     {
+        if ($group === 'default') {
+            return $docs;
+        }
+
+        $groupDocs = [];
+
         if ($group === 'api_uri') {
-            return $this->groupDocsByAPIURI($docs);
+            $groupDocs = $this->groupDocsByAPIURI($docs);
         }
 
         if ($group === 'controller_full_path') {
-            return $this->groupDocsByFQController($docs);
+            $groupDocs = $this->groupDocsByFQController($docs);
         }
 
-        return $docs;
+        return collect($groupDocs)->sortBy(['group', 'group_index'])
+            ->values()
+            ->toArray();
     }
 
     public function getControllersInfo(): array
