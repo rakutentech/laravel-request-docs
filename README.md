@@ -186,6 +186,7 @@ Fixing lints
        - Groupby enabled for routes and controllers
 - v2.3 Bug fix for localstorage (tabs) and full UI refactored after alpha
 - v2.4 Show version on navbar and curl is using ace editor
+- v2.5 Groupby final fix and localstorage clear button. Other UI refactor
 
 
 # Maintainers
