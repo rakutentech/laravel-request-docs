@@ -31,7 +31,7 @@ class WelcomeController
         return 1;
     }
 
-    public function store(WelcomeStoreRequest $request)
+    public function store(int $id, WelcomeStoreRequest $request)
     {
         return 1;
     }

@@ -4,16 +4,24 @@ namespace Rakutentech\LaravelRequestDocs\Tests;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
+use Rakutentech\LaravelRequestDocs\Doc;
 use Rakutentech\LaravelRequestDocs\Tests\TestControllers\UserController;
 
 class LRDTest extends TestCase
 {
     public function testGetDocs()
     {
+//        Route::get('closure', function () {
+//            return true;
+//        });
+
+        Route::get('users', UserController::class);
+
         $docs = $this->lrd->getDocs();
 
         $docSize  = 10;
-        $firstDoc = $docs[0];
+        $firstDoc = $docs[0]->toArray();
+
         $this->assertCount($docSize, $firstDoc);
         $this->assertArrayHasKey('uri', $firstDoc);
         $this->assertArrayHasKey('methods', $firstDoc);
@@ -24,6 +32,263 @@ class LRDTest extends TestCase
         $this->assertArrayHasKey('httpMethod', $firstDoc);
         $this->assertArrayHasKey('rules', $firstDoc);
         $this->assertArrayHasKey('docBlock', $firstDoc);
+        $this->assertArrayHasKey('responses', $firstDoc);
+
+        $expected = [
+            [
+                'uri'                  => '/',
+                'methods'              => [
+                    'GET',
+                    'HEAD'
+                ],
+                'middlewares'          => [],
+                'controller'           => 'WelcomeController',
+                'controller_full_path' => 'Rakutentech\LaravelRequestDocs\Tests\TestControllers\WelcomeController',
+                'method'               => 'index',
+                'httpMethod'           => 'GET',
+                'rules'                => [
+                    'name'     => [
+                        'nullable|string|min:5|max:255'
+                    ],
+                    'title'    => [
+                        'Rakutentech\LaravelRequestDocs\Tests\TestRules\Uppercase'
+                    ],
+                    'file'     => [
+                        'file'
+                    ],
+                    'image'    => [
+                        'image'
+                    ],
+                    'page'     => [
+                        'nullable|integer|min:1'
+                    ],
+                    'per_page' => [
+                        'nullable|integer|min:1|max:100'
+                    ]
+                ],
+                'docBlock'             => '#Hello markdown
+## Documentation for /my route
+',
+                'responses'            => [
+                    '200',
+                    '400',
+                    '401',
+                    '403',
+                    '404',
+                    '405',
+                    '422',
+                    '429',
+                    '500',
+                    '503'
+                ]
+            ],
+            [
+                'uri'                  => 'welcome',
+                'methods'              => [
+                    'GET',
+                    'HEAD'
+                ],
+                'middlewares'          => [],
+                'controller'           => 'WelcomeController',
+                'controller_full_path' => 'Rakutentech\LaravelRequestDocs\Tests\TestControllers\WelcomeController',
+                'method'               => 'index',
+                'httpMethod'           => 'GET',
+                'rules'                => [
+                    'name'     => [
+                        'nullable|string|min:5|max:255'
+                    ],
+                    'title'    => [
+                        'Rakutentech\LaravelRequestDocs\Tests\TestRules\Uppercase'
+                    ],
+                    'file'     => [
+                        'file'
+                    ],
+                    'image'    => [
+                        'image'
+                    ],
+                    'page'     => [
+                        'nullable|integer|min:1'
+                    ],
+                    'per_page' => [
+                        'nullable|integer|min:1|max:100'
+                    ]
+                ],
+                'docBlock'             => '#Hello markdown
+## Documentation for /my route
+',
+                'responses'            => [
+                    '200',
+                    '400',
+                    '401',
+                    '403',
+                    '404',
+                    '405',
+                    '422',
+                    '429',
+                    '500',
+                    '503'
+                ]
+            ],
+            [
+                'uri'                  => 'welcome',
+                'methods'              => [
+                    'POST'
+                ],
+                'middlewares'          => [
+                    'auth:api'
+                ],
+                'controller'           => 'WelcomeController',
+                'controller_full_path' => 'Rakutentech\LaravelRequestDocs\Tests\TestControllers\WelcomeController',
+                'method'               => 'store',
+                'httpMethod'           => 'POST',
+                'rules'                => [
+                    'error'         => [
+                        'string',
+                        'exists:'
+                    ],
+                    'message_param' => [
+                        'nullable|string'
+                    ]
+                ],
+                'docBlock'             => '',
+                'responses'            => [
+                    '200',
+                    '400',
+                    '401',
+                    '403',
+                    '404',
+                    '405',
+                    '422',
+                    '429',
+                    '500',
+                    '503'
+                ]
+            ],
+            [
+                'uri'                  => 'welcome',
+                'methods'              => [
+                    'PUT'
+                ],
+                'middlewares'          => [],
+                'controller'           => 'WelcomeController',
+                'controller_full_path' => 'Rakutentech\LaravelRequestDocs\Tests\TestControllers\WelcomeController',
+                'method'               => 'edit',
+                'httpMethod'           => 'PUT',
+                'rules'                => [
+                    'message_param'  => [
+                        'nullable|string'
+                    ],
+                    'search_string'  => [
+                        'string'
+                    ],
+                    'search_array'   => [
+                        'array'
+                    ],
+                    'search_integer' => [
+                        'integer'
+                    ],
+                    'search_boolean' => [
+                        'boolean'
+                    ]
+                ],
+                'docBlock'             => '',
+                'responses'            => [
+                    '200',
+                    '400',
+                    '401',
+                    '403',
+                    '404',
+                    '405',
+                    '422',
+                    '429',
+                    '500',
+                    '503'
+                ]
+            ],
+            [
+                'uri'                  => 'welcome',
+                'methods'              => [
+                    'DELETE'
+                ],
+                'middlewares'          => [],
+                'controller'           => 'WelcomeController',
+                'controller_full_path' => 'Rakutentech\LaravelRequestDocs\Tests\TestControllers\WelcomeController',
+                'method'               => 'destroy',
+                'httpMethod'           => 'DELETE',
+                'rules'                => [
+                    'message_param' => [
+                        'nullable|string'
+                    ]
+                ],
+                'docBlock'             => '',
+                'responses'            => [
+                    '200',
+                    '400',
+                    '401',
+                    '403',
+                    '404',
+                    '405',
+                    '422',
+                    '429',
+                    '500',
+                    '503'
+                ]
+            ],
+            [
+                'uri'                  => 'single',
+                'methods'              => [
+                    'GET',
+                    'HEAD'
+                ],
+                'middlewares'          => [],
+                'controller'           => 'SingleActionController',
+                'controller_full_path' => 'Rakutentech\LaravelRequestDocs\Tests\TestControllers\SingleActionController',
+                'method'               => '__invoke',
+                'httpMethod'           => 'GET',
+                'rules'                => [],
+                'docBlock'             => '',
+                'responses'            => [
+                    '200',
+                    '400',
+                    '401',
+                    '403',
+                    '404',
+                    '405',
+                    '422',
+                    '429',
+                    '500',
+                    '503'
+                ]
+            ],
+            [
+                'uri'                  => 'users',
+                'methods'              => [
+                    'GET',
+                    'HEAD'
+                ],
+                'middlewares'          => [],
+                'controller'           => 'UserController',
+                'controller_full_path' => 'Rakutentech\LaravelRequestDocs\Tests\TestControllers\UserController',
+                'method'               => '__invoke',
+                'httpMethod'           => 'GET',
+                'rules'                => [],
+                'docBlock'             => '',
+                'responses'            => [
+                    '200',
+                    '400',
+                    '401',
+                    '403',
+                    '404',
+                    '405',
+                    '422',
+                    '429',
+                    '500',
+                    '503'
+                ]
+            ]
+        ];
+
+        $this->assertSame($expected, collect($docs)->toArray());
     }
 
     public function testDocsCanFetchAllMethods()
@@ -31,7 +296,7 @@ class LRDTest extends TestCase
         $docs    = $this->lrd->getDocs();
         $methods = [];
         foreach ($docs as $doc) {
-            $methods = array_merge($methods, $doc['methods']);
+            $methods = array_merge($methods, $doc->getMethods());
         }
         $methods = array_unique($methods);
         sort($methods);
@@ -43,28 +308,28 @@ class LRDTest extends TestCase
         Config::set('request-docs.only_route_uri_start_with', 'welcome');
         $docs = $this->lrd->getDocs();
         foreach ($docs as $doc) {
-            $this->assertStringStartsWith('welcome', $doc['uri']);
+            $this->assertStringStartsWith('welcome', $doc->getUri());
         }
     }
 
     public function testGroupByURI()
     {
-        Route::get('users', [UserController::class]);
-        Route::post('users', [UserController::class]);
-        Route::put('users/update', [UserController::class]);
-        Route::put('api/users/', [UserController::class]);
-        Route::put('api/users/{id}', [UserController::class]);
-        Route::put('api/users_roles/{id}', [UserController::class]);
-        Route::put('api/v1/users', [UserController::class]);
-        Route::put('api/v1/users/{id}/store', [UserController::class]);
-        Route::put('api/v2/users', [UserController::class]);
-        Route::put('api/v99/users', [UserController::class]);
+        Route::get('users', UserController::class);
+        Route::post('users', UserController::class);
+        Route::put('users/update', UserController::class);
+        Route::put('api/users/', UserController::class);
+        Route::put('api/users/{id}', UserController::class);
+        Route::put('api/users_roles/{id}', UserController::class);
+        Route::put('api/v1/users', UserController::class);
+        Route::put('api/v1/users/{id}/store', UserController::class);
+        Route::put('api/v2/users', UserController::class);
+        Route::put('api/v99/users', UserController::class);
 
         $docs = $this->lrd->getDocs();
         $docs = $this->lrd->groupDocs($docs, 'api_uri');
 
         $grouped = collect($docs)
-            ->map(function (array $item) {
+            ->map(function (Doc $item) {
                 return collect($item)->only(['uri', 'group', 'group_index', 'httpMethod'])->toArray();
             })
             ->groupBy('group');
@@ -191,24 +456,24 @@ class LRDTest extends TestCase
     public function testGroupByURISorted()
     {
         // Define routes with random ordering.
-        Route::post('api/v1/users/store', [UserController::class]);
-        Route::get('api/v1/users', [UserController::class]);
+        Route::post('api/v1/users/store', UserController::class);
+        Route::get('api/v1/users', UserController::class);
 
-        Route::post('api/v1/health', [UserController::class]);
+        Route::post('api/v1/health', UserController::class);
 
-        Route::put('api/v1/users/update', [UserController::class]);
-        Route::delete('api/v1/users/destroy', [UserController::class]);
+        Route::put('api/v1/users/update', UserController::class);
+        Route::delete('api/v1/users/destroy', UserController::class);
 
-        Route::get('api/v1/health', [UserController::class]);
+        Route::get('api/v1/health', UserController::class);
 
         $docs = $this->lrd->getDocs();
         $docs = $this->lrd->groupDocs($docs, 'api_uri');
 
         $sorted = collect($docs)
-            ->filter(function (array $doc) {
-                return in_array($doc['group'], ['api/v1/users', 'api/v1/health']);
+            ->filter(function (Doc $doc) {
+                return in_array($doc->getGroup(), ['api/v1/users', 'api/v1/health']);
             })
-            ->map(function (array $doc) {
+            ->map(function (Doc $doc) {
                 return collect($doc)->only(['uri', 'group', 'group_index'])->toArray();
             })
             ->values();
@@ -256,7 +521,7 @@ class LRDTest extends TestCase
         $docs    = $this->lrd->getDocs();
         $docs    = $this->lrd->groupDocs($docs, 'api_uri');
         $grouped = collect($docs)
-            ->map(function (array $item) {
+            ->map(function (Doc $item) {
                 return collect($item)->only(['uri', 'group', 'group_index', 'httpMethod'])->toArray();
             })
             ->groupBy('group');
@@ -310,14 +575,14 @@ class LRDTest extends TestCase
 
     public function testGroupByFQController()
     {
-        Route::get('users', [UserController::class]);
-        Route::post('users', [UserController::class]);
-        Route::put('users/update', [UserController::class]);
+        Route::get('users', UserController::class);
+        Route::post('users', UserController::class);
+        Route::put('users/update', UserController::class);
         $docs = $this->lrd->getDocs();
         $docs = $this->lrd->groupDocs($docs, 'controller_full_path');
 
         $grouped = collect($docs)
-            ->map(function (array $item) {
+            ->map(function (Doc $item) {
                 return collect($item)->only(['controller_full_path', 'group', 'group_index', 'httpMethod'])->toArray();
             })
             ->groupBy('group');

@@ -2,10 +2,9 @@
 
 namespace Rakutentech\LaravelRequestDocs;
 
+use Illuminate\Support\Facades\Route;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Rakutentech\LaravelRequestDocs\Commands\LaravelRequestDocsCommand;
-use Route;
 
 class LaravelRequestDocsServiceProvider extends PackageServiceProvider
 {

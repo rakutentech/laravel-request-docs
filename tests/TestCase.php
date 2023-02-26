@@ -36,7 +36,7 @@ class TestCase extends Orchestra
         Route::get('/', [TestControllers\WelcomeController::class, 'index']);
         Route::get('welcome', [TestControllers\WelcomeController::class, 'index']);
         Route::post('welcome', [TestControllers\WelcomeController::class, 'store'])->middleware('auth:api');
-        Route::put('welcome', [TestControllers\WelcomeController::class, 'edit']);
+        Route::put('welcome', 'Rakutentech\LaravelRequestDocs\Tests\TestControllers\WelcomeController@edit');
         Route::delete('welcome', [TestControllers\WelcomeController::class, 'destroy']);
         Route::get('single', TestControllers\SingleActionController::class);
 

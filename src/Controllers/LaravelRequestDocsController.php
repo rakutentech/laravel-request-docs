@@ -2,6 +2,7 @@
 
 namespace Rakutentech\LaravelRequestDocs\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Rakutentech\LaravelRequestDocs\LaravelRequestDocs;
@@ -10,7 +11,8 @@ use Illuminate\Routing\Controller;
 
 class LaravelRequestDocsController extends Controller
 {
-    private $laravelRequestDocs;
+    private LaravelRequestDocs $laravelRequestDocs;
+    private LaravelRequestDocsToOpenApi $laravelRequestDocsToOpenApi;
 
     public function __construct(LaravelRequestDocs $laravelRequestDoc, LaravelRequestDocsToOpenApi $laravelRequestDocsToOpenApi)
     {
@@ -18,22 +20,23 @@ class LaravelRequestDocsController extends Controller
         $this->laravelRequestDocsToOpenApi = $laravelRequestDocsToOpenApi;
     }
 
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
-        return view('request-docs::index');
+        return response()->view('request-docs::index');
     }
-    public function api(Request $request)
+
+    public function api(Request $request): JsonResponse
     {
         $docs = $this->laravelRequestDocs->getDocs();
-        $docs = $this->laravelRequestDocs->sortDocs($docs, $request->sort);
-        $docs = $this->laravelRequestDocs->groupDocs($docs, $request->groupby);
+        $docs = $this->laravelRequestDocs->sortDocs($docs, $request->input('sort'));
+        $docs = $this->laravelRequestDocs->groupDocs($docs, $request->input('groupby'));
 
-        $showGet = $request->has('showGet') ? $request->showGet == 'true' : true;
-        $showPost = $request->has('showPost') ? $request->showPost == 'true' : true;
-        $showPut = $request->has('showPut') ? $request->showPut == 'true' : true;
-        $showPatch = $request->has('showPatch') ? $request->showPatch == 'true' : true;
-        $showDelete = $request->has('showDelete') ? $request->showDelete == 'true' : true;
-        $showHead = $request->has('showHead') ? $request->showHead == 'true' : true;
+        $showGet = $request->has('showGet') ? $request->input('showGet') == 'true' : true;
+        $showPost = $request->has('showPost') ? $request->input('showPost') == 'true' : true;
+        $showPut = $request->has('showPut') ? $request->input('showPut') == 'true' : true;
+        $showPatch = $request->has('showPatch') ? $request->input('showPatch') == 'true' : true;
+        $showDelete = $request->has('showDelete') ? $request->input('showDelete') == 'true' : true;
+        $showHead = $request->has('showHead') ? $request->input('showHead') == 'true' : true;
 
         $docs = $this->laravelRequestDocs->filterByMethods(
             $docs,
@@ -44,7 +47,8 @@ class LaravelRequestDocsController extends Controller
             $showDelete,
             $showHead
         );
-        if ($request->openapi) {
+
+        if ($request->input('openapi')) {
             return response()->json(
                 $this->laravelRequestDocsToOpenApi->openApi($docs)->toArray(),
                 Response::HTTP_OK,
@@ -56,7 +60,7 @@ class LaravelRequestDocsController extends Controller
         }
 
         return response()->json(
-            $docs,
+            collect($docs),
             Response::HTTP_OK,
             [
                 'Content-type'=> 'application/json; charset=utf-8',
@@ -65,6 +69,9 @@ class LaravelRequestDocsController extends Controller
         );
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
     public function assets(Request $request)
     {
         $path = explode('/', $request->path());

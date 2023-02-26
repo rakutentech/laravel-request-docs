@@ -2,17 +2,14 @@
 
 namespace Rakutentech\LaravelRequestDocs;
 
-use Route;
-use ReflectionMethod;
-use Illuminate\Support\Str;
-use Exception;
-use Throwable;
-
 class LaravelRequestDocsToOpenApi
 {
-    private $openApi = [];
+    private array $openApi = [];
 
-    // docs from $docs = $this->laravelRequestDocs->getDocs();
+    /**
+     * @param  \Rakutentech\LaravelRequestDocs\Doc[]  $docs $this->laravelRequestDocs->getDocs()
+     * @return $this
+     */
     public function openApi(array $docs): LaravelRequestDocsToOpenApi
     {
         $this->openApi['openapi']                 = config('request-docs.open_api.version', '3.0.0');
@@ -29,23 +26,27 @@ class LaravelRequestDocsToOpenApi
         return $this;
     }
 
-    private function docsToOpenApi(array $docs)
+    /**
+     * @param  \Rakutentech\LaravelRequestDocs\Doc[]  $docs
+     * @return void
+     */
+    private function docsToOpenApi(array $docs): void
     {
         $this->openApi['paths'] = [];
         foreach ($docs as $doc) {
             $requestHasFile = false;
-            $httpMethod = strtolower($doc['httpMethod']);
+            $httpMethod = strtolower($doc->getHttpMethod());
             $isGet    = $httpMethod == 'get';
             $isPost   = $httpMethod == 'post';
             $isPut    = $httpMethod == 'put';
             $isDelete = $httpMethod == 'delete';
 
-            $this->openApi['paths'][$doc['uri']][$httpMethod]['description'] = $doc['docBlock'];
-            $this->openApi['paths'][$doc['uri']][$httpMethod]['parameters'] = [];
+            $this->openApi['paths'][$doc->getUri()][$httpMethod]['description'] = $doc->getDocBlock();
+            $this->openApi['paths'][$doc->getUri()][$httpMethod]['parameters'] = [];
 
-            $this->openApi['paths'][$doc['uri']][$httpMethod]['responses'] = config('request-docs.open_api.responses', []);
+            $this->openApi['paths'][$doc->getUri()][$httpMethod]['responses'] = config('request-docs.open_api.responses', []);
 
-            foreach ($doc['rules'] as $attribute => $rules) {
+            foreach ($doc->getRules() as $attribute => $rules) {
                 foreach ($rules as $rule) {
                     if ($isPost || $isPut || $isDelete) {
                         $requestHasFile = $this->attributeIsFile($rule);
@@ -60,27 +61,27 @@ class LaravelRequestDocsToOpenApi
             $contentType = $requestHasFile ? 'multipart/form-data' : 'application/json';
 
             if ($isGet) {
-                $this->openApi['paths'][$doc['uri']][$httpMethod]['parameters'] = [];
+                $this->openApi['paths'][$doc->getUri()][$httpMethod]['parameters'] = [];
             }
             if ($isPost || $isPut || $isDelete) {
-                $this->openApi['paths'][$doc['uri']][$httpMethod]['requestBody'] = $this->makeRequestBodyItem($contentType);
+                $this->openApi['paths'][$doc->getUri()][$httpMethod]['requestBody'] = $this->makeRequestBodyItem($contentType);
             }
 
-            foreach ($doc['rules'] as $attribute => $rules) {
+            foreach ($doc->getRules() as $attribute => $rules) {
                 foreach ($rules as $rule) {
                     if ($isGet) {
                         $parameter = $this->makeQueryParameterItem($attribute, $rule);
-                        $this->openApi['paths'][$doc['uri']][$httpMethod]['parameters'][] = $parameter;
+                        $this->openApi['paths'][$doc->getUri()][$httpMethod]['parameters'][] = $parameter;
                     }
                     if ($isPost || $isPut || $isDelete) {
-                        $this->openApi['paths'][$doc['uri']][$httpMethod]['requestBody']['content'][$contentType]['schema']['properties'][$attribute] = $this->makeRequestBodyContentPropertyItem($rule);
+                        $this->openApi['paths'][$doc->getUri()][$httpMethod]['requestBody']['content'][$contentType]['schema']['properties'][$attribute] = $this->makeRequestBodyContentPropertyItem($rule);
                     }
                 }
             }
         }
     }
 
-    protected function attributeIsFile(string $rule)
+    protected function attributeIsFile(string $rule): bool
     {
         return str_contains($rule, 'file') || str_contains($rule, 'image');
     }
@@ -126,7 +127,6 @@ class LaravelRequestDocsToOpenApi
             'format' => $this->attributeIsFile($rule) ? 'binary' : $type,
         ];
     }
-
 
     protected function getAttributeType(string $rule): string
     {

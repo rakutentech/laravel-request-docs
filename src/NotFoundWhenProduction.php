@@ -3,11 +3,15 @@
 namespace Rakutentech\LaravelRequestDocs;
 
 use Closure;
-use Illuminate\Http\Response;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class NotFoundWhenProduction
 {
-    public function handle($request, Closure $next)
+    /**
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
+    public function handle(Request $request, Closure $next): Response
     {
         if (app()->environment('prod')) {
             return response()->json([

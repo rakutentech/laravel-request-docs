@@ -4,11 +4,14 @@ namespace Rakutentech\LaravelRequestDocs;
 
 use Closure;
 use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use KitLoong\AppLogger\QueryLog\LogWriter as QueryLogger;
-use Log;
 use Event;
 use Str;
+use Symfony\Component\HttpFoundation\Response;
+
 
 class LaravelRequestDocsMiddleware extends QueryLogger
 {
@@ -17,7 +20,12 @@ class LaravelRequestDocsMiddleware extends QueryLogger
     private array $models = [];
     private array $modelsTimeline = [];
 
-    public function handle($request, Closure $next)
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
+    public function handle(Request $request, Closure $next): Response
     {
         if (!$request->headers->has('X-Request-LRD') || !config('app.debug')) {
             return $next($request);
@@ -42,7 +50,7 @@ class LaravelRequestDocsMiddleware extends QueryLogger
             return $response;
         }
 
-        $content = $response->getData();
+        $content       = $response->getData();
         $content->_lrd = [
             'queries' => $this->queries,
             'logs' => $this->logs,
@@ -51,14 +59,14 @@ class LaravelRequestDocsMiddleware extends QueryLogger
             'modelsTimeline' => array_unique($this->modelsTimeline, SORT_REGULAR),
             'memory' => (string) round(memory_get_peak_usage(true) / 1048576, 2) . "MB",
         ];
-        $jsonContent = json_encode($content);
+        $jsonContent   = json_encode($content);
 
         if (in_array('gzip', $request->getEncodings()) && function_exists('gzencode')) {
-            $level = 9; // best compression;
+            $level       = 9; // best compression;
             $jsonContent = gzencode($jsonContent, $level);
             $response->headers->add([
-                'Content-type' => 'application/json; charset=utf-8',
-                'Content-Length'=> strlen($jsonContent),
+                'Content-type'     => 'application/json; charset=utf-8',
+                'Content-Length'   => strlen($jsonContent),
                 'Content-Encoding' => 'gzip',
             ]);
         }
@@ -72,7 +80,8 @@ class LaravelRequestDocsMiddleware extends QueryLogger
             $this->queries[] = $this->getMessages($query);
         });
     }
-    public function listenToLogs()
+
+    public function listenToLogs(): void
     {
         Log::listen(function ($message) {
             $this->logs[] = $message;
