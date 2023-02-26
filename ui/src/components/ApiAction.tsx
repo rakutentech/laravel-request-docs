@@ -65,7 +65,6 @@ export default function ApiAction(props: Props) {
     }
 
     const handleSendRequest = () => {
-        updateLocalStorage()
         try {
             JSON.parse(requestHeaders)
         } catch (error: any) {
@@ -74,6 +73,10 @@ export default function ApiAction(props: Props) {
         }
         const headers = JSON.parse(requestHeaders)
         headers['X-Request-LRD'] = true
+        if (fileParams != null) {
+            delete headers['Content-Type']
+            headers['Accept'] = 'multipart/form-data'
+        }
 
         const options: any = {
             credentials: "include",
@@ -151,11 +154,13 @@ export default function ApiAction(props: Props) {
                 }
                 setResponseData(JSON.stringify(data, null, 2))
                 setActiveTab('response')
+                updateLocalStorage()
             }).catch((error) => {
                 setError("Response error: " + error)
                 setResponseStatus(500)
                 setSendingRequest(false)
                 setActiveTab('response')
+                updateLocalStorage()
             })
 
     }
@@ -195,7 +200,27 @@ export default function ApiAction(props: Props) {
                 return
             }
             const body: any = {}
-            for (const [key] of Object.entries(lrdDocsItem.rules)) {
+            for (const [key, rule] of Object.entries(lrdDocsItem.rules)) {
+                if (rule.length == 0) {
+                    continue
+                }
+                const theRule = rule[0].split("|")
+                if (theRule.includes('file') || theRule.includes('image')) {
+                    continue
+                }
+                if (key.includes(".*")) {
+                    body[key] = []
+                    continue
+                }
+                if (key.includes(".")) {
+                    const keys = key.split(".")
+                    if (keys.length == 2) {
+                        body[keys[0]] = {}
+                        body[keys[0]][keys[1]] = ""
+                    }
+                    continue
+                }
+
                 body[key] = ""
             }
             const jsonBody = JSON.stringify(body, null, 2)

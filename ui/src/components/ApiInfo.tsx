@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import shortid from 'shortid';
 import {explode} from '../libs/strings'
 import type { IAPIInfo } from '../libs/types'
-import { ChevronRightIcon, LinkIcon, EnvelopeIcon  } from '@heroicons/react/24/solid'
+import { ChevronRightIcon, LinkIcon, EnvelopeIcon  } from '@heroicons/react/24/outline'
 
 interface Props {
     lrdDocsItem: IAPIInfo,
@@ -11,6 +11,22 @@ interface Props {
 export default function ApiInfo(props: Props) {
 
     const { lrdDocsItem, method } = props
+
+    const [hasFile, setHasFile] = useState(false)
+    useEffect(() => {
+        //check if lrdDocsItem has rules
+        const files: any = []
+        for (const [key, rule] of Object.entries(lrdDocsItem.rules)) {
+            if (rule.length == 0) {
+                continue
+            }
+            const theRule = rule[0].split("|")
+            if (theRule.includes('file') || theRule.includes('image')) {
+                files.push(key)
+            }
+        }
+        setHasFile(files.length > 0)
+    }, [])    
 
     const StyledRule = (theRule: any): JSX.Element => {
         theRule = theRule.rule
@@ -77,7 +93,13 @@ export default function ApiInfo(props: Props) {
             </h2>
             <h3 className='pt-4'>
                 <span className='text-sm text-slate-500'>REQUEST SCHEMA</span>
-                <code className='pl-2 text-xs'>application/json</code>
+                <code className='pl-2 text-xs'>
+                    {hasFile ? (
+                        'multipart/form-data'
+                    ) : (
+                        'application/json'
+                    )}
+                </code>
             </h3>
             <div className='pt-4'>
 
@@ -87,7 +109,8 @@ export default function ApiInfo(props: Props) {
 
                             <tr key={shortid.generate()}>
                                 <th className='param-cell'>
-                                    ¬ <code className='pl-1'>
+                                    <span className='text-blue-500 pr-1'>¬</span>
+                                    <code className='pl-1'>
                                         {key}
                                         {lrdDocsItem.rules[key].map((rule) => (
                                             rule.split('|').map((theRule) => (

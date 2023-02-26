@@ -12,7 +12,7 @@ import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-one_dark";
 import "ace-builds/src-noconflict/ext-language_tools";
 
-import { PaperAirplaneIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
+import { PaperAirplaneIcon, ChevronRightIcon, ExclamationTriangleIcon, LockOpenIcon } from '@heroicons/react/24/outline'
 
 
 interface Props {
@@ -61,7 +61,11 @@ export default function ApiActionRequest(props: Props) {
         //check if lrdDocsItem has rules
         const files: any = []
         for (const [key, rule] of Object.entries(lrdDocsItem.rules)) {
-            if (rule.includes('file') || rule.includes('image')) {
+            if (rule.length == 0) {
+                continue
+            }
+            const theRule = rule[0].split("|")
+            if (theRule.includes('file') || theRule.includes('image')) {
                 files.push(key)
             }
         }
@@ -90,6 +94,13 @@ export default function ApiActionRequest(props: Props) {
                 <input type="checkbox" />
                 <div className="collapse-title text-sm text-slate-500 pl-0">
                     Set Global Headers
+                </div>
+                <div className='text-sm text-slate-500 p-0'>
+                    <ExclamationTriangleIcon className='inline-block w-4 h-4 ml-1 text-yellow-500' />
+                    &nbsp; This request requires a file upload. <br />
+                    <LockOpenIcon className='inline-block w-4 h-4 ml-1 text-slate-500' />
+                    &nbsp; Global headers will be overridden as <code>application/json</code> ⇢ <code>multipart/form-data</code>
+                    <br />
                 </div>
                 <div className="collapse-content p-0">
                     <AceEditor
@@ -134,14 +145,6 @@ export default function ApiActionRequest(props: Props) {
                     <span className='pl-5 text-sm text-slate-500'>REQUEST BODY</span>
                     {files.map((file: string) =>
                         <div key={shortid.generate()}>
-                            <div className='m-2 pl-3'>
-                                <code>
-                                    <small>{file}</small>
-                                </code>
-                                {file.includes('.*') && (
-                                    <ChevronRightIcon className='inline-block w-4 h-4 ml-1' />
-                                )}
-                            </div>
                             <Files
                                 className='p-5 bg-gray-800 border border-gray-500 border-double hover:bg-gray-700 hover:border-dashed hover:cursor-pointer'
                                 onChange={(e: any) => handleFileUploaded(e, file)}
@@ -159,10 +162,19 @@ export default function ApiActionRequest(props: Props) {
                                         ))}
                                     </div>
                                 )}
-                                {file.includes('.*')
-                                    ? 'Drop or click to upload multiple files'
-                                    : 'Drop or click to upload single file'
-                                }
+                                <span className='text-slate-500'>
+                                    <code>
+                                        <small>{file}</small>
+                                    </code>
+                                    {file.includes('.*') && (
+                                        <ChevronRightIcon className='inline-block w-4 h-4 ml-1' />
+                                    )}
+                                    <br />
+                                    {file.includes('.*')
+                                        ? 'Drop or click to upload multiple files'
+                                        : 'Drop or click to upload single file'
+                                    }
+                                </span>
                             </Files>
                         </div>
                     )}

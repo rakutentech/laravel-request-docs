@@ -5,7 +5,7 @@ import type { IAPIInfo } from '../../libs/types'
 import { responsesText } from '../../libs/constants'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { ChevronRightIcon, CodeBracketIcon } from '@heroicons/react/24/solid';
+import { ChevronRightIcon, CodeBracketIcon } from '@heroicons/react/24/outline';
 import ApiActionCurl from './ApiActionCurl';
 
 interface Props {
@@ -62,8 +62,7 @@ export default function ApiActionInfo(props: Props) {
                         )}
                         <tr>
                             <th>
-                            Response
-                            <br />HTTP Codes
+                                Status Codes
                             </th>
                             <td>
                                 <div className="collapse">
