@@ -30,6 +30,7 @@ export default function ApiActionSQL(props: Props) {
                         <AceEditor
                             maxLines={50}
                             width='100%'
+                            readOnly={true}
                             mode="sql"
                             wrapEnabled={true}
                             value={sqlData}

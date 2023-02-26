@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { InformationCircleIcon, PaperAirplaneIcon, CircleStackIcon, DocumentTextIcon, ReceiptRefundIcon  } from '@heroicons/react/24/solid'
+import { InformationCircleIcon, PaperAirplaneIcon, CircleStackIcon, DocumentTextIcon, ReceiptRefundIcon  } from '@heroicons/react/24/outline'
 
 interface Props {
     responseStatus: number,

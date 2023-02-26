@@ -49,7 +49,7 @@ td {
 .table th.param-cell {
     @apply font-normal;
     @apply truncate;
-    border-left: 1px solid rgb(124, 124, 187);
+    border-left: 2px solid rgb(59 130 246 / var(--tw-border-opacity));
     padding-left: 0px;
 
 }
@@ -97,7 +97,4 @@ td {
 }
 .response-500,.response-501,.response-502,.response-503 {
     @apply bg-red-400 text-red-800;
-}
-.files-dropzone {
-    @apply bg-base-200 rounded p-5 mt-3 mb-3;
 }

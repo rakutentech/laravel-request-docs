@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
+import type { IAPIInfo } from '../libs/types'
+import Files from 'react-files'
 import "ace-builds";
+import shortid from 'shortid';
 import jsonWorkerUrl from 'ace-builds/src-min-noconflict/worker-json?url';
 ace.config.setModuleUrl('ace/mode/json_worker', jsonWorkerUrl);
 
@@ -9,10 +12,11 @@ import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-one_dark";
 import "ace-builds/src-noconflict/ext-language_tools";
 
-import { PaperAirplaneIcon  } from '@heroicons/react/24/solid'
+import { PaperAirplaneIcon, ChevronRightIcon, ExclamationTriangleIcon, LockOpenIcon } from '@heroicons/react/24/outline'
 
 
 interface Props {
+    lrdDocsItem: IAPIInfo,
     requestUri: string,
     method: string,
     sendingRequest: boolean,
@@ -22,13 +26,15 @@ interface Props {
     setRequestUri: (requestUri: string) => void,
     handleSendRequest: () => void,
     handleChangeRequestHeaders: (requestHeaders: string) => void,
-    handleFileChange: (e: any) => void,
+    handleFileChange: (files: any, file: any) => void,
     setBodyParams: (bodyParams: string) => void,
     setQueryParams: (queryParams: string) => void,
 }
 
 export default function ApiActionRequest(props: Props) {
-    const { requestUri,
+    const {
+        lrdDocsItem,
+        requestUri,
         method,
         sendingRequest,
         requestHeaders,
@@ -40,6 +46,31 @@ export default function ApiActionRequest(props: Props) {
         handleFileChange,
         setBodyParams,
         setQueryParams } = props
+
+    const [files, setFiles] = useState<any>([])
+    const [uploadedFiles, setUploadedFiles] = useState<any>({})
+
+    const handleFileUploaded = (files: any, file: any) => {
+        const uf = { ...uploadedFiles }
+        uf[file] = files
+        setUploadedFiles(uf)
+        handleFileChange(files, file)
+    }
+
+    useEffect(() => {
+        //check if lrdDocsItem has rules
+        const files: any = []
+        for (const [key, rule] of Object.entries(lrdDocsItem.rules)) {
+            if (rule.length == 0) {
+                continue
+            }
+            const theRule = rule[0].split("|")
+            if (theRule.includes('file') || theRule.includes('image')) {
+                files.push(key)
+            }
+        }
+        setFiles(files)
+    }, [])
 
     return (
         <>
@@ -63,6 +94,13 @@ export default function ApiActionRequest(props: Props) {
                 <input type="checkbox" />
                 <div className="collapse-title text-sm text-slate-500 pl-0">
                     Set Global Headers
+                </div>
+                <div className='text-sm text-slate-500 p-0'>
+                    <ExclamationTriangleIcon className='inline-block w-4 h-4 ml-1 text-yellow-500' />
+                    &nbsp; This request requires a file upload. <br />
+                    <LockOpenIcon className='inline-block w-4 h-4 ml-1 text-slate-500' />
+                    &nbsp; Global headers will be overridden as <code>application/json</code> ⇢ <code>multipart/form-data</code>
+                    <br />
                 </div>
                 <div className="collapse-content p-0">
                     <AceEditor
@@ -105,18 +143,41 @@ export default function ApiActionRequest(props: Props) {
             {(method == 'POST' || method == 'PUT' || method == 'PATCH') && (
                 <div className="mockup-code">
                     <span className='pl-5 text-sm text-slate-500'>REQUEST BODY</span>
-                    {/* <div className='pl-5'>Image</div>
-                    <div className="files-dropzone">
-                        <Files
-                            className='files-dropzone'
-                            onChange={handleFileChange}
-                            multiple={true}
-                            maxFileSize={10000000}
-                            minFileSize={0}
-                            clickable>
-                            Drop files here or click to upload
-                        </Files>
-                    </div> */}
+                    {files.map((file: string) =>
+                        <div key={shortid.generate()}>
+                            <Files
+                                className='p-5 bg-gray-800 border border-gray-500 border-double hover:bg-gray-700 hover:border-dashed hover:cursor-pointer'
+                                onChange={(e: any) => handleFileUploaded(e, file)}
+                                multiple={file.includes('.*')}
+                                maxFileSize={10000000}
+                                minFileSize={0}
+                                clickable
+                            >
+                                {uploadedFiles[file] && uploadedFiles[file].length > 0 && (
+                                    <div className='text-sm text-gray-300'>
+                                        {uploadedFiles[file].map((file: any, index: any) => (
+                                            <div key={file.id}>
+                                                {index + 1}) {file.name} - {file.size} bytes
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                                <span className='text-slate-500'>
+                                    <code>
+                                        <small>{file}</small>
+                                    </code>
+                                    {file.includes('.*') && (
+                                        <ChevronRightIcon className='inline-block w-4 h-4 ml-1' />
+                                    )}
+                                    <br />
+                                    {file.includes('.*')
+                                        ? 'Drop or click to upload multiple files'
+                                        : 'Drop or click to upload single file'
+                                    }
+                                </span>
+                            </Files>
+                        </div>
+                    )}
                     <AceEditor
                         height='200px'
                         width='100%'

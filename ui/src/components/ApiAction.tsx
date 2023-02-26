@@ -28,6 +28,7 @@ export default function ApiAction(props: Props) {
     const [sendingRequest, setSendingRequest] = useState(false);
     const [queryParams, setQueryParams] = useState('');
     const [bodyParams, setBodyParams] = useState('');
+    const [fileParams, setFileParams] = useState(null);
     const [responseData, setResponseData] = useState("");
     const [sqlQueriesCount, setSqlQueriesCount] = useState(0);
     const [sqlData, setSqlData] = useState("");
@@ -37,13 +38,20 @@ export default function ApiAction(props: Props) {
     const [responseHeaders, setResponseHeaders] = useState("");
     const [activeTab, setActiveTab] = useState('info');
 
-    const handleFileChange = (files: any) => {
-        const bodyAppend = JSON.parse(bodyParams)
-        bodyAppend["avatar"] = files[0]
-        setBodyParams(JSON.stringify(bodyAppend))
+    const handleFileChange = (files: any, file: any) => {
+        const formData: any = new FormData()
+        if (file.includes('.*')) {
+            const fileParam = file.replace('.*', '')
+            for (let i = 0; i < files.length; i++) {
+                formData.append(`${fileParam}[${i}]`, files[i]);
+            }
+        } else {
+            formData.append(file, files[0])
+        }
+        setFileParams(formData)
     }
 
-        // // update localstorage
+    // // update localstorage
     const updateLocalStorage = () => {
         const jsonAllParamsRegistry = JSON.parse(allParamsRegistry)
         if (method == 'GET' || method == 'HEAD' || method == 'DELETE') {
@@ -57,7 +65,6 @@ export default function ApiAction(props: Props) {
     }
 
     const handleSendRequest = () => {
-        updateLocalStorage()
         try {
             JSON.parse(requestHeaders)
         } catch (error: any) {
@@ -66,6 +73,10 @@ export default function ApiAction(props: Props) {
         }
         const headers = JSON.parse(requestHeaders)
         headers['X-Request-LRD'] = true
+        if (fileParams != null) {
+            delete headers['Content-Type']
+            headers['Accept'] = 'multipart/form-data'
+        }
 
         const options: any = {
             credentials: "include",
@@ -76,11 +87,22 @@ export default function ApiAction(props: Props) {
         if (method == 'POST' || method == 'PUT' || method == 'PATCH') {
             try {
                 JSON.parse(bodyParams)
+                if (fileParams != null) {
+                    for (const [key, value] of Object.entries(JSON.parse(bodyParams))) {
+                        fileParams.append(key, value)
+                    }
+                }
+
             } catch (error: any) {
                 setError("Request body incorrect: " + error.message)
                 return
             }
-            options['body'] = bodyParams
+
+            if (fileParams != null) {
+                options['body'] = fileParams // includes body as well
+            } else {
+                options['body'] = bodyParams // just the body
+            }
         }
 
         const startTime = performance.now();
@@ -93,51 +115,53 @@ export default function ApiAction(props: Props) {
         setError(null)
 
         fetch(`${host}/${requestUri}${queryParams}`, options)
-        .then((response) => {
-            let timeTaken = performance.now() - startTime
-            // round to 3 decimals
-            timeTaken = Math.round((timeTaken + Number.EPSILON) * 1000) / 1000
-            setTimeTaken(timeTaken)
-            setResponseStatus(response.status)
-            setResponseHeaders(JSON.stringify(Object.fromEntries(response.headers), null, 2))
-            setSendingRequest(false)
-            return response.json();
-        }).then((data) => {
-            
-            if (data && data._lrd && data._lrd.queries) {
-                const sqlQueries = data._lrd.queries.map((query: any) => {
-                    return "Connection: " 
-                        + query.connection_name 
-                        + " Time taken: " 
-                        + query.time 
-                        + "ms: \n" 
-                        + query.sql + "\n"
-                }).join("\n")
-                setSqlData(sqlQueries)
-                setSqlQueriesCount(data._lrd.queries.length)
-            }
-            if (data && data._lrd && data._lrd.logs) {
-                let logs = ""
-                for (const value of data._lrd.logs) {
-                    logs += value.level + ": " + value.message + "\n"
+            .then((response) => {
+                let timeTaken = performance.now() - startTime
+                // round to 3 decimals
+                timeTaken = Math.round((timeTaken + Number.EPSILON) * 1000) / 1000
+                setTimeTaken(timeTaken)
+                setResponseStatus(response.status)
+                setResponseHeaders(JSON.stringify(Object.fromEntries(response.headers), null, 2))
+                setSendingRequest(false)
+                return response.json();
+            }).then((data) => {
+
+                if (data && data._lrd && data._lrd.queries) {
+                    const sqlQueries = data._lrd.queries.map((query: any) => {
+                        return "Connection: "
+                            + query.connection_name
+                            + " Time taken: "
+                            + query.time
+                            + "ms: \n"
+                            + query.sql + "\n"
+                    }).join("\n")
+                    setSqlData(sqlQueries)
+                    setSqlQueriesCount(data._lrd.queries.length)
                 }
-                setLogData(logs)
-            }
-            if (data && data._lrd && data._lrd.memory) {
-                setServerMemory(data._lrd.memory)
-            }
-            // remove key _lrd from response
-            if (data && data._lrd) {
-                delete data._lrd
-            }
-            setResponseData(JSON.stringify(data, null, 2))
-            setActiveTab('response')
-        }).catch((error) => {
-            setError("Response error: " + error)
-            setResponseStatus(500)
-            setSendingRequest(false)
-            setActiveTab('response')
-        })
+                if (data && data._lrd && data._lrd.logs) {
+                    let logs = ""
+                    for (const value of data._lrd.logs) {
+                        logs += value.level + ": " + value.message + "\n"
+                    }
+                    setLogData(logs)
+                }
+                if (data && data._lrd && data._lrd.memory) {
+                    setServerMemory(data._lrd.memory)
+                }
+                // remove key _lrd from response
+                if (data && data._lrd) {
+                    delete data._lrd
+                }
+                setResponseData(JSON.stringify(data, null, 2))
+                setActiveTab('response')
+                updateLocalStorage()
+            }).catch((error) => {
+                setError("Response error: " + error)
+                setResponseStatus(500)
+                setSendingRequest(false)
+                setActiveTab('response')
+                updateLocalStorage()
+            })
 
     }
 
@@ -176,7 +200,27 @@ export default function ApiAction(props: Props) {
                 return
             }
             const body: any = {}
-            for (const [key] of Object.entries(lrdDocsItem.rules)) {
+            for (const [key, rule] of Object.entries(lrdDocsItem.rules)) {
+                if (rule.length == 0) {
+                    continue
+                }
+                const theRule = rule[0].split("|")
+                if (theRule.includes('file') || theRule.includes('image')) {
+                    continue
+                }
+                if (key.includes(".*")) {
+                    body[key] = []
+                    continue
+                }
+                if (key.includes(".")) {
+                    const keys = key.split(".")
+                    if (keys.length == 2) {
+                        body[keys[0]] = {}
+                        body[keys[0]][keys[1]] = ""
+                    }
+                    continue
+                }
+
                 body[key] = ""
             }
             const jsonBody = JSON.stringify(body, null, 2)
@@ -213,6 +257,7 @@ export default function ApiAction(props: Props) {
                 )}
                 {activeTab == 'request' && (
                     <ApiActionRequest
+                        lrdDocsItem={lrdDocsItem}
                         requestUri={requestUri}
                         method={method}
                         sendingRequest={sendingRequest}

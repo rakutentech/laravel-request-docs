@@ -21,6 +21,7 @@
     "git-rev-sync": "^3.0.2",
     "react-ace": "^10.1.0",
     "react-anchor-link-smooth-scroll": "^1.0.12",
+    "react-files": "^3.0.0",
     "react-markdown": "^8.0.5",
     "react-use-localstorage": "^3.5.3",
     "remark-gfm": "^3.0.1",

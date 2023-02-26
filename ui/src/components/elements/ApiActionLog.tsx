@@ -30,6 +30,7 @@ export default function ApiActionLog(props: Props) {
                             maxLines={50}
                             width='100%'
                             mode="sh"
+                            readOnly={true}
                             value={logData}
                             theme="one_dark"
                             wrapEnabled={true}

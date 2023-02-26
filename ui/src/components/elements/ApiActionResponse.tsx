@@ -32,6 +32,7 @@ export default function ApiActionResponse(props: Props) {
                         <div className="collapse-content p-0">
                             <AceEditor
                                 maxLines={35}
+                                readOnly={true}
                                 width='100%'
                                 mode="json"
                                 wrapEnabled={true}
@@ -54,12 +55,15 @@ export default function ApiActionResponse(props: Props) {
             )}
             {responseData && (
                 <div className="mockup-code">
-                    <span className='pl-5 text-sm'>Response. Took: <b>{timeTaken}ms</b>, Status Code: <b>{responseStatus}</b>, Server memory: <b>{serverMemory}</b></span>
+                    <span className='pl-5 text-sm text-slate-500'>RESPONSE</span>
+                    <br />
+                    <span className='pl-5 text-sm'>Time taken: <b>{timeTaken}ms</b>, Status Code: <b>{responseStatus}</b>, Server memory: <b>{serverMemory}</b></span>
                     <AceEditor
                         maxLines={50}
                         width='100%'
                         mode="json"
                         wrapEnabled={true}
+                        readOnly={true}
                         value={responseData}
                         theme="one_dark"
                         onLoad={function (editor) { editor.renderer.setPadding(0); editor.renderer.setScrollMargin(5, 5, 5, 5); editor.renderer.setShowPrintMargin(false); }}

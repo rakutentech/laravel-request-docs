@@ -1,7 +1,17 @@
 import React, { useEffect } from 'react';
 
 import useLocalStorage from 'react-use-localstorage';
-import { MagnifyingGlassIcon, Cog6ToothIcon, ArrowUpRightIcon, MoonIcon, SunIcon, XMarkIcon, ChatBubbleLeftIcon } from '@heroicons/react/24/solid'
+import { MagnifyingGlassIcon,
+     Cog6ToothIcon,
+     ArrowUpRightIcon,
+     MoonIcon,
+     SunIcon,
+     XMarkIcon,
+     Bars3BottomLeftIcon,
+     RectangleGroupIcon,
+     FunnelIcon,
+     CircleStackIcon,
+     ChatBubbleLeftIcon } from '@heroicons/react/24/outline'
 
 interface Props {
     handleChangeSettings: (
@@ -133,8 +143,21 @@ export default function TopNav(props: Props) {
                         </a>
                         <div className="modal" id="modal-settings">
                             <div className="modal-box">
-                                <h3 className="font-bold text-lg">Settings</h3>
-                                <h4 className="font-bold mt-10">Sort By</h4>
+                                <div className="modal-action float-right">
+                                    <a href="#" className="btn btn-sm btn-ghost">
+                                        <XMarkIcon className="h-6 w-6" /> Close
+                                    </a>
+                                </div>
+                                <h3 className="font-bold text-lg mt-7">
+                                    <Cog6ToothIcon className="inline-block h-6 w-6 mr-1" />
+                                    Settings
+                                </h3>
+                                <hr />
+                                <h4 className="font-bold mt-10">
+                                    <Bars3BottomLeftIcon className="inline-block h-6 w-6 mr-1" />
+                                    Sort By
+                                </h4>
+                                <hr />
                                 <div className="form-control">
                                     <label className="label">
 
@@ -148,7 +171,12 @@ export default function TopNav(props: Props) {
                                         <span className="label-text">HTTP Methods</span>
                                     </label>
                                 </div>
-                                <h4 className="font-bold mt-10">Group By</h4>
+                                <h4 className="font-bold mt-10">
+                                    <RectangleGroupIcon className="inline-block h-6 w-6 mr-1" />
+                                    Group By
+                                </h4>
+                                <hr />
+                                <hr />
                                 <div className="form-control">
                                     <label className="label">
 
@@ -162,7 +190,11 @@ export default function TopNav(props: Props) {
                                         <span className="label-text">Controller Name</span>
                                     </label>
                                 </div>
-                                <h4 className="font-bold mt-10">Display Settings</h4>
+                                <h4 className="font-bold mt-10">
+                                    <FunnelIcon className="inline-block h-6 w-6 mr-1" />
+                                    Filter Settings
+                                </h4>
+                                <hr />
                                 <div className="form-control">
                                     <label className="label">
                                         <span className="label-text">GET</span>
@@ -189,7 +221,11 @@ export default function TopNav(props: Props) {
                                         <input type="checkbox" onChange={handleChangeHead} className="toggle toggle-success" checked={showHead == 'true'} />
                                     </label>
                                 </div>
-                                <h4 className="font-bold mt-10">Storage</h4>
+                                <h4 className="font-bold mt-10">
+                                    <CircleStackIcon className="inline-block h-6 w-6 mr-1" />
+                                    Storage
+                                </h4>
+                                <hr />
                                 <div className="form-control">
                                     <label className="label">
                                         <span className="label-text">
@@ -199,11 +235,11 @@ export default function TopNav(props: Props) {
                                         <button className="btn btn-sm btn-error" onClick={handleClearLocalStorage}>Clear</button>
                                     </label>
                                 </div>
-                                <div className="modal-action">
+                                {/* <div className="modal-action">
                                     <a href="#" className="btn btn-sm">
                                         <XMarkIcon className="h-6 w-6" /> Close
                                     </a>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>
