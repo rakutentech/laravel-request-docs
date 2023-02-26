@@ -152,12 +152,12 @@ export default function TopNav(props: Props) {
                                     <Cog6ToothIcon className="inline-block h-6 w-6 mr-1" />
                                     Settings
                                 </h3>
-                                <hr />
+                                <div className='divider'></div>
                                 <h4 className="font-bold mt-10">
                                     <Bars3BottomLeftIcon className="inline-block h-6 w-6 mr-1" />
                                     Sort By
                                 </h4>
-                                <hr />
+                                <div className='divider'></div>
                                 <div className="form-control">
                                     <label className="label">
 
@@ -175,8 +175,7 @@ export default function TopNav(props: Props) {
                                     <RectangleGroupIcon className="inline-block h-6 w-6 mr-1" />
                                     Group By
                                 </h4>
-                                <hr />
-                                <hr />
+                                <div className='divider'></div>
                                 <div className="form-control">
                                     <label className="label">
 
@@ -194,7 +193,7 @@ export default function TopNav(props: Props) {
                                     <FunnelIcon className="inline-block h-6 w-6 mr-1" />
                                     Filter Settings
                                 </h4>
-                                <hr />
+                                <div className='divider'></div>
                                 <div className="form-control">
                                     <label className="label">
                                         <span className="label-text">GET</span>
@@ -225,7 +224,7 @@ export default function TopNav(props: Props) {
                                     <CircleStackIcon className="inline-block h-6 w-6 mr-1" />
                                     Storage
                                 </h4>
-                                <hr />
+                                <div className='divider'></div>
                                 <div className="form-control">
                                     <label className="label">
                                         <span className="label-text">

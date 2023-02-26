@@ -186,6 +186,8 @@ Fixing lints
 - v2.3 Bug fix for localstorage (tabs) and full UI refactored after alpha
 - v2.4 Show version on navbar and curl is using ace editor
 - v2.5 Groupby final fix and localstorage clear button. Other UI refactor
+- v2.6 File uploads
+- v2.7 Show activity on Eloquent models
 
 
 # Maintainers
