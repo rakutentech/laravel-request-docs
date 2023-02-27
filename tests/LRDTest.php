@@ -330,7 +330,7 @@ class LRDTest extends TestCase
 
         $grouped = collect($docs)
             ->map(function (Doc $item) {
-                return collect($item)->only(['uri', 'group', 'group_index', 'httpMethod'])->toArray();
+                return collect($item->toArray())->only(['uri', 'group', 'group_index', 'httpMethod']);
             })
             ->groupBy('group');
 
@@ -474,7 +474,7 @@ class LRDTest extends TestCase
                 return in_array($doc->getGroup(), ['api/v1/users', 'api/v1/health']);
             })
             ->map(function (Doc $doc) {
-                return collect($doc)->only(['uri', 'group', 'group_index'])->toArray();
+                return collect($doc->toArray())->only(['uri', 'group', 'group_index']);
             })
             ->values();
 
@@ -522,7 +522,7 @@ class LRDTest extends TestCase
         $docs    = $this->lrd->groupDocs($docs, 'api_uri');
         $grouped = collect($docs)
             ->map(function (Doc $item) {
-                return collect($item)->only(['uri', 'group', 'group_index', 'httpMethod'])->toArray();
+                return collect($item->toArray())->only(['uri', 'group', 'group_index', 'httpMethod']);
             })
             ->groupBy('group');
 
@@ -583,7 +583,7 @@ class LRDTest extends TestCase
 
         $grouped = collect($docs)
             ->map(function (Doc $item) {
-                return collect($item)->only(['controller_full_path', 'group', 'group_index', 'httpMethod'])->toArray();
+                return collect($item->toArray())->only(['controller_full_path', 'group', 'group_index', 'httpMethod']);
             })
             ->groupBy('group');
 

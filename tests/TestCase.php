@@ -2,16 +2,18 @@
 
 namespace Rakutentech\LaravelRequestDocs\Tests;
 
-use Orchestra\Testbench\TestCase as Orchestra;
-use Rakutentech\LaravelRequestDocs\LaravelRequestDocsServiceProvider;
-use Rakutentech\LaravelRequestDocs\LaravelRequestDocs;
 use Illuminate\Support\Facades\Route;
+use Orchestra\Testbench\TestCase as Orchestra;
+use Rakutentech\LaravelRequestDocs\LaravelRequestDocs;
+use Rakutentech\LaravelRequestDocs\LaravelRequestDocsServiceProvider;
 use Rakutentech\LaravelRequestDocs\LaravelRequestDocsToOpenApi;
 use Rakutentech\LaravelRequestDocs\Tests\TestControllers;
 
 class TestCase extends Orchestra
 {
-    protected LaravelRequestDocs $lrd;
+    protected LaravelRequestDocs          $lrd;
+    protected LaravelRequestDocsToOpenApi $lrdToOpenApi;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -32,7 +34,8 @@ class TestCase extends Orchestra
         config()->set('database.default', 'testing');
     }
 
-    public function registerRoutes() {
+    public function registerRoutes()
+    {
         Route::get('/', [TestControllers\WelcomeController::class, 'index']);
         Route::get('welcome', [TestControllers\WelcomeController::class, 'index']);
         Route::post('welcome', [TestControllers\WelcomeController::class, 'store'])->middleware('auth:api');
@@ -46,6 +49,6 @@ class TestCase extends Orchestra
 
     protected function countRoutesWithLRDDoc(): int
     {
-        return count(Route::getRoutes()) - 2; // Exclude `telescope`, `request-docs`
+        return count(Route::getRoutes()->getRoutes()) - 2; // Exclude `telescope`, `request-docs`
     }
 }

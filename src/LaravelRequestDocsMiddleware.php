@@ -4,6 +4,7 @@ namespace Rakutentech\LaravelRequestDocs;
 
 use Closure;
 use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -23,9 +24,9 @@ class LaravelRequestDocsMiddleware extends QueryLogger
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\JsonResponse)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next): JsonResponse
     {
         if (!$request->headers->has('X-Request-LRD') || !config('app.debug')) {
             return $next($request);

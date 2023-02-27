@@ -8,6 +8,6 @@ class UserController
 {
     public function __invoke(): Response
     {
-        return response(true);
+        return response('true');
     }
 }

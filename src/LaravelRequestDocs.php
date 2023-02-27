@@ -246,12 +246,14 @@ class LaravelRequestDocs
             $controllerInfo->setResponses($this->customResponsesDocComment($docComment));
 
             foreach ($reflectionMethod->getParameters() as $param) {
-                if (!$param->getType()) {
+                /** @var \ReflectionNamedType|\ReflectionUnionType|\ReflectionIntersectionType|null $namedType */
+                $namedType = $param->getType();
+                if (!$namedType) {
                     continue;
                 }
 
                 try {
-                    $requestClassName = $param->getType()->getName();
+                    $requestClassName = $namedType->getName();
                     $reflectionClass  = new ReflectionClass($requestClassName);
                     $requestObject    = $reflectionClass->newInstanceWithoutConstructor();
 
