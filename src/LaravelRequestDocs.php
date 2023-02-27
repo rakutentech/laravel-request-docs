@@ -48,7 +48,7 @@ class LaravelRequestDocs
      */
     public function sortDocs(array $docs, ?string $sortBy = 'default'): array
     {
-        if ($sortBy === 'default') {
+        if ($sortBy === null || $sortBy === 'default') {
             return $docs;
         }
 
