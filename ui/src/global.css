@@ -49,7 +49,7 @@ td {
 .table th.param-cell {
     @apply font-normal;
     @apply truncate;
-    border-left: 2px solid rgb(59 130 246 / var(--tw-border-opacity));
+    border-left: 1px solid rgb(59 130 246);
     padding-left: 0px;
 
 }

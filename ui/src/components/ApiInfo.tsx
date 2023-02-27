@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import shortid from 'shortid';
-import {explode} from '../libs/strings'
+import { explode } from '../libs/strings'
 import type { IAPIInfo } from '../libs/types'
-import { ChevronRightIcon, LinkIcon, EnvelopeIcon  } from '@heroicons/react/24/outline'
+import { ChevronRightIcon, LinkIcon, EnvelopeIcon } from '@heroicons/react/24/outline'
 
 interface Props {
     lrdDocsItem: IAPIInfo,
@@ -26,7 +26,7 @@ export default function ApiInfo(props: Props) {
             }
         }
         setHasFile(files.length > 0)
-    }, [])    
+    }, [])
 
     const StyledRule = (theRule: any): JSX.Element => {
         theRule = theRule.rule
@@ -38,18 +38,18 @@ export default function ApiInfo(props: Props) {
                     <LinkIcon className='inline-block w-4 h-4' />  {theRule}
                 </div>
             )
-        }        
+        }
         if (theRule == 'email') {
             return (
                 <div className="block">
                     <EnvelopeIcon className='inline-block w-4 h-4' />  {theRule}
                 </div>
             )
-        }        
+        }
 
         if (split.length < 2) {
             return (
-                <div className='' dangerouslySetInnerHTML={{__html: explode(theRule, 50, "<br/>")}} />
+                <div className='' dangerouslySetInnerHTML={{ __html: explode(theRule, 50, "<br/>") }} />
             )
         }
 
@@ -81,8 +81,8 @@ export default function ApiInfo(props: Props) {
         }
 
         return (
-            <div className='' dangerouslySetInnerHTML={{__html: explode(theRule, 50, "<br/>")}} />
-        )        
+            <div className='' dangerouslySetInnerHTML={{ __html: explode(theRule, 50, "<br/>") }} />
+        )
     }
 
     return (
@@ -126,7 +126,7 @@ export default function ApiInfo(props: Props) {
                                                 <div key={shortid.generate()} className="block badge badge-success badge-outline ml-4 mt-1 mb-1 rounded-sm title">{theRule}</div>
                                             ) : (<span key={shortid.generate()}></span>)
                                         ))
-                                    ))}                                  
+                                    ))}
                                     {lrdDocsItem.rules[key].map((rule) => (
                                         rule.split('|').map((theRule) => (
                                             (theRule == "required") ? (
@@ -152,12 +152,12 @@ export default function ApiInfo(props: Props) {
                                             if (theRule == "required") {
                                                 return (<span key={shortid.generate()}></span>)
                                             }
-                                            if (theRule == "integer" 
-                                                || theRule == "string" 
-                                                || theRule == "bool" 
-                                                || theRule == "date" 
-                                                || theRule == "file" 
-                                                || theRule == "image" 
+                                            if (theRule == "integer"
+                                                || theRule == "string"
+                                                || theRule == "bool"
+                                                || theRule == "date"
+                                                || theRule == "file"
+                                                || theRule == "image"
                                                 || theRule == "array"
                                                 || theRule == "nullable") {
                                                 return (
@@ -178,14 +178,14 @@ export default function ApiInfo(props: Props) {
                                     ))}
                                     {lrdDocsItem.rules[key].map((rule) => (
                                         rule.split('|').map((theRule) => {
-                                            if (theRule == "required" 
-                                                || theRule == "integer" 
-                                                || theRule == "string" 
-                                                || theRule == "bool" 
-                                                || theRule == "date" 
-                                                || theRule == "file" 
-                                                || theRule == "image" 
-                                                || theRule == "array" 
+                                            if (theRule == "required"
+                                                || theRule == "integer"
+                                                || theRule == "string"
+                                                || theRule == "bool"
+                                                || theRule == "date"
+                                                || theRule == "file"
+                                                || theRule == "image"
+                                                || theRule == "array"
                                                 || theRule == "nullable") {
                                                 return (<span key={shortid.generate()}></span>)
                                             }

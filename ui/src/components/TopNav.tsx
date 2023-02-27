@@ -1,17 +1,19 @@
 import React, { useEffect } from 'react';
 
 import useLocalStorage from 'react-use-localstorage';
-import { MagnifyingGlassIcon,
-     Cog6ToothIcon,
-     ArrowUpRightIcon,
-     MoonIcon,
-     SunIcon,
-     XMarkIcon,
-     Bars3BottomLeftIcon,
-     RectangleGroupIcon,
-     FunnelIcon,
-     CircleStackIcon,
-     ChatBubbleLeftIcon } from '@heroicons/react/24/outline'
+import {
+    MagnifyingGlassIcon,
+    Cog6ToothIcon,
+    ArrowUpRightIcon,
+    MoonIcon,
+    SunIcon,
+    XMarkIcon,
+    Bars3BottomLeftIcon,
+    RectangleGroupIcon,
+    FunnelIcon,
+    CircleStackIcon,
+    ChatBubbleLeftIcon
+} from '@heroicons/react/24/outline'
 
 interface Props {
     handleChangeSettings: (

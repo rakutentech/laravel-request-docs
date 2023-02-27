@@ -7,11 +7,14 @@ use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Support\Facades\DB;
 use KitLoong\AppLogger\QueryLog\LogWriter as QueryLogger;
 use Log;
+use Event;
+use Str;
 
 class LaravelRequestDocsMiddleware extends QueryLogger
 {
     private array $queries = [];
     private array $logs = [];
+    private array $models = [];
 
     public function handle($request, Closure $next)
     {
@@ -19,8 +22,16 @@ class LaravelRequestDocsMiddleware extends QueryLogger
             return $next($request);
         }
 
-        $this->listenDB();
-        $this->listenToLogs();
+        if (!config('request-docs.hide_sql_data')) {
+            $this->listenToDB();
+        }
+        if (!config('request-docs.hide_logs_data')) {
+            $this->listenToLogs();
+        }
+        if (!config('request-docs.hide_models_data')) {
+            $this->listenToModels();
+        }
+
         $response = $next($request);
 
         try {
@@ -34,6 +45,7 @@ class LaravelRequestDocsMiddleware extends QueryLogger
         $content->_lrd = [
             'queries' => $this->queries,
             'logs' => $this->logs,
+            'models' => $this->models,
             'memory' => (string) round(memory_get_peak_usage(true) / 1048576, 2) . "MB",
         ];
         $jsonContent = json_encode($content);
@@ -51,7 +63,7 @@ class LaravelRequestDocsMiddleware extends QueryLogger
         return $response;
     }
 
-    public function listenDB()
+    public function listenToDB()
     {
         DB::listen(function (QueryExecuted $query) {
             $this->queries[] = $this->getMessages($query);
@@ -61,6 +73,36 @@ class LaravelRequestDocsMiddleware extends QueryLogger
     {
         Log::listen(function ($message) {
             $this->logs[] = $message;
+        });
+    }
+
+    public function listenToModels()
+    {
+        Event::listen('eloquent.*', function ($event, $models) {
+            foreach (array_filter($models) as $model) {
+                // doing and booted ignore
+                if (Str::startsWith($event, 'eloquent.booting')
+                || Str::startsWith($event, 'eloquent.retrieving')
+                || Str::startsWith($event, 'eloquent.creating')
+                || Str::startsWith($event, 'eloquent.saving')
+                || Str::startsWith($event, 'eloquent.updating')
+                || Str::startsWith($event, 'eloquent.deleting')
+                ) {
+                    continue;
+                }
+                // split $event by : and take first part
+                $event = explode(':', $event)[0];
+                $event = Str::replace('eloquent.', '', $event);
+                $class = get_class($model);
+
+                if (!isset($this->models[$class])) {
+                    $this->models[$class] = [];
+                }
+                if (!isset($this->models[$class][$event])) {
+                    $this->models[$class][$event] = 0;
+                }
+                $this->models[$class][$event] = $this->models[$class][$event]+1;
+            }
         });
     }
 }
