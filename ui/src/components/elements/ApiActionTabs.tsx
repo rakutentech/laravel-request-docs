@@ -1,45 +1,67 @@
 import React from 'react';
 
-import { InformationCircleIcon, PaperAirplaneIcon, CircleStackIcon, DocumentTextIcon, ReceiptRefundIcon  } from '@heroicons/react/24/outline'
+import {
+    InformationCircleIcon,
+    PaperAirplaneIcon,
+    CircleStackIcon,
+    DocumentTextIcon,
+    TableCellsIcon,
+    EllipsisVerticalIcon,
+    ReceiptRefundIcon
+} from '@heroicons/react/24/outline'
 
 interface Props {
     responseStatus: number,
     activeTab: string,
     sqlQueriesCount: number,
-    logData: string,
+    logsData: string,
+    modelsData: any,
     setActiveTab: (tab: string) => void
 }
 
 export default function ApiActionTabs(props: Props) {
-    const { activeTab, responseStatus, sqlQueriesCount, logData, setActiveTab } = props
+    const { activeTab, responseStatus, sqlQueriesCount, logsData, modelsData, setActiveTab } = props
 
     return (
         <div className="tabs tabs-boxed">
             <a className={`tab ${activeTab == 'info' ? 'tab-active' : ''}`} onClick={() => setActiveTab('info')}>
-                <InformationCircleIcon className='inline-block w-5 h-5 mr-1' /> Info
+                <InformationCircleIcon className='inline-block w-5 h-5' /> Info
             </a>
             <a className={`tab ${activeTab == 'request' ? 'tab-active' : ''}`} onClick={() => setActiveTab('request')}>
-                <PaperAirplaneIcon className='inline-block w-5 h-5 mr-1' /> Request
+                <span className='text-success font-bold'>
+                    <PaperAirplaneIcon className='inline-block w-5 h-5' /> Send
+                </span>
             </a>
-            <a className={`tab ${activeTab == 'response' ? 'tab-active' : ''}`} onClick={() => setActiveTab('response')}>
-                <ReceiptRefundIcon className='inline-block w-5 h-5 mr-1' /> Response
+            <span className='pr-1 mb-1'>
+                <EllipsisVerticalIcon className='inline-block w-5 h-5' />
+            </span>
+            <a className={`pl-0 tab ${activeTab == 'response' ? 'tab-active' : ''}`} onClick={() => setActiveTab('response')}>
+                <ReceiptRefundIcon className='inline-block w-5 h-5' /> Response
                 {responseStatus != 0 && (
                     <div className={`ml-1 badge badge-sm badge-${responseStatus} badge-info`}>{responseStatus}</div>
                 )}
             </a>
-            <a className={`tab ${activeTab == 'sql' ? 'tab-active' : ''}`} onClick={() => setActiveTab('sql')}>
+            <a className={`pl-0 pr-3 tab ${activeTab == 'sql' ? 'tab-active' : ''}`} onClick={() => setActiveTab('sql')}>
                 <CircleStackIcon className='inline-block w-5 h-5 mr-1' /> SQL
                 {responseStatus != 0 && (
-                    <div className="ml-1 badge badge-sm badge-warning">
+                    <div className="ml-1 badge badge-xs badge-warning">
                         {sqlQueriesCount}
                     </div>
                 )}
             </a>
-            <a className={`tab ${activeTab == 'log' ? 'tab-active' : ''}`} onClick={() => setActiveTab('logs')}>
+            <a className={`pl-0 pr-3 tab ${activeTab == 'logs' ? 'tab-active' : ''}`} onClick={() => setActiveTab('logs')}>
                 <DocumentTextIcon className='inline-block w-5 h-5 mr-1' /> Logs
                 {responseStatus != 0 && (
-                    <div className="ml-1 badge badge-sm badge-info">
-                        {logData.split("\n").length - 1}
+                    <div className="ml-1 badge badge-xs badge-warning">
+                        {logsData.split("\n").length - 1}
+                    </div>
+                )}
+            </a>
+            <a className={`pl-0 pr-1 tab ${activeTab == 'events' ? 'tab-active' : ''}`} onClick={() => setActiveTab('events')}>
+                <TableCellsIcon className='inline-block w-5 h-5 mr-1' /> Events
+                {responseStatus != 0 && (
+                    <div className="ml-1 badge badge-xs badge-warning">
+                        {Object.keys(modelsData).length}
                     </div>
                 )}
             </a>

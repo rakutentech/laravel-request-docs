@@ -28,6 +28,9 @@ return [
     ],
 
     'hide_meta_data' => false,
+    'hide_sql_data' => false,
+    'hide_logs_data' => false,
+    'hide_models_data' => false,
 
     // https://github.com/rakutentech/laravel-request-docs/pull/92
     // When rules are put in other method than rules()

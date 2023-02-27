@@ -9,6 +9,7 @@ import ApiActionTabs from './elements/ApiActionTabs'
 import ApiActionInfo from './elements/ApiActionInfo'
 import ApiActionSQL from './elements/ApiActionSQL'
 import ApiActionLog from './elements/ApiActionLog'
+import ApiActionEvents from './elements/ApiActionEvents'
 
 interface Props {
     lrdDocsItem: IAPIInfo,
@@ -32,7 +33,8 @@ export default function ApiAction(props: Props) {
     const [responseData, setResponseData] = useState("");
     const [sqlQueriesCount, setSqlQueriesCount] = useState(0);
     const [sqlData, setSqlData] = useState("");
-    const [logData, setLogData] = useState("");
+    const [modelsData, setModelsData] = useState({});
+    const [logsData, setLogsData] = useState("");
     const [serverMemory, setServerMemory] = useState("");
     const [responseStatus, setResponseStatus] = useState(0);
     const [responseHeaders, setResponseHeaders] = useState("");
@@ -65,6 +67,7 @@ export default function ApiAction(props: Props) {
     }
 
     const handleSendRequest = () => {
+        updateLocalStorage()
         try {
             JSON.parse(requestHeaders)
         } catch (error: any) {
@@ -109,7 +112,7 @@ export default function ApiAction(props: Props) {
 
         setSendingRequest(true)
         setSqlData("")
-        setLogData("")
+        setLogsData("")
         setServerMemory("")
         setResponseData("")
         setError(null)
@@ -143,10 +146,13 @@ export default function ApiAction(props: Props) {
                     for (const value of data._lrd.logs) {
                         logs += value.level + ": " + value.message + "\n"
                     }
-                    setLogData(logs)
+                    setLogsData(logs)
                 }
                 if (data && data._lrd && data._lrd.memory) {
                     setServerMemory(data._lrd.memory)
+                }
+                if (data && data._lrd && data._lrd.models) {
+                    setModelsData(data._lrd.models)
                 }
                 // remove key _lrd from response
                 if (data && data._lrd) {
@@ -154,13 +160,11 @@ export default function ApiAction(props: Props) {
                 }
                 setResponseData(JSON.stringify(data, null, 2))
                 setActiveTab('response')
-                updateLocalStorage()
             }).catch((error) => {
                 setError("Response error: " + error)
                 setResponseStatus(500)
                 setSendingRequest(false)
                 setActiveTab('response')
-                updateLocalStorage()
             })
 
     }
@@ -245,7 +249,8 @@ export default function ApiAction(props: Props) {
                 activeTab={activeTab}
                 responseStatus={responseStatus}
                 sqlQueriesCount={sqlQueriesCount}
-                logData={logData}
+                logsData={logsData}
+                modelsData={modelsData}
                 setActiveTab={setActiveTab} />
 
             <div className='mt-5'>
@@ -285,7 +290,10 @@ export default function ApiAction(props: Props) {
                 )}
 
                 {activeTab == 'logs' && (
-                    <ApiActionLog logData={logData} />
+                    <ApiActionLog logsData={logsData} />
+                )}
+                {activeTab == 'events' && (
+                    <ApiActionEvents modelsData={modelsData} />
                 )}
             </div>
         </>
