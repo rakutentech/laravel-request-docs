@@ -41,7 +41,7 @@ export default function ApiAction(props: Props) {
     const [serverMemory, setServerMemory] = useState("");
     const [responseStatus, setResponseStatus] = useState(0);
     const [responseHeaders, setResponseHeaders] = useState("");
-    const [activeTab, setActiveTab] = useState('events');
+    const [activeTab, setActiveTab] = useState('info');
 
     const handleFileChange = (files: any, file: any) => {
         const formData: any = new FormData()
