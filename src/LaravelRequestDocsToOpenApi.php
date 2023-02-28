@@ -7,7 +7,7 @@ class LaravelRequestDocsToOpenApi
     private array $openApi = [];
 
     /**
-     * @param  \Rakutentech\LaravelRequestDocs\Doc[]  $docs $this->laravelRequestDocs->getDocs()
+     * @param  \Rakutentech\LaravelRequestDocs\Doc[]  $docs
      * @return $this
      */
     public function openApi(array $docs): LaravelRequestDocsToOpenApi
