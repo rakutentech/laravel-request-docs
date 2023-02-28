@@ -95,13 +95,15 @@ export default function ApiActionRequest(props: Props) {
                 <div className="collapse-title text-sm text-slate-500 pl-0">
                     Set Global Headers
                 </div>
-                <div className='text-sm text-slate-500 p-0'>
-                    <ExclamationTriangleIcon className='inline-block w-4 h-4 ml-1 text-yellow-500' />
-                    &nbsp; This request requires a file upload. <br />
-                    <LockOpenIcon className='inline-block w-4 h-4 ml-1 text-slate-500' />
-                    &nbsp; Global headers will be overridden as <code>application/json</code> ⇢ <code>multipart/form-data</code>
-                    <br />
-                </div>
+                {(files.length != 0 && (method == 'POST' || method == 'PUT' || method == 'DELETE')) && (
+                    <div className='text-sm text-slate-500 p-0'>
+                        <ExclamationTriangleIcon className='inline-block w-4 h-4 ml-1 text-yellow-500' />
+                        &nbsp; This request requires a file upload. <br />
+                        <LockOpenIcon className='inline-block w-4 h-4 ml-1 text-slate-500' />
+                        &nbsp; Global headers will be overridden as <code>application/json</code> ⇢ <code>multipart/form-data</code>
+                        <br />
+                    </div>
+                )}
                 <div className="collapse-content p-0">
                     <AceEditor
                         height='200px'

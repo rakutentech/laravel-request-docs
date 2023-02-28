@@ -65,6 +65,12 @@ export default function App() {
         response
             .then(lrdDocsJson => lrdDocsJson.json())
             .then((lrdDocsJson) => {
+                // check if not an array
+                if (!Array.isArray(lrdDocsJson)) {
+                    setError("Invalid response")
+                    setSendingRequest(false)
+                    return
+                }
                 setError(null)
                 setLrdDocsJson(lrdDocsJson)
                 setLrdDocsJsonCopy(lrdDocsJson)
