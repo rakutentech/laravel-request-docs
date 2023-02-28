@@ -31,17 +31,25 @@ class LaravelRequestDocsController extends Controller
      */
     public function api(Request $request): JsonResponse
     {
-        $docs = $this->laravelRequestDocs->getDocs();
-        $docs = $this->laravelRequestDocs->splitByMethods($docs);
-        $docs = $this->laravelRequestDocs->sortDocs($docs, $request->input('sort'));
-        $docs = $this->laravelRequestDocs->groupDocs($docs, $request->input('groupby'));
-
         $showGet    = !$request->has('showGet') || $request->input('showGet') === 'true';
         $showPost   = !$request->has('showPost') || $request->input('showPost') == 'true';
         $showPut    = !$request->has('showPut') || $request->input('showPut') === 'true';
         $showPatch  = !$request->has('showPatch') || $request->input('showPatch') === 'true';
         $showDelete = !$request->has('showDelete') || $request->input('showDelete') === 'true';
         $showHead   = !$request->has('showHead') || $request->input('showHead') === 'true';
+
+        $docs = $this->laravelRequestDocs->getDocs(
+            $showGet,
+            $showPost,
+            $showPut,
+            $showPatch,
+            $showDelete,
+            $showHead,
+        );
+
+        $docs = $this->laravelRequestDocs->splitByMethods($docs);
+        $docs = $this->laravelRequestDocs->sortDocs($docs, $request->input('sort'));
+        $docs = $this->laravelRequestDocs->groupDocs($docs, $request->input('groupby'));
 
         if ($request->input('openapi')) {
             return response()->json(

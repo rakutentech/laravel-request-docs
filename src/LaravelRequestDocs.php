@@ -13,13 +13,34 @@ use Throwable;
 class LaravelRequestDocs
 {
     /**
+     * @param  bool  $showGet
+     * @param  bool  $showPost
+     * @param  bool  $showPut
+     * @param  bool  $showPatch
+     * @param  bool  $showDelete
+     * @param  bool  $showHead
      * @return \Rakutentech\LaravelRequestDocs\Doc[]
-     * @throws \ReflectionException
-     * @throws \Throwable
      */
-    public function getDocs(): array
-    {
-        $docs = $this->getControllersInfo();
+    public function getDocs(
+        bool $showGet,
+        bool $showPost,
+        bool $showPut,
+        bool $showPatch,
+        bool $showDelete,
+        bool $showHead
+    ): array {
+        $methods = array_filter([
+            Request::METHOD_GET    => $showGet,
+            Request::METHOD_POST   => $showPost,
+            Request::METHOD_PUT    => $showPut,
+            Request::METHOD_PATCH  => $showPatch,
+            Request::METHOD_DELETE => $showDelete,
+            Request::METHOD_HEAD   => $showHead,
+        ], function (string $method) {
+            return $method;
+        });
+
+        $docs = $this->getControllersInfo(array_keys($methods));
         $docs = $this->appendRequestRules($docs);
 
         return array_filter($docs);
@@ -171,17 +192,18 @@ class LaravelRequestDocs
     }
 
     /**
+     * @param  string[]  $onlyMethods
      * @return \Rakutentech\LaravelRequestDocs\Doc[]
      * @throws \ReflectionException
      */
-    public function getControllersInfo(): array
+    public function getControllersInfo(array $onlyMethods): array
     {
-        /** @var \Rakutentech\LaravelRequestDocs\Doc[] $controllersInfo */
-        $controllersInfo = [];
-        $routes          = Route::getRoutes()->getRoutes();
+        /** @var \Rakutentech\LaravelRequestDocs\Doc[] $docs */
+        $docs   = [];
+        $routes = Route::getRoutes()->getRoutes();
 
         $onlyRouteStartWith = config('request-docs.only_route_uri_start_with') ?? '';
-        $excludePatterns = config('request-docs.hide_matching') ?? [];
+        $excludePatterns    = config('request-docs.hide_matching') ?? [];
 
         foreach ($routes as $route) {
             if ($onlyRouteStartWith && !Str::startsWith($route->uri, $onlyRouteStartWith)) {
@@ -193,6 +215,15 @@ class LaravelRequestDocs
                     continue 2;
                 }
             }
+
+            $httpMethod = $route->methods[0];
+
+            if (!in_array($httpMethod, $onlyMethods)) {
+                continue;
+            }
+
+            // Exclude from `$route->methods` which is not in `$onlyMethods`.
+            $routeMethods = array_intersect($route->methods, $onlyMethods);
 
             $controllerName     = '';
             $controllerFullPath = '';
@@ -206,10 +237,8 @@ class LaravelRequestDocs
                 $controllerName     = (new ReflectionClass($controllerFullPath))->getShortName();
             }
 
-            $httpMethod = $route->methods[0];
-
-            foreach ($controllersInfo as $controllerInfo) {
-                if ($controllerInfo->getUri() === $route->uri && $controllerInfo->getHttpMethod() == $httpMethod) {
+            foreach ($docs as $doc) {
+                if ($doc->getUri() === $route->uri && $doc->getHttpMethod() === $httpMethod) {
                     // is duplicate
                     continue 2;
                 }
@@ -217,7 +246,7 @@ class LaravelRequestDocs
 
             $doc = new Doc(
                 $route->uri,
-                $route->methods,
+                $routeMethods,
                 config('request-docs.hide_meta_data') ? [] : $route->middleware(),
                 config('request-docs.hide_meta_data') ? '' : $controllerName,
                 config('request-docs.hide_meta_data') ? '' : $controllerFullPath,
@@ -227,10 +256,10 @@ class LaravelRequestDocs
                 '',
             );
 
-            $controllersInfo[] = $doc;
+            $docs[] = $doc;
         }
 
-        return $controllersInfo;
+        return $docs;
     }
 
     /**

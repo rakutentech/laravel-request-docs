@@ -17,7 +17,7 @@ class LRDTest extends TestCase
 
         Route::get('users', UserController::class);
 
-        $docs = $this->lrd->getDocs();
+        $docs = $this->lrd->getDocs(true, true, true, true, true, true);
 
         $docSize  = 10;
         $firstDoc = $docs[0]->toArray();
@@ -293,7 +293,7 @@ class LRDTest extends TestCase
 
     public function testDocsCanFetchAllMethods()
     {
-        $docs    = $this->lrd->getDocs();
+        $docs    = $this->lrd->getDocs(true, true, true, true, true, true);
         $methods = [];
         foreach ($docs as $doc) {
             $methods = array_merge($methods, $doc->getMethods());
@@ -306,7 +306,7 @@ class LRDTest extends TestCase
     public function testOnlyRouteURIStartWith()
     {
         Config::set('request-docs.only_route_uri_start_with', 'welcome');
-        $docs = $this->lrd->getDocs();
+        $docs = $this->lrd->getDocs(true, true, true, true, true, true);
         foreach ($docs as $doc) {
             $this->assertStringStartsWith('welcome', $doc->getUri());
         }
@@ -325,7 +325,7 @@ class LRDTest extends TestCase
         Route::put('api/v2/users', UserController::class);
         Route::put('api/v99/users', UserController::class);
 
-        $docs = $this->lrd->getDocs();
+        $docs = $this->lrd->getDocs(true, true, true, true, true, true);
         $docs = $this->lrd->groupDocs($docs, 'api_uri');
 
         $grouped = collect($docs)
@@ -466,7 +466,7 @@ class LRDTest extends TestCase
 
         Route::get('api/v1/health', UserController::class);
 
-        $docs = $this->lrd->getDocs();
+        $docs = $this->lrd->getDocs(true, true, true, true, true, true);
         $docs = $this->lrd->groupDocs($docs, 'api_uri');
 
         $sorted = collect($docs)
@@ -518,7 +518,7 @@ class LRDTest extends TestCase
         // Set to `null` to test backward compatibility.
         Config::set('request-docs.group_by.uri_patterns', []);
 
-        $docs    = $this->lrd->getDocs();
+        $docs    = $this->lrd->getDocs(true, true, true, true, true, true);
         $docs    = $this->lrd->groupDocs($docs, 'api_uri');
         $grouped = collect($docs)
             ->map(function (Doc $item) {
@@ -578,7 +578,7 @@ class LRDTest extends TestCase
         Route::get('users', UserController::class);
         Route::post('users', UserController::class);
         Route::put('users/update', UserController::class);
-        $docs = $this->lrd->getDocs();
+        $docs = $this->lrd->getDocs(true, true, true, true, true, true);
         $docs = $this->lrd->groupDocs($docs, 'controller_full_path');
 
         $grouped = collect($docs)
