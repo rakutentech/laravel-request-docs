@@ -56,7 +56,7 @@ export default function ApiActionEvents(props: Props) {
             {Object.keys(modelsTimeline).length != 0 && (
                 <>
                     <h3 className='title'>Model Events Timeline</h3>
-                    <small className='text-slate-500'>Events are in the order of occurances</small>
+                    <small className='text-slate-500'>Events are in the order of occurrences</small>
                     <div className='divider'></div>
                     <div className="flex flex-col md:grid grid-cols-12">
                         {Object.keys(modelsTimeline).map((index) => {
