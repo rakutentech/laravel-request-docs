@@ -72,7 +72,7 @@ export default function ApiActionInfo(props: Props) {
                                         <ChevronRightIcon className='inline-block w-4 h-4 ml-1' />
                                     </div>
                                     <div className="collapse-content p-0">
-                                        {lrdDocsItem.responses.map((response) => (
+                                        {lrdDocsItem.responses && lrdDocsItem.responses.map((response) => (
                                             <div key={shortid.generate()}>
                                                 <div className={`response response-${response}`}>
                                                     - {response} &nbsp; {responsesText[response]}

@@ -71,10 +71,42 @@ td {
 .method-HEAD {
     @apply text-info;
 }
-.badge-200,.badge-201,.badge-202,.response-204 {
+.bg-created {
     @apply bg-success;
 }
-.badge-422,.badge-429 {
+.bg-saved {
+    @apply bg-info;
+}
+.bg-updated {
+    @apply bg-warning;
+}
+.bg-deleted {
+    @apply bg-error;
+}
+.bg-retrieved {
+    @apply bg-gray-800;
+}
+.badge-created {
+    @apply badge-success;
+}
+.badge-saved {
+    @apply badge-info;
+}
+.badge-updated {
+    @apply badge-warning;
+}
+.badge-deleted {
+    @apply badge-error;
+}
+.badge-retrieved {
+    @apply badge-ghost;
+}
+
+.badge-200,.badge-201,.badge-202,.response-204,  {
+    @apply bg-success;
+}
+
+.badge-422,.badge-429, {
     @apply bg-warning;
 }
 .badge-400,.badge-401,.badge-402,.badge-403,.badge-404,.badge-405 {

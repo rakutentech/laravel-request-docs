@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/rakutentech/laravel-request-docs">
-    <img alt="Laravel Request Docs" src="https://imgur.com/2NvLKn2.png">
+    <img alt="Laravel Request Docs" src="https://imgur.com/NuQNx8v.png">
   </a>
 </p>
 
@@ -27,6 +27,8 @@
 - Support for SQL query and query time
 - Support for HTTP response time and memory consumption
 - Support for Authorization Headers
+- Support for File uploads
+- Support for Eloquents events
 - Display extra documentation using markdown
 - Saves history previous requests
 - Added filters to sort, group and filter routes by methods, controllers, middlewares, routes
@@ -76,31 +78,33 @@ For extra documentation you can use markdown inside your controller method as we
 
 # Screenshots
 
-**Light and Dark Modes**
+**Dark and Light Modes**
 
-Light mode
-![Preview](https://imgur.com/2s1SrKm.png)
+<p float="left">
+  <img src="https://imgur.com/vOMMYVl.png" width="49%" />
+  <img src="https://imgur.com/HZvNOFm.png" width="49%" />
+</p>
 
-Dark mode
-![Preview](https://imgur.com/76sk7Lq.png)
 
-**Try API**
+- Uses localstorage to save history of previous requests and request headers.
+- Request, sql, response and events timeline below:
 
-Uses localstorage to save history of previous requests and request headers
+<p float="left">
+  <img src="https://imgur.com/fd09jw1.png" width="32%" />
+  <img src="https://imgur.com/8PLLlHv.png" width="45%" />
+</p>
 
-![Preview](https://imgur.com/q3d7pw2.png)
-
-**SQL query profile**
-
-![Preview](https://imgur.com/8PLLlHv.png)
-
-**Response profile**
-
-![Preview](https://imgur.com/fd09jw1.png)
+<p float="left">
+  <img src="https://imgur.com/q3d7pw2.png" width="49%" />
+  <img src="https://imgur.com/AHTCUOJ.png" width="41%" />
+</p>
 
 **Settings to sort, group and filter**
 
-![Preview](https://imgur.com/qHq1pjr.png)
+<p float="left">
+  <img src="https://imgur.com/SGXlIbl.png" width="30%" />
+  <img src="https://imgur.com/Wb2AmZl.png" width="25%" />
+</p>
 
 
 # Extra
@@ -188,6 +192,7 @@ Fixing lints
 - v2.5 Groupby final fix and localstorage clear button. Other UI refactor
 - v2.6 File uploads
 - v2.7 Show activity on Eloquent models
+- v2.8 Show full activity on Eloquent models
 
 
 # Maintainers

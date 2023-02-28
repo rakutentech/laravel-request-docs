@@ -15,6 +15,7 @@ class LaravelRequestDocsMiddleware extends QueryLogger
     private array $queries = [];
     private array $logs = [];
     private array $models = [];
+    private array $modelsTimeline = [];
 
     public function handle($request, Closure $next)
     {
@@ -46,6 +47,8 @@ class LaravelRequestDocsMiddleware extends QueryLogger
             'queries' => $this->queries,
             'logs' => $this->logs,
             'models' => $this->models,
+            // 'modelsTimeline' => $this->modelsTimeline,
+            'modelsTimeline' => array_unique($this->modelsTimeline, SORT_REGULAR),
             'memory' => (string) round(memory_get_peak_usage(true) / 1048576, 2) . "MB",
         ];
         $jsonContent = json_encode($content);
@@ -82,6 +85,7 @@ class LaravelRequestDocsMiddleware extends QueryLogger
             foreach (array_filter($models) as $model) {
                 // doing and booted ignore
                 if (Str::startsWith($event, 'eloquent.booting')
+                || Str::startsWith($event, 'eloquent.booted')
                 || Str::startsWith($event, 'eloquent.retrieving')
                 || Str::startsWith($event, 'eloquent.creating')
                 || Str::startsWith($event, 'eloquent.saving')
@@ -94,6 +98,11 @@ class LaravelRequestDocsMiddleware extends QueryLogger
                 $event = explode(':', $event)[0];
                 $event = Str::replace('eloquent.', '', $event);
                 $class = get_class($model);
+
+                $this->modelsTimeline[] = [
+                    'event' => $event,
+                    'model' => $class,
+                ];
 
                 if (!isset($this->models[$class])) {
                     $this->models[$class] = [];

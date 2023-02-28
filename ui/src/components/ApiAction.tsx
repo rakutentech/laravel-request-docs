@@ -33,7 +33,10 @@ export default function ApiAction(props: Props) {
     const [responseData, setResponseData] = useState("");
     const [sqlQueriesCount, setSqlQueriesCount] = useState(0);
     const [sqlData, setSqlData] = useState("");
-    const [modelsData, setModelsData] = useState({});
+    const [modelsData, setModelsData] = useState({
+        modelsSummary: [],
+        modelsTimeline: []
+    });
     const [logsData, setLogsData] = useState("");
     const [serverMemory, setServerMemory] = useState("");
     const [responseStatus, setResponseStatus] = useState(0);
@@ -151,8 +154,11 @@ export default function ApiAction(props: Props) {
                 if (data && data._lrd && data._lrd.memory) {
                     setServerMemory(data._lrd.memory)
                 }
-                if (data && data._lrd && data._lrd.models) {
-                    setModelsData(data._lrd.models)
+                if (data && data._lrd && data._lrd.models && data._lrd.modelsTimeline) {
+                    setModelsData({
+                        modelsSummary: data._lrd.models,
+                        modelsTimeline: data._lrd.modelsTimeline
+                    })
                 }
                 // remove key _lrd from response
                 if (data && data._lrd) {
