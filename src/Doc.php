@@ -13,10 +13,20 @@ class Doc implements Arrayable
      */
     private string $uri;
 
-    /** @var string[] */
+    /**
+     * The list of HTTP methods the route responds to.
+     * Most of the time contains only 1 HTTP method.
+     * If a route is defined as `GET`, `HEAD` is always injected into this property.
+     *
+     * @var string[]
+     */
     private array $methods;
 
-    /** @var string[] */
+    /**
+     * The middlewares attached to the route.
+     *
+     * @var string[]
+     */
     private array $middlewares;
 
     /**
@@ -36,7 +46,7 @@ class Doc implements Arrayable
     private string $controllerFullPath;
 
     /**
-     * The method name of the route action.
+     * The (Controller) method name of the route action.
      * Empty if the route action is a closure.
      *
      * @var string
@@ -44,22 +54,45 @@ class Doc implements Arrayable
     private string $method;
 
     /**
-     * The HTTP methods the route responds to.
+     * The HTTP method the route responds to.
      *
      * @var string
      */
     private string $httpMethod;
 
-    /** @var array<string, string[]> */
+    /**
+     * The parsed validation rules.
+     *
+     * @var array<string, string[]>
+     */
     private array $rules;
 
+    /**
+     * The additional description about this route.
+     *
+     * @var string
+     */
     private string $docBlock;
 
-    /** @var string[] */
+    /**
+     * A list of HTTP response codes in string format.
+     *
+     * @var string[]
+     */
     private array $responses;
 
+    /**
+     * The group name of the route.
+     *
+     * @var string
+     */
     private string $group;
 
+    /**
+     * The group index of the group, determine the ordering.
+     *
+     * @var int
+     */
     private int $groupIndex;
 
     /**
