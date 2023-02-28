@@ -2,7 +2,7 @@
 
 namespace Rakutentech\LaravelRequestDocs;
 
-use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -19,26 +19,37 @@ class LaravelRequestDocs
      */
     public function getDocs(): array
     {
-        $docs            = [];
-        $excludePatterns = config('request-docs.hide_matching') ?? [];
-        $controllersInfo = $this->getControllersInfo();
-        $controllersInfo = $this->appendRequestRules($controllersInfo);
-        foreach ($controllersInfo as $controllerInfo) {
-            try {
-                $exclude = false;
-                foreach ($excludePatterns as $regex) {
-                    if (preg_match($regex, $controllerInfo->getUri())) {
-                        $exclude = true;
-                    }
-                }
-                if (!$exclude) {
-                    $docs[] = $controllerInfo;
-                }
-            } catch (Exception $exception) {
+        $docs = $this->getControllersInfo();
+        $docs = $this->appendRequestRules($docs);
+
+        return array_filter($docs);
+    }
+
+    /**
+     * Split {@see \Rakutentech\LaravelRequestDocs\Doc} by {@see \Rakutentech\LaravelRequestDocs\Doc::$methods}
+     *
+     * @param  \Rakutentech\LaravelRequestDocs\Doc[]  $docs
+     * @return \Rakutentech\LaravelRequestDocs\Doc[]
+     */
+    public function splitByMethods(array $docs): array
+    {
+        /** @var \Rakutentech\LaravelRequestDocs\Doc[] $splitDocs */
+        $splitDocs = [];
+
+        foreach ($docs as $doc) {
+            if (count($doc->getMethods()) === 1) {
+                $splitDocs[] = $doc;
                 continue;
             }
+
+            foreach ($doc->getMethods() as $method) {
+                $cloned = $doc->clone();
+                $cloned->setMethods([$method]);
+                $splitDocs[] = $cloned;
+            }
         }
-        return array_filter($docs);
+
+        return $splitDocs;
     }
 
     /**
@@ -48,7 +59,7 @@ class LaravelRequestDocs
      */
     public function sortDocs(array $docs, ?string $sortBy = 'default'): array
     {
-        if ($sortBy === null || $sortBy === 'default') {
+        if (!in_array($sortBy, ['route_names', 'method_names'])) {
             return $docs;
         }
 
@@ -57,31 +68,21 @@ class LaravelRequestDocs
             return $docs;
         }
 
-        /** @var \Rakutentech\LaravelRequestDocs\Doc[] $sorted */
-        $sorted  = [];
-
+        // Sort by `method_names`.
         $methods = [
-            'GET',
-            'POST',
-            'PUT',
-            'PATCH',
-            'DELETE',
-            'HEAD',
+            Request::METHOD_GET,
+            Request::METHOD_POST,
+            Request::METHOD_PUT,
+            Request::METHOD_PATCH,
+            Request::METHOD_DELETE,
+            Request::METHOD_HEAD,
         ];
 
-        foreach ($methods as $method) {
-            foreach ($docs as $doc) {
-                if (in_array($method, $doc->getMethods())) {
-                    if (!in_array($doc, $sorted)) {
-                        // Overwrite methods without mutation.
-                        $clone = clone $doc;
-                        $clone->setMethods([$method]);
-                        $sorted[] = $clone;
-                    }
-                }
-            }
-        }
-        return $sorted;
+        $sorted = collect($docs)->sortBy(function (Doc $doc) use ($methods) {
+            return array_search($doc->getMethods()[0], $methods);
+        }, SORT_NUMERIC);
+
+        return $sorted->values()->all();
     }
 
     /**
@@ -147,17 +148,17 @@ class LaravelRequestDocs
      * @param  \Rakutentech\LaravelRequestDocs\Doc[]  $docs
      * @return \Rakutentech\LaravelRequestDocs\Doc[]
      */
-    public function groupDocs(array $docs, ?string $group = 'default'): array
+    public function groupDocs(array $docs, ?string $groupBy = 'default'): array
     {
-        if ($group === null || $group === 'default') {
+        if (!in_array($groupBy, ['api_uri', 'controller_full_path'])) {
             return $docs;
         }
 
-        if ($group === 'api_uri') {
+        if ($groupBy === 'api_uri') {
             $this->groupDocsByAPIURI($docs);
         }
 
-        if ($group === 'controller_full_path') {
+        if ($groupBy === 'controller_full_path') {
             $this->groupDocsByFQController($docs);
         }
 
@@ -180,10 +181,17 @@ class LaravelRequestDocs
         $routes          = Route::getRoutes()->getRoutes();
 
         $onlyRouteStartWith = config('request-docs.only_route_uri_start_with') ?? '';
+        $excludePatterns = config('request-docs.hide_matching') ?? [];
 
         foreach ($routes as $route) {
             if ($onlyRouteStartWith && !Str::startsWith($route->uri, $onlyRouteStartWith)) {
                 continue;
+            }
+
+            foreach ($excludePatterns as $regex) {
+                if (preg_match($regex, $route->uri)) {
+                    continue 2;
+                }
             }
 
             $controllerName     = '';

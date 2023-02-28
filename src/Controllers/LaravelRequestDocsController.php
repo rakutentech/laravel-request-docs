@@ -5,18 +5,18 @@ namespace Rakutentech\LaravelRequestDocs\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Routing\Controller;
 use Rakutentech\LaravelRequestDocs\LaravelRequestDocs;
 use Rakutentech\LaravelRequestDocs\LaravelRequestDocsToOpenApi;
-use Illuminate\Routing\Controller;
 
 class LaravelRequestDocsController extends Controller
 {
-    private LaravelRequestDocs $laravelRequestDocs;
+    private LaravelRequestDocs          $laravelRequestDocs;
     private LaravelRequestDocsToOpenApi $laravelRequestDocsToOpenApi;
 
     public function __construct(LaravelRequestDocs $laravelRequestDoc, LaravelRequestDocsToOpenApi $laravelRequestDocsToOpenApi)
     {
-        $this->laravelRequestDocs = $laravelRequestDoc;
+        $this->laravelRequestDocs          = $laravelRequestDoc;
         $this->laravelRequestDocsToOpenApi = $laravelRequestDocsToOpenApi;
     }
 
@@ -25,35 +25,30 @@ class LaravelRequestDocsController extends Controller
         return response()->view('request-docs::index');
     }
 
+    /**
+     * @throws \ReflectionException
+     * @throws \Throwable
+     */
     public function api(Request $request): JsonResponse
     {
         $docs = $this->laravelRequestDocs->getDocs();
+        $docs = $this->laravelRequestDocs->splitByMethods($docs);
         $docs = $this->laravelRequestDocs->sortDocs($docs, $request->input('sort'));
         $docs = $this->laravelRequestDocs->groupDocs($docs, $request->input('groupby'));
 
-        $showGet = $request->has('showGet') ? $request->input('showGet') == 'true' : true;
-        $showPost = $request->has('showPost') ? $request->input('showPost') == 'true' : true;
-        $showPut = $request->has('showPut') ? $request->input('showPut') == 'true' : true;
-        $showPatch = $request->has('showPatch') ? $request->input('showPatch') == 'true' : true;
-        $showDelete = $request->has('showDelete') ? $request->input('showDelete') == 'true' : true;
-        $showHead = $request->has('showHead') ? $request->input('showHead') == 'true' : true;
-
-        $docs = $this->laravelRequestDocs->filterByMethods(
-            $docs,
-            $showGet,
-            $showPost,
-            $showPut,
-            $showPatch,
-            $showDelete,
-            $showHead
-        );
+        $showGet    = !$request->has('showGet') || $request->input('showGet') === 'true';
+        $showPost   = !$request->has('showPost') || $request->input('showPost') == 'true';
+        $showPut    = !$request->has('showPut') || $request->input('showPut') === 'true';
+        $showPatch  = !$request->has('showPatch') || $request->input('showPatch') === 'true';
+        $showDelete = !$request->has('showDelete') || $request->input('showDelete') === 'true';
+        $showHead   = !$request->has('showHead') || $request->input('showHead') === 'true';
 
         if ($request->input('openapi')) {
             return response()->json(
                 $this->laravelRequestDocsToOpenApi->openApi($docs)->toArray(),
                 Response::HTTP_OK,
                 [
-                    'Content-type'=> 'application/json; charset=utf-8'
+                    'Content-type' => 'application/json; charset=utf-8'
                 ],
                 JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
             );
@@ -63,7 +58,7 @@ class LaravelRequestDocsController extends Controller
             collect($docs),
             Response::HTTP_OK,
             [
-                'Content-type'=> 'application/json; charset=utf-8',
+                'Content-type' => 'application/json; charset=utf-8',
             ],
             JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
         );
@@ -102,7 +97,7 @@ class LaravelRequestDocsController extends Controller
 
             // set cache control headers
             $headers['Cache-Control'] = 'public, max-age=1800';
-            $headers['Expires'] = gmdate('D, d M Y H:i:s \G\M\T', time() + 1800);
+            $headers['Expires']       = gmdate('D, d M Y H:i:s \G\M\T', time() + 1800);
             return response()->file($path, $headers);
         }
         return response()->json(['error' => 'file not found'], 404);

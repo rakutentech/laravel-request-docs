@@ -281,6 +281,11 @@ class Doc implements Arrayable
         $this->responses = $responses;
     }
 
+    public function clone(): Doc
+    {
+        return clone $this;
+    }
+
     public function toArray(): array
     {
         $result = [
