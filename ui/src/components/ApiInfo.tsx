@@ -74,9 +74,12 @@ export default function ApiInfo(props: Props) {
         }
         if (keyPart == 'regex') {
             return (
-                <div className="block">
-                    Match: <code>${valuePart}</code>
-                </div>
+                <>
+                    <div className="inline-block badge badge-info badge-outline mt-1 mb-1 mr-2 rounded-sm">
+                        Regexp
+                    </div>
+                    <code>${valuePart}</code>
+                </>
             )
         }
 
@@ -112,13 +115,9 @@ export default function ApiInfo(props: Props) {
                                     <span className='text-blue-500 pr-1'>¬</span>
                                     <code className='pl-1'>
                                         {key}
-                                        {lrdDocsItem.rules[key].map((rule) => (
-                                            rule.split('|').map((theRule) => (
-                                                (theRule == "array" || key.endsWith(".*")) ? (
-                                                    <ChevronRightIcon key={shortid.generate()} className='inline-block w-4 h-4' />
-                                                ) : (<span key={shortid.generate()}></span>)
-                                            ))
-                                        ))}
+                                        {(key.endsWith(".*")) ? (
+                                            <ChevronRightIcon key={shortid.generate()} className='inline-block w-4 h-4' />
+                                        ) : (<span key={shortid.generate()}></span>)}
                                     </code>
                                     {lrdDocsItem.rules[key].map((rule) => (
                                         rule.split('|').map((theRule) => (
