@@ -29,7 +29,7 @@ class LaravelRequestDocs
         bool $showDelete,
         bool $showHead
     ): array {
-        $methods = array_filter([
+        $filteredMethods = array_filter([
             Request::METHOD_GET    => $showGet,
             Request::METHOD_POST   => $showPost,
             Request::METHOD_PUT    => $showPut,
@@ -40,7 +40,10 @@ class LaravelRequestDocs
             return $method;
         });
 
-        $docs = $this->getControllersInfo(array_keys($methods));
+        /** @var string[] $methods */
+        $methods = array_keys($filteredMethods);
+
+        $docs = $this->getControllersInfo($methods);
         $docs = $this->appendRequestRules($docs);
 
         return array_filter($docs);
@@ -58,14 +61,10 @@ class LaravelRequestDocs
         $splitDocs = [];
 
         foreach ($docs as $doc) {
-            if (count($doc->getMethods()) === 1) {
-                $splitDocs[] = $doc;
-                continue;
-            }
-
             foreach ($doc->getMethods() as $method) {
                 $cloned = $doc->clone();
                 $cloned->setMethods([$method]);
+                $cloned->setHttpMethod($method);
                 $splitDocs[] = $cloned;
             }
         }
@@ -104,65 +103,6 @@ class LaravelRequestDocs
         }, SORT_NUMERIC);
 
         return $sorted->values()->all();
-    }
-
-    /**
-     * @param  \Rakutentech\LaravelRequestDocs\Doc[]  $docs
-     * @return \Rakutentech\LaravelRequestDocs\Doc[]
-     */
-    public function filterByMethods(array $docs, bool $get, bool $post, bool $put, bool $patch, bool $delete, bool $head): array
-    {
-        $filtered = [];
-
-        foreach ($docs as $doc) {
-            if ($get && in_array('GET', $doc->getMethods())) {
-                $clone = clone $doc;
-                $clone->setMethods(['GET']);
-                $filtered[] = $clone;
-            }
-        }
-
-        foreach ($docs as $doc) {
-            if ($post && in_array('POST', $doc->getMethods())) {
-                $clone = clone $doc;
-                $clone->setMethods(['POST']);
-                $filtered[] = $clone;
-            }
-        }
-
-        foreach ($docs as $doc) {
-            if ($put && in_array('PUT', $doc->getMethods())) {
-                $clone = clone $doc;
-                $clone->setMethods(['PUT']);
-                $filtered[] = $clone;
-            }
-        }
-
-        foreach ($docs as $doc) {
-            if ($patch && in_array('PATCH', $doc->getMethods())) {
-                $clone = clone $doc;
-                $clone->setMethods(['PATCH']);
-                $filtered[] = $clone;
-            }
-        }
-
-        foreach ($docs as $doc) {
-            if ($delete && in_array('DELETE', $doc->getMethods())) {
-                $clone = clone $doc;
-                $clone->setMethods(['DELETE']);
-                $filtered[] = $clone;
-            }
-        }
-
-        foreach ($docs as $doc) {
-            if ($head && in_array('HEAD', $doc->getMethods())) {
-                $clone = clone $doc;
-                $clone->setMethods(['HEAD']);
-                $filtered[] = $clone;
-            }
-        }
-
-        return $filtered;
     }
 
     /**
@@ -216,14 +156,11 @@ class LaravelRequestDocs
                 }
             }
 
-            $httpMethod = $route->methods[0];
+            $routeMethods = array_intersect($route->methods, $onlyMethods);
 
-            if (!in_array($httpMethod, $onlyMethods)) {
+            if (empty($routeMethods)) {
                 continue;
             }
-
-            // Exclude from `$route->methods` which is not in `$onlyMethods`.
-            $routeMethods = array_intersect($route->methods, $onlyMethods);
 
             $controllerName     = '';
             $controllerFullPath = '';
@@ -237,13 +174,6 @@ class LaravelRequestDocs
                 $controllerName     = (new ReflectionClass($controllerFullPath))->getShortName();
             }
 
-            foreach ($docs as $doc) {
-                if ($doc->getUri() === $route->uri && $doc->getHttpMethod() === $httpMethod) {
-                    // is duplicate
-                    continue 2;
-                }
-            }
-
             $doc = new Doc(
                 $route->uri,
                 $routeMethods,
@@ -251,7 +181,7 @@ class LaravelRequestDocs
                 config('request-docs.hide_meta_data') ? '' : $controllerName,
                 config('request-docs.hide_meta_data') ? '' : $controllerFullPath,
                 config('request-docs.hide_meta_data') ? '' : $method,
-                $httpMethod,
+                '',
                 [],
                 '',
             );
@@ -303,10 +233,6 @@ class LaravelRequestDocs
                             $controllerInfo->mergeRules($this->flattenRules($requestObject->$requestMethod()));
                         } catch (Throwable $e) {
                             $controllerInfo->mergeRules($this->rulesByRegex($requestClassName, $requestMethod));
-
-                            if (config('request-docs.debug')) {
-                                throw $e;
-                            }
                         }
                     }
                 } catch (Throwable $th) {
@@ -389,7 +315,7 @@ class LaravelRequestDocs
             // check if line is a comment
             $trimmed = trim($lines[$i]);
             if (Str::startsWith($trimmed, '//') || Str::startsWith($trimmed, '#')) {
-                continue;
+                continue; // @codeCoverageIgnore
             }
             // check if => in string, only pick up rules that are coded on single line
             if (Str::contains($lines[$i], '=>')) {
