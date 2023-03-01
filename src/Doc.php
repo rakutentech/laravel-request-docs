@@ -328,9 +328,9 @@ class Doc implements Arrayable
             'controller'           => $this->controller,
             'controller_full_path' => $this->controllerFullPath,
             'method'               => $this->method,
-            'httpMethod'           => $this->httpMethod,
+            'http_method'          => $this->httpMethod,
             'rules'                => $this->rules,
-            'docBlock'             => $this->docBlock,
+            'doc_block'            => $this->docBlock,
             'responses'            => $this->responses,
         ];
 
