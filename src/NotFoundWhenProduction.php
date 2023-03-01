@@ -13,7 +13,7 @@ class NotFoundWhenProduction
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (app()->environment('prod')) {
+        if (app()->environment('prod', 'production')) {
             return response()->json([
                 'status' => 'forbidden',
                 'status_code' => Response::HTTP_FORBIDDEN
