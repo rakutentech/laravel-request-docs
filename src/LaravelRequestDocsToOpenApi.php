@@ -145,6 +145,9 @@ class LaravelRequestDocsToOpenApi
         return "object";
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function toJson(): string
     {
         return collect($this->openApi)->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);

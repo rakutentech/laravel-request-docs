@@ -4,6 +4,9 @@ namespace Rakutentech\LaravelRequestDocs;
 
 use Illuminate\Contracts\Support\Arrayable;
 
+/**
+ * @codeCoverageIgnore
+ */
 class Doc implements Arrayable
 {
     /**
@@ -128,7 +131,6 @@ class Doc implements Arrayable
         $this->docBlock           = $docBlock;
         $this->responses          = [];
     }
-
 
     /**
      * @return string
