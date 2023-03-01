@@ -99,7 +99,7 @@ class LaravelRequestDocs
         ];
 
         $sorted = collect($docs)->sortBy(function (Doc $doc) use ($methods) {
-            return array_search($doc->getMethods()[0], $methods);
+            return array_search($doc->getHttpMethod(), $methods);
         }, SORT_NUMERIC);
 
         return $sorted->values()->all();
