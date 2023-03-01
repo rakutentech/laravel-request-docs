@@ -11,10 +11,12 @@ use Rakutentech\LaravelRequestDocs\Tests\TestRequests\WelcomeDeleteRequest;
 class WelcomeController
 {
     /**
+     * Before
      * @lrd:start
      * #Hello markdown
      * ## Documentation for /my route
      * @lrd:end
+     * After
      */
     public function index(WelcomeIndexRequest $request)
     {
@@ -31,6 +33,7 @@ class WelcomeController
      * @LRDparam search_array array
      * @LRDparam search_integer integer
      * @LRDparam search_boolean boolean
+     * @LRDresponses 200|400|401
      */
     public function edit(WelcomeEditRequest $request)
     {
