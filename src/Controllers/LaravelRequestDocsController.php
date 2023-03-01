@@ -20,6 +20,9 @@ class LaravelRequestDocsController extends Controller
         $this->laravelRequestDocsToOpenApi = $laravelRequestDocsToOpenApi;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function index(Request $request): Response
     {
         return response()->view('request-docs::index');
@@ -73,6 +76,7 @@ class LaravelRequestDocsController extends Controller
     }
 
     /**
+     * @codeCoverageIgnore
      * @return \Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse
      */
     public function assets(Request $request)
