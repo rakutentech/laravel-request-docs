@@ -2,6 +2,7 @@
 
 namespace Rakutentech\LaravelRequestDocs\Tests\TestControllers;
 
+use Rakutentech\LaravelRequestDocs\Tests\TestRequests\RequestWithoutRules;
 use Rakutentech\LaravelRequestDocs\Tests\TestRequests\WelcomeIndexRequest;
 use Rakutentech\LaravelRequestDocs\Tests\TestRequests\WelcomeEditRequest;
 use Rakutentech\LaravelRequestDocs\Tests\TestRequests\WelcomeStoreRequest;
@@ -16,6 +17,11 @@ class WelcomeController
      * @lrd:end
      */
     public function index(WelcomeIndexRequest $request)
+    {
+        return 1;
+    }
+
+    public function show()
     {
         return 1;
     }
@@ -37,6 +43,19 @@ class WelcomeController
     }
 
     public function destroy(WelcomeDeleteRequest $request)
+    {
+        return 1;
+    }
+
+    /**
+     * Test request without `rules` method
+     */
+    public function noRules(RequestWithoutRules $request)
+    {
+        return 1;
+    }
+
+    public function health($unknown)
     {
         return 1;
     }

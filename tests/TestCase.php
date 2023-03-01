@@ -38,13 +38,33 @@ class TestCase extends Orchestra
     {
         Route::get('/', [TestControllers\WelcomeController::class, 'index']);
         Route::get('welcome', [TestControllers\WelcomeController::class, 'index']);
+        Route::get('welcome/{id}', [TestControllers\WelcomeController::class, 'show']);
         Route::post('welcome', [TestControllers\WelcomeController::class, 'store'])->middleware('auth:api');
         Route::put('welcome', 'Rakutentech\LaravelRequestDocs\Tests\TestControllers\WelcomeController@edit');
+        Route::patch('welcome/patch', 'Rakutentech\LaravelRequestDocs\Tests\TestControllers\WelcomeController@edit');
         Route::delete('welcome', [TestControllers\WelcomeController::class, 'destroy']);
+        Route::get('health', [TestControllers\WelcomeController::class, 'health']);
         Route::get('single', TestControllers\SingleActionController::class);
+        Route::delete('welcome/no-rules', [TestControllers\WelcomeController::class, 'noRules']);
+
+        Route::get('closure', function () {
+            return true;
+        });
+
+        Route::apiResource('accounts', TestControllers\AccountController::class);
+
+        Route::any('any', [TestControllers\WelcomeController::class, 'index']);
+        Route::match(['get', 'post'], 'match', [TestControllers\WelcomeController::class, 'index']);
+
+        // Test duplication
+        Route::apiResource('accounts', TestControllers\AccountController::class);
 
         // Expected to be skipped
         Route::get('telescope', [TestControllers\TelescopeController::class, 'index']);
+
+        Route::options('not_included', function () {
+            return false;
+        });
     }
 
     protected function countRoutesWithLRDDoc(): int
