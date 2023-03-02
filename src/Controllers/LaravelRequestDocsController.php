@@ -57,7 +57,7 @@ class LaravelRequestDocsController extends Controller
 
         if ($request->input('openapi')) {
             return response()->json(
-                $this->laravelRequestDocsToOpenApi->openApi($docs)->toArray(),
+                $this->laravelRequestDocsToOpenApi->openApi($docs->all())->toArray(),
                 Response::HTTP_OK,
                 [
                     'Content-type' => 'application/json; charset=utf-8'
@@ -67,7 +67,7 @@ class LaravelRequestDocsController extends Controller
         }
 
         return response()->json(
-            collect($docs),
+            $docs,
             Response::HTTP_OK,
             [
                 'Content-type' => 'application/json; charset=utf-8',
