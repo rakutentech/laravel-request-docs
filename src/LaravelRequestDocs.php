@@ -58,8 +58,8 @@ class LaravelRequestDocs
      */
     public function splitByMethods(Collection $docs): Collection
     {
-        $splitDocs = collect();
         /** @var \Illuminate\Support\Collection<int, \Rakutentech\LaravelRequestDocs\Doc> $splitDocs */
+        $splitDocs = collect();
 
         foreach ($docs as $doc) {
             foreach ($doc->getMethods() as $method) {
@@ -439,8 +439,8 @@ class LaravelRequestDocs
         $regex = count($patterns) > 0 ? '(' . implode('|', $patterns) . ')' : '';
 
         // A collection<string, int> to remember indexes with `group` => `index` pair.
-        $groupIndexes = collect();
         /** @var \Illuminate\Support\Collection<string, int> $groupIndexes */
+        $groupIndexes = collect();
 
         foreach ($docs as $doc) {
             if ($regex !== '') {
@@ -481,8 +481,8 @@ class LaravelRequestDocs
     private function groupDocsByFQController(Collection $docs): void
     {
         // To remember group indexes with group => index pair.
-        $groupIndexes = collect();
         /** @var \Illuminate\Support\Collection<string, int> $groupIndexes */
+        $groupIndexes = collect();
 
         foreach ($docs as $doc) {
             $group = $doc->getControllerFullPath();
