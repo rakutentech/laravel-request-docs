@@ -20,6 +20,23 @@ class LaravelRequestDocsControllerTest extends TestCase
             ->assertStatus(Response::HTTP_OK);
     }
 
+    public function testApiCanHideMetadata()
+    {
+        Config::set('request-docs.hide_meta_data', true);
+
+        $response = $this->get(route('request-docs.api'))
+            ->assertStatus(Response::HTTP_OK);
+
+        $docs = collect($response->json());
+
+        $this->assertEmpty($docs->pluck('middlewares')->flatten()->toArray());
+        $this->assertSame([''], $docs->pluck('controller')->flatten()->unique()->toArray());
+        $this->assertSame([''], $docs->pluck('controller_full_path')->flatten()->unique()->toArray());
+        $this->assertSame([''], $docs->pluck('method')->flatten()->unique()->toArray());
+        $this->assertSame([''], $docs->pluck('doc_block')->flatten()->unique()->toArray());
+        $this->assertEmpty($docs->pluck('rules')->flatten()->toArray());
+    }
+
     public function testAbleFetchAllMethods()
     {
         $response = $this->get(route('request-docs.api'))
