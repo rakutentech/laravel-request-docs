@@ -225,7 +225,11 @@ class LaravelRequestDocs
                 $requestClass = null;
                 try {
                     $reflection = new ReflectionClass($requestClassName);
-                    $requestClass = $reflection->newInstanceWithoutConstructor();
+                    try {
+                        $requestClass = $reflection->newInstance();
+                    } catch (Throwable $th) {
+                        $requestClass = $reflection->newInstanceWithoutConstructor();
+                    }
                 } catch (Throwable $th) {
                     //throw $th;
                 }
