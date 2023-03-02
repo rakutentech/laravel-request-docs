@@ -10,7 +10,19 @@ jobs:
 
     strategy:
       matrix:
-        php-versions: [7.4, 8.0.6, 8.1, 8.2]
+        php-versions: [7.4, 8.0, 8.1, 8.2]
+        laravel: [8.*]
+        include:
+          - php: 8.0
+            laravel: 9.*
+          - php: 8.1
+            laravel: 9.*
+          - php: 8.2
+            laravel: 9.*
+          - php: 8.1
+            laravel: 10.*
+          - php: 8.2
+            laravel: 10.*
 
     steps:
       - name: Cancel Previous Runs
@@ -31,7 +43,9 @@ jobs:
           tools: composer:v2
 
       - name: Composer Install
-        run: composer install
+        run: |
+            composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+            composer install
 
       - name: PHPUNIT Tests
         run: |
