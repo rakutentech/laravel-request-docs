@@ -36,9 +36,7 @@ class LaravelRequestDocs
             Request::METHOD_PATCH  => $showPatch,
             Request::METHOD_DELETE => $showDelete,
             Request::METHOD_HEAD   => $showHead,
-        ], function (string $method) {
-            return $method;
-        });
+        ], fn(bool $shouldShow) => $shouldShow);
 
         /** @var string[] $methods */
         $methods = array_keys($filteredMethods);
