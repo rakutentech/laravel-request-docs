@@ -7,7 +7,7 @@ use Orchestra\Testbench\TestCase as Orchestra;
 use Rakutentech\LaravelRequestDocs\LaravelRequestDocs;
 use Rakutentech\LaravelRequestDocs\LaravelRequestDocsServiceProvider;
 use Rakutentech\LaravelRequestDocs\LaravelRequestDocsToOpenApi;
-use Rakutentech\LaravelRequestDocs\Tests\TestControllers;
+use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers;
 
 class TestCase extends Orchestra
 {
@@ -40,8 +40,8 @@ class TestCase extends Orchestra
         Route::get('welcome', [TestControllers\WelcomeController::class, 'index']);
         Route::get('welcome/{id}', [TestControllers\WelcomeController::class, 'show']);
         Route::post('welcome', [TestControllers\WelcomeController::class, 'store'])->middleware('auth:api');
-        Route::put('welcome', 'Rakutentech\LaravelRequestDocs\Tests\TestControllers\WelcomeController@edit');
-        Route::patch('welcome/patch', 'Rakutentech\LaravelRequestDocs\Tests\TestControllers\WelcomeController@edit');
+        Route::put('welcome', 'Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\WelcomeController@edit');
+        Route::patch('welcome/patch', 'Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\WelcomeController@edit');
         Route::delete('welcome', [TestControllers\WelcomeController::class, 'destroy']);
         Route::get('health', [TestControllers\WelcomeController::class, 'health']);
         Route::get('single', TestControllers\SingleActionController::class);

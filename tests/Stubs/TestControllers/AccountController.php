@@ -1,11 +1,11 @@
 <?php
 
-namespace Rakutentech\LaravelRequestDocs\Tests\TestControllers\API;
+namespace Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class Group1Controller
+class AccountController
 {
     /**
      * Display a listing of the resource.

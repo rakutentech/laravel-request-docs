@@ -1,6 +1,6 @@
 <?php
 
-namespace Rakutentech\LaravelRequestDocs\Tests\TestRules;
+namespace Rakutentech\LaravelRequestDocs\Tests\Stubs\TestRules;
 
 use Illuminate\Contracts\Validation\InvokableRule;
 

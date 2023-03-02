@@ -1,6 +1,6 @@
 <?php
 
-namespace Rakutentech\LaravelRequestDocs\Tests\TestRequests;
+namespace Rakutentech\LaravelRequestDocs\Tests\Stubs\TestRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
 

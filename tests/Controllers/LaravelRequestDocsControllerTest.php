@@ -7,10 +7,10 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\API\Group1Controller;
+use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\API\Group2Controller;
+use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\UserController;
 use Rakutentech\LaravelRequestDocs\Tests\TestCase;
-use Rakutentech\LaravelRequestDocs\Tests\TestControllers\API\Group1Controller;
-use Rakutentech\LaravelRequestDocs\Tests\TestControllers\API\Group2Controller;
-use Rakutentech\LaravelRequestDocs\Tests\TestControllers\UserController;
 
 class LaravelRequestDocsControllerTest extends TestCase
 {
@@ -318,37 +318,37 @@ class LaravelRequestDocsControllerTest extends TestCase
         $docs = collect($response->json());
 
         $expected = [
-            'Rakutentech\LaravelRequestDocs\Tests\TestControllers\API\Group1Controller' => [
+            'Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\API\Group1Controller' => [
                 [
                     'method'      => 'store',
                     'http_method' => 'POST',
-                    'group'       => 'Rakutentech\LaravelRequestDocs\Tests\TestControllers\API\Group1Controller',
+                    'group'       => 'Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\API\Group1Controller',
                     'group_index' => 0
                 ],
                 [
                     'method'      => 'update',
                     'http_method' => 'PUT',
-                    'group'       => 'Rakutentech\LaravelRequestDocs\Tests\TestControllers\API\Group1Controller',
+                    'group'       => 'Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\API\Group1Controller',
                     'group_index' => 1
                 ],
             ],
-            'Rakutentech\LaravelRequestDocs\Tests\TestControllers\API\Group2Controller' => [
+            'Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\API\Group2Controller' => [
                 [
                     'method'      => 'show',
                     'http_method' => 'GET',
-                    'group'       => 'Rakutentech\LaravelRequestDocs\Tests\TestControllers\API\Group2Controller',
+                    'group'       => 'Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\API\Group2Controller',
                     'group_index' => 0
                 ],
                 [
                     'method'      => 'show',
                     'http_method' => 'HEAD',
-                    'group'       => 'Rakutentech\LaravelRequestDocs\Tests\TestControllers\API\Group2Controller',
+                    'group'       => 'Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\API\Group2Controller',
                     'group_index' => 1
                 ],
                 [
                     'method'      => 'destroy',
                     'http_method' => 'DELETE',
-                    'group'       => 'Rakutentech\LaravelRequestDocs\Tests\TestControllers\API\Group2Controller',
+                    'group'       => 'Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\API\Group2Controller',
                     'group_index' => 2
                 ]
             ]

@@ -1,12 +1,12 @@
 <?php
 
-namespace Rakutentech\LaravelRequestDocs\Tests\TestControllers;
+namespace Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers;
 
-use Rakutentech\LaravelRequestDocs\Tests\TestRequests\RequestWithoutRules;
-use Rakutentech\LaravelRequestDocs\Tests\TestRequests\WelcomeIndexRequest;
-use Rakutentech\LaravelRequestDocs\Tests\TestRequests\WelcomeEditRequest;
-use Rakutentech\LaravelRequestDocs\Tests\TestRequests\WelcomeStoreRequest;
-use Rakutentech\LaravelRequestDocs\Tests\TestRequests\WelcomeDeleteRequest;
+use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestRequests\RequestWithoutRules;
+use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestRequests\WelcomeDeleteRequest;
+use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestRequests\WelcomeEditRequest;
+use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestRequests\WelcomeIndexRequest;
+use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestRequests\WelcomeStoreRequest;
 
 class WelcomeController
 {

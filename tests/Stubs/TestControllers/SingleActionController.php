@@ -1,6 +1,6 @@
 <?php
 
-namespace Rakutentech\LaravelRequestDocs\Tests\TestControllers;
+namespace Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers;
 
 /**
  * Single action controller with a single `__invoke` method
