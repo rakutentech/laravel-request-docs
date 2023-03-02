@@ -129,8 +129,15 @@ export default function ApiAction(props: Props) {
                 setResponseStatus(response.status)
                 setResponseHeaders(JSON.stringify(Object.fromEntries(response.headers), null, 2))
                 setSendingRequest(false)
-                return response.json();
+                return response.text()
             }).then((data) => {
+                let isJson = true
+                try {
+                    data = JSON.parse(data)
+                } catch (error: any) {
+                    isJson = false
+                    // do nothing
+                }
 
                 if (data && data._lrd && data._lrd.queries) {
                     const sqlQueries = data._lrd.queries.map((query: any) => {
@@ -164,7 +171,12 @@ export default function ApiAction(props: Props) {
                 if (data && data._lrd) {
                     delete data._lrd
                 }
-                setResponseData(JSON.stringify(data, null, 2))
+                if (isJson) {
+                    setResponseData(JSON.stringify(data, null, 2))
+                } else {
+                    setResponseData(data)
+                }
+
                 setActiveTab('response')
             }).catch((error) => {
                 setError("Response error: " + error)
