@@ -12,7 +12,7 @@ class Group2Controller
      */
     public function index(): Response
     {
-        return response();
+        return response('content');
     }
 
     /**
@@ -20,7 +20,7 @@ class Group2Controller
      */
     public function store(Request $request): Response
     {
-        return response();
+        return response('content');
     }
 
     /**
@@ -28,7 +28,7 @@ class Group2Controller
      */
     public function show(string $id): Response
     {
-        return response();
+        return response('content');
     }
 
     /**
@@ -36,7 +36,7 @@ class Group2Controller
      */
     public function update(Request $request, string $id): Response
     {
-        return response();
+        return response('content');
     }
 
     /**
@@ -44,6 +44,6 @@ class Group2Controller
      */
     public function destroy(string $id): Response
     {
-        return response();
+        return response('content');
     }
 }
