@@ -102,7 +102,7 @@ td {
     @apply badge-ghost;
 }
 
-.badge-200,.badge-201,.badge-202,.response-204,  {
+.badge-200,.badge-201,.badge-202,.response-204  {
     @apply bg-success;
 }
 

@@ -61,7 +61,7 @@ export default function ApiActionTabs(props: Props) {
                 <TableCellsIcon className='inline-block w-5 h-5 mr-1' /> Events
                 {responseStatus != 0 && (
                     <div className="ml-1 badge badge-xs badge-warning">
-                        {Object.keys(modelsData).length}
+                        {(modelsData && modelsData.modelsSummary) ? Object.keys(modelsData.modelsSummary).length : 0}
                     </div>
                 )}
             </a>

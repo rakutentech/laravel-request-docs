@@ -195,13 +195,9 @@ Fixing lints
 - v2.8 Show full activity on Eloquent models
 
 
-# Maintainers
+# Contributors
 
-<table>
-  <tr>
-    <td align="center"><a href="https://kevincobain2000.github.io"><img src="https://avatars2.githubusercontent.com/u/629055?v=4" width="100px;" alt=""/><br /><sub><b>Pulkit Kathuria</b></sub></a><br /><a href="https://github.com/kevincobain2000/laravel-alert-notifications/pulls?q=is%3Apr+reviewed-by%3Akevincobain2000" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/kevincobain2000/laravel-alert-notifications/commits?author=kevincobain2000" title="Tests">⚠️</a> <a href="https://github.com/kevincobain2000/laravel-alert-notifications/commits?author=kevincobain2000" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/kitloong"><img src="https://avatars2.githubusercontent.com/u/7660346?v=4" width="100px;" alt=""/><br /><sub><b>Kit Loong</b></sub></a><br /><a href="https://github.com/kevincobain2000/laravel-alert-notifications/pulls?q=is%3Apr+reviewed-by%3Akitloong" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/kevincobain2000/laravel-alert-notifications/commits?author=kitloong" title="Tests">⚠️</a> <a href="https://github.com/kevincobain2000/laravel-alert-notifications/commits?author=kitloong" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/truongns"><img src="https://avatars2.githubusercontent.com/u/11814875?v=4" width="100px;" alt=""/><br /><sub><b>Truong Nguyen</b></sub></a><br /><a href="https://github.com/kevincobain2000/laravel-alert-notifications/pulls?q=is%3Apr+reviewed-by%3Atruongns" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/kevincobain2000/laravel-alert-notifications/commits?author=truongns" title="Tests">⚠️</a> <a href="https://github.com/kevincobain2000/laravel-alert-notifications/commits?author=truongns" title="Code">💻</a></td>
-  </tr>
-</table>
 
+<a href="https://github.com/rakutentech/laravel-request-docs/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=rakutentech/laravel-request-docs" />
+</a>
