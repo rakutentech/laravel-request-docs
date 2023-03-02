@@ -4,29 +4,27 @@ namespace Rakutentech\LaravelRequestDocs;
 
 use Closure;
 use Illuminate\Database\Events\QueryExecuted;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use KitLoong\AppLogger\QueryLog\LogWriter as QueryLogger;
-use Event;
-use Str;
 use Symfony\Component\HttpFoundation\Response;
-
 
 class LaravelRequestDocsMiddleware extends QueryLogger
 {
-    private array $queries = [];
-    private array $logs = [];
-    private array $models = [];
+    private array $queries        = [];
+    private array $logs           = [];
+    private array $models         = [];
     private array $modelsTimeline = [];
 
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\JsonResponse)  $next
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): JsonResponse
+    public function handle(Request $request, Closure $next): Response
     {
         if (!$request->headers->has('X-Request-LRD') || !config('app.debug')) {
             return $next($request);
@@ -53,12 +51,12 @@ class LaravelRequestDocsMiddleware extends QueryLogger
 
         $content       = $response->getData();
         $content->_lrd = [
-            'queries' => $this->queries,
-            'logs' => $this->logs,
-            'models' => $this->models,
+            'queries'        => $this->queries,
+            'logs'           => $this->logs,
+            'models'         => $this->models,
             // 'modelsTimeline' => $this->modelsTimeline,
             'modelsTimeline' => array_unique($this->modelsTimeline, SORT_REGULAR),
-            'memory' => (string) round(memory_get_peak_usage(true) / 1048576, 2) . "MB",
+            'memory'         => (string) round(memory_get_peak_usage(true) / 1048576, 2) . "MB",
         ];
         $jsonContent   = json_encode($content);
 
@@ -75,7 +73,7 @@ class LaravelRequestDocsMiddleware extends QueryLogger
         return $response;
     }
 
-    public function listenToDB()
+    public function listenToDB(): void
     {
         DB::listen(function (QueryExecuted $query) {
             $this->queries[] = $this->getMessages($query);
@@ -89,18 +87,18 @@ class LaravelRequestDocsMiddleware extends QueryLogger
         });
     }
 
-    public function listenToModels()
+    public function listenToModels(): void
     {
         Event::listen('eloquent.*', function ($event, $models) {
             foreach (array_filter($models) as $model) {
                 // doing and booted ignore
                 if (Str::startsWith($event, 'eloquent.booting')
-                || Str::startsWith($event, 'eloquent.booted')
-                || Str::startsWith($event, 'eloquent.retrieving')
-                || Str::startsWith($event, 'eloquent.creating')
-                || Str::startsWith($event, 'eloquent.saving')
-                || Str::startsWith($event, 'eloquent.updating')
-                || Str::startsWith($event, 'eloquent.deleting')
+                    || Str::startsWith($event, 'eloquent.booted')
+                    || Str::startsWith($event, 'eloquent.retrieving')
+                    || Str::startsWith($event, 'eloquent.creating')
+                    || Str::startsWith($event, 'eloquent.saving')
+                    || Str::startsWith($event, 'eloquent.updating')
+                    || Str::startsWith($event, 'eloquent.deleting')
                 ) {
                     continue;
                 }
@@ -120,7 +118,7 @@ class LaravelRequestDocsMiddleware extends QueryLogger
                 if (!isset($this->models[$class][$event])) {
                     $this->models[$class][$event] = 0;
                 }
-                $this->models[$class][$event] = $this->models[$class][$event]+1;
+                $this->models[$class][$event] = $this->models[$class][$event] + 1;
             }
         });
     }
