@@ -24,7 +24,7 @@ class NotFoundWhenProductionTest extends TestCase
     public function testHandle()
     {
         Route::get('middleware', function () {
-            return 1;
+            return response()->json([1]);
         })->middleware(NotFoundWhenProduction::class);
 
         $this->get('middleware')
