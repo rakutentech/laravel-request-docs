@@ -4,6 +4,7 @@ namespace Rakutentech\LaravelRequestDocs;
 
 use Closure;
 use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
@@ -42,10 +43,7 @@ class LaravelRequestDocsMiddleware extends QueryLogger
 
         $response = $next($request);
 
-        try {
-            $response->getData();
-        } catch (\Exception $e) {
-            // not a json response
+        if (!$response instanceof JsonResponse) {
             return $response;
         }
 
