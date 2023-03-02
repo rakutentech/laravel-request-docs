@@ -2,10 +2,19 @@ import React from 'react';
 
 import { explode } from '../../libs/strings'
 import shortid from 'shortid';
+import {
+    CheckIcon,
+    ChevronDoubleDownIcon,
+    ArrowPathIcon,
+    MinusIcon,
+    PlusIcon,
+} from '@heroicons/react/24/outline'
 
 interface Props {
     modelsData: any,
 }
+
+
 
 export default function ApiActionEvents(props: Props) {
     const { modelsData } = props
@@ -36,9 +45,18 @@ export default function ApiActionEvents(props: Props) {
                                                         <div className='' dangerouslySetInnerHTML={{ __html: explode(model.split('\\')[model.split('\\').length - 1], 30, "<br/>") }} />
                                                     </td>
                                                 )}
-                                                <td className='capitalize'>{event}</td>
+                                                <td className='capitalize'>
+                                                    {event == 'created' && <PlusIcon className={`inline-block w-3 h-3 mr-1`} />}
+                                                    {event == 'saved' && <CheckIcon className={`inline-block w-3 h-3 mr-1`} />}
+                                                    {event == 'retrieved' && <ChevronDoubleDownIcon className={`inline-block w-3 h-3 text-white mr-1`} />}
+                                                    {event == 'updated' && <ArrowPathIcon className={`inline-block w-3 h-3 mr-1`} />}
+                                                    {event == 'deleted' && <MinusIcon className={`inline-block w-3 h-3 mr-1`} />}
+                                                    {event}
+                                                </td>
                                                 <td>
-                                                    <span className='font-bold'>{modelsSummary[model][event]}</span>
+                                                    <span className='font-bold'>
+                                                        {modelsSummary[model][event]}
+                                                    </span>
                                                     <span className='text-slate-400 pl-1'>
                                                         Time{modelsSummary[model][event] > 1 ? 's' : ''}
                                                     </span>
@@ -67,7 +85,12 @@ export default function ApiActionEvents(props: Props) {
                                             <div className={`h-full w-1 bg-${modelsTimeline[index].event} pointer-events-none`}></div>
                                         </div>
                                         <div className={`w-3 h-3 absolute top-1/2 rounded-full bg-${modelsTimeline[index].event} shadow text-center`}>
-                                            <i className="fas fa-check-circle text-white"></i>
+                                            {modelsTimeline[index].event == 'created' && <PlusIcon className={`w-3 h-3 text-black mx-auto`} />}
+                                            {modelsTimeline[index].event == 'saved' && <CheckIcon className={`w-3 h-3 text-black mx-auto`} />}
+                                            {modelsTimeline[index].event == 'retrieved' && <ChevronDoubleDownIcon className={`w-3 h-3 text-white mx-auto`} />}
+                                            {modelsTimeline[index].event == 'updated' && <ArrowPathIcon className={`w-3 h-3 text-black mx-auto`} />}
+                                            {modelsTimeline[index].event == 'deleted' && <MinusIcon className={`w-3 h-3 text-black mx-auto`} />}
+
                                         </div>
                                     </div>
                                     <div className="col-start-4 col-end-12 rounded-md my-3 mr-auto w-full break-all">
@@ -76,7 +99,7 @@ export default function ApiActionEvents(props: Props) {
                                         </h3>
                                         <p className="title text-justify w-full">
                                             <span className={`badge badge-${modelsTimeline[index].event} rounded-sm`}>
-                                            {   modelsTimeline[index].event}
+                                                {modelsTimeline[index].event}
                                             </span>
                                         </p>
                                     </div>

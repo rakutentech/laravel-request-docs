@@ -195,9 +195,8 @@ export default function ApiAction(props: Props) {
         }
 
         if (method == 'GET' || method == 'HEAD' || method == 'DELETE') {
-            if (cached) {
+            if (cached && cached.trim() != "") {
                 setQueryParams(cached)
-                // setGetCurlCommand(cached)
                 setCurlCommand(makeCurlCommand(host, lrdDocsItem.uri, method, cached, requestHeaders))
                 return
             }
@@ -216,7 +215,7 @@ export default function ApiAction(props: Props) {
             setCurlCommand(makeCurlCommand(host, lrdDocsItem.uri, method, queries, requestHeaders))
         }
         if (method == 'POST' || method == 'PUT' || method == 'PATCH') {
-            if (cached) {
+            if (cached && (cached.trim() != "" || cached.trim() != "{}")) {
                 setBodyParams(cached)
                 setCurlCommand(makeCurlCommand(host, lrdDocsItem.uri, method, cached, requestHeaders))
                 return
