@@ -20,6 +20,7 @@ class LaravelRequestDocs
      * @param  bool  $showDelete
      * @param  bool  $showHead
      * @return \Rakutentech\LaravelRequestDocs\Doc[]
+     * @throws \ReflectionException
      */
     public function getDocs(
         bool $showGet,
@@ -229,11 +230,11 @@ class LaravelRequestDocs
 
                         try {
                             $controllerInfo->mergeRules($this->flattenRules($requestObject->$requestMethod()));
-                        } catch (Throwable $e) {
+                        } catch (Throwable) {
                             $controllerInfo->mergeRules($this->rulesByRegex($requestClassName, $requestMethod));
                         }
                     }
-                } catch (Throwable $th) {
+                } catch (Throwable) {
                     // Do nothing.
                 }
 
@@ -322,7 +323,7 @@ class LaravelRequestDocs
             }
         }
 
-        $rules = collect($rules)
+        return collect($rules)
             ->filter(function ($item) {
                 return count($item[0]) > 0;
             })
@@ -338,8 +339,6 @@ class LaravelRequestDocs
             ->transform(function ($item) {
                 return $item['rules'];
             })->toArray();
-
-        return $rules;
     }
 
     /**
