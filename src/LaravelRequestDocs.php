@@ -241,11 +241,11 @@ class LaravelRequestDocs
 
                         try {
                             $doc->mergeRules($this->flattenRules($requestObject->$requestMethod()));
-                        } catch (Throwable) {
+                        } catch (Throwable $e) {
                             $doc->mergeRules($this->rulesByRegex($requestClassName, $requestMethod));
                         }
                     }
-                } catch (Throwable) {
+                } catch (Throwable $e) {
                     // Do nothing.
                 }
 

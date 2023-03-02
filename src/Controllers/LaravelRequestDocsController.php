@@ -83,8 +83,10 @@ class LaravelRequestDocsController extends Controller
 
     /**
      * @codeCoverageIgnore
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|\Illuminate\Http\JsonResponse
      */
-    public function assets(Request $request): BinaryFileResponse|JsonResponse
+    public function assets(Request $request)
     {
         $path = explode('/', $request->path());
         $path = end($path);
