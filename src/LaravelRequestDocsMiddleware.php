@@ -47,16 +47,19 @@ class LaravelRequestDocsMiddleware extends QueryLogger
             return $response;
         }
 
-        $content       = $response->getData();
-        $content->_lrd = [
-            'queries'        => $this->queries,
-            'logs'           => $this->logs,
-            'models'         => $this->models,
-            // 'modelsTimeline' => $this->modelsTimeline,
-            'modelsTimeline' => array_unique($this->modelsTimeline, SORT_REGULAR),
-            'memory'         => (string) round(memory_get_peak_usage(true) / 1048576, 2) . "MB",
+        $content = [
+            'data' => $response->getData(),
+            '_lrd' => [
+                'queries'        => $this->queries,
+                'logs'           => $this->logs,
+                'models'         => $this->models,
+                // 'modelsTimeline' => $this->modelsTimeline,
+                'modelsTimeline' => array_unique($this->modelsTimeline, SORT_REGULAR),
+                'memory'         => ((string) round(memory_get_peak_usage(true) / 1048576, 2)) . "MB",
+            ],
         ];
-        $jsonContent   = json_encode($content);
+
+        $jsonContent = json_encode($content);
 
         if (in_array('gzip', $request->getEncodings()) && function_exists('gzencode')) {
             $level       = 9; // best compression;
