@@ -16,7 +16,8 @@ jobs:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
         with:
-          access_token: ${{ github.token }}    
+          access_token: ${{ github.token }}
+
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -38,7 +39,11 @@ jobs:
 
       - name: PHPLint
         run: |
-            ./vendor/bin/phpcs --standard=phpcs.xml --extensions=php --ignore=tests/migrations config/ src/
+            ./vendor/bin/phpcs
+
+      - name: PHPStan
+        run: |
+          ./vendor/bin/phpstan analyse
 
       - name: Upload to codecov
         uses: codecov/codecov-action@v3
