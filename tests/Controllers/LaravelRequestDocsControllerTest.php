@@ -27,14 +27,15 @@ class LaravelRequestDocsControllerTest extends TestCase
 
         $docs = collect($response->json());
 
-        $this->assertSame([
-            Request::METHOD_DELETE,
-            Request::METHOD_GET,
-            Request::METHOD_HEAD,
-            Request::METHOD_PATCH,
-            Request::METHOD_POST,
-            Request::METHOD_PUT,
-        ],
+        $this->assertSame(
+            [
+                Request::METHOD_DELETE,
+                Request::METHOD_GET,
+                Request::METHOD_HEAD,
+                Request::METHOD_PATCH,
+                Request::METHOD_POST,
+                Request::METHOD_PUT,
+            ],
             $docs->pluck('http_method')
                 ->flatten()
                 ->unique()
