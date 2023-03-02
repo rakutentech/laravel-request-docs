@@ -2,22 +2,39 @@
 
 namespace Rakutentech\LaravelRequestDocs\Tests\Stubs\TestRules;
 
-use Illuminate\Contracts\Validation\InvokableRule;
+use Illuminate\Contracts\Validation\Rule;
 
-class Uppercase implements InvokableRule
+class Uppercase implements Rule
 {
     /**
-     * Run the validation rule.
+     * Create a new rule instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }
+
+    /**
+     * Determine if the validation rule passes.
      *
      * @param  string  $attribute
      * @param  mixed  $value
-     * @param  \Closure  $fail
-     * @return void
+     * @return bool
      */
-    public function __invoke($attribute, $value, $fail)
+    public function passes($attribute, $value)
     {
-        if (strtoupper($value) !== $value) {
-            $fail('The :attribute must be uppercase.');
-        }
+        return strtoupper($value) === $value;
+    }
+
+    /**
+     * Get the validation error message.
+     *
+     * @return string
+     */
+    public function message()
+    {
+        return 'The :attribute must be uppercase.';
     }
 }
