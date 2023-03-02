@@ -21,7 +21,7 @@ class NotFoundWhenProductionTest extends TestCase
         }
     }
 
-    public function testMiddleware()
+    public function testHandle()
     {
         Route::get('middleware', function () {
             return 1;
