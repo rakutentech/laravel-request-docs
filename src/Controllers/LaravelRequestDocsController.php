@@ -42,6 +42,9 @@ class LaravelRequestDocsController extends Controller
         $showDelete = !$request->has('showDelete') || $request->input('showDelete') === 'true';
         $showHead   = !$request->has('showHead') || $request->input('showHead') === 'true';
 
+        // Get a list of Doc with route and rules information.
+        // If user defined `Route::match(['get', 'post'], 'uri', ...)`,
+        // only a single Doc will be generated.
         $docs = $this->laravelRequestDocs->getDocs(
             $showGet,
             $showPost,
@@ -51,6 +54,8 @@ class LaravelRequestDocsController extends Controller
             $showHead,
         );
 
+        // Loop and split Doc by the `methods` property.
+        // `Route::match([...n], 'uri', ...)` will generate n number of Doc.
         $docs = $this->laravelRequestDocs->splitByMethods($docs);
         $docs = $this->laravelRequestDocs->sortDocs($docs, $request->input('sort'));
         $docs = $this->laravelRequestDocs->groupDocs($docs, $request->input('groupby'));

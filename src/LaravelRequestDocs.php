@@ -13,6 +13,8 @@ use Throwable;
 class LaravelRequestDocs
 {
     /**
+     * Get a collection of {@see \Rakutentech\LaravelRequestDocs\Doc} with route and rules information.
+     *
      * @param  bool  $showGet
      * @param  bool  $showPost
      * @param  bool  $showPut
@@ -49,7 +51,7 @@ class LaravelRequestDocs
     }
 
     /**
-     * Split {@see \Rakutentech\LaravelRequestDocs\Doc} by {@see \Rakutentech\LaravelRequestDocs\Doc::$methods}
+     * Loop and split {@see \Rakutentech\LaravelRequestDocs\Doc} by {@see \Rakutentech\LaravelRequestDocs\Doc::$methods}.
      *
      * @param  \Illuminate\Support\Collection<int, \Rakutentech\LaravelRequestDocs\Doc>  $docs
      * @return \Illuminate\Support\Collection<int, \Rakutentech\LaravelRequestDocs\Doc>
@@ -72,6 +74,8 @@ class LaravelRequestDocs
     }
 
     /**
+     * Sort by `$sortBy`.
+     *
      * @param  \Illuminate\Support\Collection<int, \Rakutentech\LaravelRequestDocs\Doc>  $docs
      * @param  string|null  $sortBy
      * @return \Illuminate\Support\Collection<int, \Rakutentech\LaravelRequestDocs\Doc>
@@ -104,6 +108,9 @@ class LaravelRequestDocs
     }
 
     /**
+     * Group by `$groupBy`. {@see \Rakutentech\LaravelRequestDocs\Doc::$group} and {@see \Rakutentech\LaravelRequestDocs\Doc::$groupIndex} will be set.
+     * The return collection is always sorted by `group`, `group_index`.
+     *
      * @param  \Illuminate\Support\Collection<int, \Rakutentech\LaravelRequestDocs\Doc>  $docs
      * @return \Illuminate\Support\Collection<int, \Rakutentech\LaravelRequestDocs\Doc>
      */
@@ -129,6 +136,8 @@ class LaravelRequestDocs
     }
 
     /**
+     * Get controllers and routes information and return a list of {@see \Rakutentech\LaravelRequestDocs\Doc}
+     *
      * @param  string[]  $onlyMethods
      * @return \Illuminate\Support\Collection<int, \Rakutentech\LaravelRequestDocs\Doc>
      * @throws \ReflectionException
@@ -191,6 +200,9 @@ class LaravelRequestDocs
     }
 
     /**
+     * Parse from request object and set into {@see \Rakutentech\LaravelRequestDocs\Doc}
+     * This method also read docBlock and update into {@see \Rakutentech\LaravelRequestDocs\Doc}.
+     *
      * @param  \Illuminate\Support\Collection<int, \Rakutentech\LaravelRequestDocs\Doc>  $docs
      * @return \Illuminate\Support\Collection<int, \Rakutentech\LaravelRequestDocs\Doc>
      * @throws \ReflectionException
@@ -245,6 +257,12 @@ class LaravelRequestDocs
         return $docs;
     }
 
+    /**
+     * Get description in between @lrd:start and @lrd:end from the doc block.
+     *
+     * @param  string  $docComment
+     * @return string
+     */
     public function lrdDocComment(string $docComment): string
     {
         $lrdComment = "";
@@ -267,8 +285,10 @@ class LaravelRequestDocs
     }
 
     /**
+     * Parse rules from the request.
+     *
      * @param  array<string, \Illuminate\Contracts\Validation\Rule|array|string>  $mixedRules
-     * @return array<string, string[]>
+     * @return array<string, string[]>  Key is attribute, value is a list of rules.
      */
     public function flattenRules(array $mixedRules): array
     {
@@ -300,7 +320,9 @@ class LaravelRequestDocs
     }
 
     /**
-     * @return array<string, string[]>
+     * Read the source file and parse rules by regex.
+     *
+     * @return array<string, string[]> Key is attribute, value is a list of rules.
      * @throws \ReflectionException
      */
     public function rulesByRegex(string $requestClassName, string $methodName): array
@@ -341,6 +363,8 @@ class LaravelRequestDocs
     }
 
     /**
+     * Get additional rules by parsing the doc block.
+     *
      * @param  string  $docComment
      * @return array<string, string[]>
      */
@@ -366,8 +390,10 @@ class LaravelRequestDocs
     }
 
     /**
+     * Get responses by parsing the doc block.
+     *
      * @param  string  $docComment
-     * @return string[]
+     * @return string[]  A list of responses. Will overwrite the default responses.
      */
     private function customResponsesDocComment(string $docComment): array
     {
@@ -402,7 +428,7 @@ class LaravelRequestDocs
     }
 
     /**
-     * Parse the `$docs['uri']` and attach `group` and `group_index` details.
+     * Group by {@see \Rakutentech\LaravelRequestDocs\Doc::$uri} and attach {@see \Rakutentech\LaravelRequestDocs\Doc::$group} and {@see \Rakutentech\LaravelRequestDocs\Doc::$groupIndex} details.
      *
      * @param  \Illuminate\Support\Collection<int, \Rakutentech\LaravelRequestDocs\Doc>  $docs
      */
@@ -431,7 +457,7 @@ class LaravelRequestDocs
     }
 
     /**
-     * Create and return group name by the `$uri`.
+     * Create and return group name by the {@see \Rakutentech\LaravelRequestDocs\Doc::$uri}.
      */
     private function getGroupByURI(string $prefix, string $uri): string
     {
@@ -448,7 +474,7 @@ class LaravelRequestDocs
     }
 
     /**
-     * Parse the `$docs['controller_full_path']` and attach `group` and `group_index` details.
+     * Group by {@see \Rakutentech\LaravelRequestDocs\Doc::$controllerFullPath} and attach {@see \Rakutentech\LaravelRequestDocs\Doc::$group} and {@see \Rakutentech\LaravelRequestDocs\Doc::$groupIndex} details.
      *
      * @param  \Illuminate\Support\Collection<int, \Rakutentech\LaravelRequestDocs\Doc>  $docs
      */
