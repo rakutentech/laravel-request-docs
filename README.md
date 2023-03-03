@@ -10,6 +10,15 @@
   Supports Open API 3.0.0
 </p>
 
+<p align="center">
+  <img src="https://github.com/rakutentech/laravel-request-docs/actions/workflows/node.yml/badge.svg?branch=master" alt="CI Node">
+  <img src="https://github.com/rakutentech/laravel-request-docs/actions/workflows/phptest.yml/badge.svg?branch=master" alt="CI PHP">
+  <a href="https://codecov.io/gh/rakutentech/laravel-request-docs"><img src="https://codecov.io/gh/rakutentech/laravel-request-docs/branch/master/graph/badge.svg?token=U6ZRDPY6QZ" alt="codecov"></a>
+  <a href="https://packagist.org/packages/rakutentech/laravel-request-docs"><img src="https://poser.pugx.org/rakutentech/laravel-request-docs/v/stable.png" alt="Latest Stable Version"></a>
+  <a href="https://packagist.org/packages/rakutentech/laravel-request-docs"><img src="http://poser.pugx.org/rakutentech/laravel-request-docs/downloads" alt="Total Downloads"></a>
+  <a href="LICENSE.md"><img src="https://poser.pugx.org/rakutentech/laravel-request-docs/license.png" alt="License"></a>
+</p>
+
 **Fast:** Install on any Laravel Project
 
 **Hassle Free:** Auto Generate API Documentation for request rules and parameters
