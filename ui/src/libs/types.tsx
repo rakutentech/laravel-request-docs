@@ -3,12 +3,11 @@ export interface IAPIRule {
 }
 export interface IAPIInfo {
     uri: string;
-    methods: string[];
     middlewares: string[];
     controller: string;
     controller_full_path: string;
     method: string;
-    httpMethod: string;
+    http_method: string;
     rules: IAPIRule;
     docBlock: string;
     group: string;

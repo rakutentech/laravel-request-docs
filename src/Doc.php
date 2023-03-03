@@ -325,7 +325,6 @@ class Doc implements Arrayable
     {
         $result = [
             'uri'                  => $this->uri,
-            'methods'              => $this->methods,
             'middlewares'          => $this->middlewares,
             'controller'           => $this->controller,
             'controller_full_path' => $this->controllerFullPath,

@@ -30,8 +30,8 @@ export default function ApiActionInfo(props: Props) {
                         <tr>
                             <th>Method</th>
                             <td>
-                                <span className={`method-${lrdDocsItem.httpMethod} uppercase`}>
-                                    {lrdDocsItem.httpMethod}
+                                <span className={`method-${lrdDocsItem.http_method} uppercase`}>
+                                    {lrdDocsItem.http_method}
                                 </span>
                             </td>
                         </tr>
