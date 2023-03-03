@@ -56,8 +56,7 @@ class TestCase extends Orchestra
 
         Route::apiResource('accounts', TestControllers\AccountController::class);
 
-        Route::any('any', [TestControllers\WelcomeController::class, 'index']);
-        Route::match(['get', 'post'], 'match', [TestControllers\WelcomeController::class, 'index']);
+        Route::match(['get', 'post'], 'match', [TestControllers\MatchController::class, 'index']);
 
         // Test duplication
         Route::apiResource('accounts', TestControllers\AccountController::class);
@@ -65,7 +64,7 @@ class TestCase extends Orchestra
         // Expected to be skipped
         Route::get('telescope', [TestControllers\TelescopeController::class, 'index']);
 
-        Route::options('not_included', function () {
+        Route::options('options_is_not_included', function () {
             return false;
         });
     }
