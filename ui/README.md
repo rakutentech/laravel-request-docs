@@ -1,21 +1,26 @@
 # Notes
 
-### Local UI Development
-
+## Local UI Development
 
 ```
+cd ui/
 npm install
 npm run dev
 ```
 
-**Open in Browser** http://localhost:3000/request-docs?api=http://localhost:3000/request-docs/sample.json
+## 1) Mode: Readonly
+
+**Open in Browser** 
+
+http://localhost:3000/request-docs?api=http://localhost:3000/request-docs/sample.json
 
 
-### Developing with Laravel
+## 2) Mode: Developing with Laravel via npm
 
-#### Step 1
+**Step 1**
 
 **Optional** Enable CORS on Laravel to allow localhost:3000/request-docs
+
 **Recommended** Open Chrome with `--disable-web-security` flag
 
 On Mac to open chrome command:
@@ -25,11 +30,41 @@ open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args
 ```
 
 
+**Step 2**
 
-#### Step 2
+**Open in Browser** http://localhost:3000/request-docs?api=http://localhost:8000/request-docs/api
 
-**Open in Browser** http://localhost:3000?api=http://localhost:8000/request-docs/api
 
+## 3) Mode: Developing with Laravel via Laravel
+
+
+
+Add to composer.json
+
+```sh
+    "repositories": [
+        {
+            "type": "path",
+            "url": "/Users/yourpath/to/laravel-request-docs"
+        }
+    ],
+
+```
+
+```sh
+composer require rakutentech/laravel-request-docs @dev
+```
+
+```
+cd ui
+npm run export
+```
+
+**Open in Browser** http://localhost:8000/request-docs
+
+
+
+---
 
 ## Deployment notes
 
