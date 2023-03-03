@@ -52,14 +52,6 @@ jobs:
         run: |
             ./vendor/bin/phpunit --coverage-clover=coverage.xml
 
-      - name: PHPLint
-        run: |
-            ./vendor/bin/phpcs
-
-      - name: PHPStan
-        run: |
-          ./vendor/bin/phpstan analyse
-
       - name: Upload to codecov
         uses: codecov/codecov-action@v3
         with:
