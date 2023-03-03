@@ -31,6 +31,8 @@ class TestCase extends Orchestra
 
     public function getEnvironmentSetUp($app)
     {
+        app()->setBasePath(__DIR__ . '/../');
+
         $app['config']->set('database.default', 'testing');
         $app['config']->set('app.debug', true);
     }

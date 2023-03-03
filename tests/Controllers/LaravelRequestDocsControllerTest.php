@@ -5,6 +5,7 @@ namespace Rakutentech\LaravelRequestDocs\Tests\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\API\Group1Controller;
@@ -16,8 +17,15 @@ class LaravelRequestDocsControllerTest extends TestCase
 {
     public function testApi()
     {
-        $this->get(route('request-docs.api'))
+        $response = $this->get(route('request-docs.api'))
             ->assertStatus(Response::HTTP_OK);
+
+        $expected = (array) json_decode(
+            File::get(base_path('tests/mocks/lrd-response.json')),
+            true,
+        );
+
+        $this->assertSame($expected, $response->json());
     }
 
     public function testApiCanHideMetadata()
@@ -383,7 +391,7 @@ class LaravelRequestDocsControllerTest extends TestCase
 
     public function testOpenApi()
     {
-        $response = $this->get(route('request-docs.api') . '?openapi=true')
+        $this->get(route('request-docs.api') . '?openapi=true')
             ->assertStatus(Response::HTTP_OK);
     }
 }
