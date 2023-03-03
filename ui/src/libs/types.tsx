@@ -1,6 +1,7 @@
 export interface IAPIRule {
     [key: string]: string[];
 }
+
 export interface IAPIInfo {
     uri: string;
     middlewares: string[];
@@ -13,4 +14,19 @@ export interface IAPIInfo {
     group: string;
     group_index: number;
     responses: string[];
+}
+
+export interface LRDResponse {
+    data: unknown,
+    _lrd: {
+        queries: [],
+        logs: {
+            level: string,
+            message: string,
+            context: [],
+        }[],
+        models: [],
+        modelsTimeline: [],
+        memory: string,
+    }
 }

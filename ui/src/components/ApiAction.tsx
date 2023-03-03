@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import useLocalStorage from 'react-use-localstorage';
 import { defaultHeaders, makeCurlCommand } from '../libs/strings'
-import type { IAPIInfo } from '../libs/types'
+import type {IAPIInfo, LRDResponse} from '../libs/types'
 import ApiActionResponse from './elements/ApiActionResponse'
 import ApiActionRequest from './elements/ApiActionRequest'
 import ApiActionTabs from './elements/ApiActionTabs'
@@ -130,10 +130,11 @@ export default function ApiAction(props: Props) {
                 setResponseHeaders(JSON.stringify(Object.fromEntries(response.headers), null, 2))
                 setSendingRequest(false)
                 return response.text()
-            }).then((data) => {
+            }).then((dataString) => {
                 let isJson = true
+                let data
                 try {
-                    data = JSON.parse(data)
+                    data = JSON.parse(dataString) as LRDResponse
                 } catch (error: any) {
                     isJson = false
                     // do nothing
@@ -167,14 +168,10 @@ export default function ApiAction(props: Props) {
                         modelsTimeline: data._lrd.modelsTimeline
                     })
                 }
-                // remove key _lrd from response
-                if (data && data._lrd) {
-                    delete data._lrd
-                }
                 if (isJson) {
-                    setResponseData(JSON.stringify(data, null, 2))
+                    setResponseData(JSON.stringify(data?.data, null, 2))
                 } else {
-                    setResponseData(data)
+                    setResponseData(dataString)
                 }
 
                 setActiveTab('response')
