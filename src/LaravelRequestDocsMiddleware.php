@@ -68,7 +68,7 @@ class LaravelRequestDocsMiddleware extends QueryLogger
 
         $content = [
             // because php stan is not what it used to be
-            /** @phpstan-ignore-next-line */            
+            /** @phpstan-ignore-next-line */
             'data' => $response->getData(),
             '_lrd' => [
                 'queries'        => $this->queries,
