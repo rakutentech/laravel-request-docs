@@ -232,7 +232,11 @@ class LaravelRequestDocs
                 try {
                     $requestClassName = $namedType->getName();
                     $reflectionClass  = new ReflectionClass($requestClassName);
-                    $requestObject    = $reflectionClass->newInstanceWithoutConstructor();
+                    try {
+                        $requestObject = $reflectionClass->newInstance();
+                    } catch (Throwable $th) {
+                        $requestObject = $reflectionClass->newInstanceWithoutConstructor();
+                    }
 
                     foreach (config('request-docs.rules_methods') as $requestMethod) {
                         if (!method_exists($requestObject, $requestMethod)) {

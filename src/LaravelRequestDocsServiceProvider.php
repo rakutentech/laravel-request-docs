@@ -26,6 +26,9 @@ class LaravelRequestDocsServiceProvider extends PackageServiceProvider
     public function packageBooted()
     {
         parent::packageBooted();
+        if (!config('request-docs.enabled')) {
+            return;
+        }
 
         // URL from which the docs will be served.
         Route::get(config('request-docs.url'), [\Rakutentech\LaravelRequestDocs\Controllers\LaravelRequestDocsController::class, 'index'])
