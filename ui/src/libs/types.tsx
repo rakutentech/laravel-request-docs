@@ -10,7 +10,7 @@ export interface IAPIInfo {
     method: string;
     http_method: string;
     rules: IAPIRule;
-    docBlock: string;
+    doc_block: string;
     group: string;
     group_index: number;
     responses: string[];

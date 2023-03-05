@@ -27,9 +27,26 @@ class LaravelRequestDocsMiddleware extends QueryLogger
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->headers->has('X-Request-LRD') || !config('app.debug')) {
+        if (!config('request-docs.enabled')) {
             return $next($request);
         }
+
+        if (!config('app.debug') && $request->headers->has('X-Request-LRD')) {
+            $response    = $next($request);
+            $jsonContent = json_encode([
+                'data' => $response->getData()
+            ]);
+            $response->setContent($jsonContent);
+            return $response;
+        }
+
+        if (!config('app.debug')) {
+            return $next($request);
+        }
+        if (!$request->headers->has('X-Request-LRD')) {
+            return $next($request);
+        }
+
 
         if (!config('request-docs.hide_sql_data')) {
             $this->listenToDB();

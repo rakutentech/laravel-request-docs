@@ -61,7 +61,7 @@ Read more: https://medium.com/web-developer/laravel-automatically-generate-api-d
 You can install the package via composer:
 
 ```bash
-composer require rakutentech/laravel-request-docs --dev
+composer require rakutentech/laravel-request-docs
 ```
 
 
@@ -70,6 +70,18 @@ You can publish the config file with:
 ```bash
 php artisan vendor:publish --tag=request-docs-config
 php artisan route:cache
+```
+
+(optional) Add following middleware to your API, so that the sql logs, model events are captured.
+
+`app/Http/Kernel.php`
+
+```sh
+        'api' => [
+            ...
+            \Rakutentech\LaravelRequestDocs\LaravelRequestDocsMiddleware::class,
+            ... and so on
+
 ```
 
 # Usage

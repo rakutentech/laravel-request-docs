@@ -28,7 +28,7 @@ export default function App() {
     const [showHead] = useLocalStorage('showHead', 'true');
 
     const searchOptions = {
-        keys: ['uri', 'docBlock'],
+        keys: ['uri', 'doc_block'],
         threshold: 0.3
     };
 
