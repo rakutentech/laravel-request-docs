@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'enabled' => true,
     // change it to true will make lrd to throw exception if rules in request class need to be changed
     // keep it false
     'debug' => false,
@@ -37,7 +38,7 @@ return [
     'rules_methods' => [
         'rules'
     ],
-    // Can be overridden as // @LRDResponses 200|400|401
+    // Can be overridden as // @LRDresponses 200|400|401
     'default_responses' => [ "200", "400", "401", "403", "404", "405", "422", "429", "500", "503"],
 
     // By default, LRD group your routes by the first /path.

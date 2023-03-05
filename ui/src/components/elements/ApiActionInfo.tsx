@@ -19,10 +19,10 @@ export default function ApiActionInfo(props: Props) {
     return (
         <div className="mockup-window border">
             <div className="p-5">
-                {lrdDocsItem.docBlock && (
+                {lrdDocsItem.doc_block && (
                     <div className='text-sm mb-10 text-slate-500'>
                         {/*  eslint-disable-next-line react/no-children-prop */}
-                        <ReactMarkdown children={lrdDocsItem.docBlock} remarkPlugins={[remarkGfm]} />
+                        <ReactMarkdown children={lrdDocsItem.doc_block} remarkPlugins={[remarkGfm]} />
                     </div>
                 )}
                 <table className="table table-fixed table-compact">
@@ -30,8 +30,8 @@ export default function ApiActionInfo(props: Props) {
                         <tr>
                             <th>Method</th>
                             <td>
-                                <span className={`method-${lrdDocsItem.httpMethod} uppercase`}>
-                                    {lrdDocsItem.httpMethod}
+                                <span className={`method-${lrdDocsItem.http_method} uppercase`}>
+                                    {lrdDocsItem.http_method}
                                 </span>
                             </td>
                         </tr>

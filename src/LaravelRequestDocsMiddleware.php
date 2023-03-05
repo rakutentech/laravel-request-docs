@@ -4,24 +4,51 @@ namespace Rakutentech\LaravelRequestDocs;
 
 use Closure;
 use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use KitLoong\AppLogger\QueryLog\LogWriter as QueryLogger;
-use Log;
-use Event;
-use Str;
+use Symfony\Component\HttpFoundation\Response;
 
 class LaravelRequestDocsMiddleware extends QueryLogger
 {
-    private array $queries = [];
-    private array $logs = [];
-    private array $models = [];
+    private array $queries        = [];
+    private array $logs           = [];
+    private array $models         = [];
     private array $modelsTimeline = [];
 
-    public function handle($request, Closure $next)
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
+    public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->headers->has('X-Request-LRD') || !config('app.debug')) {
+        if (!config('request-docs.enabled')) {
             return $next($request);
         }
+
+        if (!config('app.debug') && $request->headers->has('X-Request-LRD')) {
+            $response    = $next($request);
+            $jsonContent = json_encode([
+                // because php stan is not what it used to be
+                /** @phpstan-ignore-next-line */
+                'data' => $response->getData()
+            ]);
+            $response->setContent($jsonContent);
+            return $response;
+        }
+
+        if (!config('app.debug')) {
+            return $next($request);
+        }
+        if (!$request->headers->has('X-Request-LRD')) {
+            return $next($request);
+        }
+
 
         if (!config('request-docs.hide_sql_data')) {
             $this->listenToDB();
@@ -35,30 +62,30 @@ class LaravelRequestDocsMiddleware extends QueryLogger
 
         $response = $next($request);
 
-        try {
-            $response->getData();
-        } catch (\Exception $e) {
-            // not a json response
+        if (!$response instanceof JsonResponse) {
             return $response;
         }
 
-        $content = $response->getData();
-        $content->_lrd = [
-            'queries' => $this->queries,
-            'logs' => $this->logs,
-            'models' => $this->models,
-            // 'modelsTimeline' => $this->modelsTimeline,
-            'modelsTimeline' => array_unique($this->modelsTimeline, SORT_REGULAR),
-            'memory' => (string) round(memory_get_peak_usage(true) / 1048576, 2) . "MB",
+        $content = [
+            'data' => $response->getData(),
+            '_lrd' => [
+                'queries'        => $this->queries,
+                'logs'           => $this->logs,
+                'models'         => $this->models,
+                // 'modelsTimeline' => $this->modelsTimeline,
+                'modelsTimeline' => array_unique($this->modelsTimeline, SORT_REGULAR),
+                'memory'         => ((string) round(memory_get_peak_usage(true) / 1048576, 2)) . "MB",
+            ],
         ];
+
         $jsonContent = json_encode($content);
 
         if (in_array('gzip', $request->getEncodings()) && function_exists('gzencode')) {
-            $level = 9; // best compression;
+            $level       = 9; // best compression;
             $jsonContent = gzencode($jsonContent, $level);
             $response->headers->add([
-                'Content-type' => 'application/json; charset=utf-8',
-                'Content-Length'=> strlen($jsonContent),
+                'Content-type'     => 'application/json; charset=utf-8',
+                'Content-Length'   => strlen($jsonContent),
                 'Content-Encoding' => 'gzip',
             ]);
         }
@@ -66,31 +93,32 @@ class LaravelRequestDocsMiddleware extends QueryLogger
         return $response;
     }
 
-    public function listenToDB()
+    public function listenToDB(): void
     {
         DB::listen(function (QueryExecuted $query) {
             $this->queries[] = $this->getMessages($query);
         });
     }
-    public function listenToLogs()
+
+    public function listenToLogs(): void
     {
         Log::listen(function ($message) {
             $this->logs[] = $message;
         });
     }
 
-    public function listenToModels()
+    public function listenToModels(): void
     {
         Event::listen('eloquent.*', function ($event, $models) {
             foreach (array_filter($models) as $model) {
                 // doing and booted ignore
                 if (Str::startsWith($event, 'eloquent.booting')
-                || Str::startsWith($event, 'eloquent.booted')
-                || Str::startsWith($event, 'eloquent.retrieving')
-                || Str::startsWith($event, 'eloquent.creating')
-                || Str::startsWith($event, 'eloquent.saving')
-                || Str::startsWith($event, 'eloquent.updating')
-                || Str::startsWith($event, 'eloquent.deleting')
+                    || Str::startsWith($event, 'eloquent.booted')
+                    || Str::startsWith($event, 'eloquent.retrieving')
+                    || Str::startsWith($event, 'eloquent.creating')
+                    || Str::startsWith($event, 'eloquent.saving')
+                    || Str::startsWith($event, 'eloquent.updating')
+                    || Str::startsWith($event, 'eloquent.deleting')
                 ) {
                     continue;
                 }
@@ -110,7 +138,7 @@ class LaravelRequestDocsMiddleware extends QueryLogger
                 if (!isset($this->models[$class][$event])) {
                     $this->models[$class][$event] = 0;
                 }
-                $this->models[$class][$event] = $this->models[$class][$event]+1;
+                $this->models[$class][$event] = $this->models[$class][$event] + 1;
             }
         });
     }

@@ -2,10 +2,9 @@
 
 namespace Rakutentech\LaravelRequestDocs;
 
+use Illuminate\Support\Facades\Route;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Rakutentech\LaravelRequestDocs\Commands\LaravelRequestDocsCommand;
-use Route;
 
 class LaravelRequestDocsServiceProvider extends PackageServiceProvider
 {
@@ -27,6 +26,9 @@ class LaravelRequestDocsServiceProvider extends PackageServiceProvider
     public function packageBooted()
     {
         parent::packageBooted();
+        if (!config('request-docs.enabled')) {
+            return;
+        }
 
         // URL from which the docs will be served.
         Route::get(config('request-docs.url'), [\Rakutentech\LaravelRequestDocs\Controllers\LaravelRequestDocsController::class, 'index'])

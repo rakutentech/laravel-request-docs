@@ -1,10 +1,10 @@
 <?php
 
-namespace Rakutentech\LaravelRequestDocs\Tests\TestRequests;
+namespace Rakutentech\LaravelRequestDocs\Tests\Stubs\TestRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class WelcomeStoreRequest extends FormRequest
+class RequestWithEmptyRules extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,9 +27,6 @@ class WelcomeStoreRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'error'         => ['string', 'exists:' . $this->user->id],
-            'message_param' => 'nullable|string',
-        ];
+        return [];
     }
 }

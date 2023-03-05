@@ -1,9 +1,9 @@
 <?php
 
-namespace Rakutentech\LaravelRequestDocs\Tests\TestRequests;
+namespace Rakutentech\LaravelRequestDocs\Tests\Stubs\TestRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Rakutentech\LaravelRequestDocs\Tests\TestRules\Uppercase;
+use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestRules\Uppercase;
 
 class WelcomeIndexRequest extends FormRequest
 {

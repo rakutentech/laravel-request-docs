@@ -1,17 +1,32 @@
 export interface IAPIRule {
     [key: string]: string[];
 }
+
 export interface IAPIInfo {
     uri: string;
-    methods: string[];
     middlewares: string[];
     controller: string;
     controller_full_path: string;
     method: string;
-    httpMethod: string;
+    http_method: string;
     rules: IAPIRule;
-    docBlock: string;
+    doc_block: string;
     group: string;
     group_index: number;
     responses: string[];
+}
+
+export interface LRDResponse {
+    data: unknown,
+    _lrd: {
+        queries: [],
+        logs: {
+            level: string,
+            message: string,
+            context: [],
+        }[],
+        models: [],
+        modelsTimeline: [],
+        memory: string,
+    }
 }

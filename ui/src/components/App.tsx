@@ -28,7 +28,7 @@ export default function App() {
     const [showHead] = useLocalStorage('showHead', 'true');
 
     const searchOptions = {
-        keys: ['uri', 'docBlock'],
+        keys: ['uri', 'doc_block'],
         threshold: 0.3
     };
 
@@ -47,7 +47,7 @@ export default function App() {
             setHost(domain)
             url = domain + "/request-docs/api"
         }
-        
+
         if (url) {
             // extract host from url
             const domain = url?.split('/').slice(0, 3).join('/');
@@ -131,21 +131,19 @@ export default function App() {
                 </div>
                 <div className="pt-10 col-span-7">
                     {lrdDocsJson.map((lrdDocsItem) => (
-                        lrdDocsItem.methods.map((method) => (
-                            <div key={shortid.generate()}>
-                                <div className="min-h-screen">
-                                    <div className="main-grid grid grid-cols-10 gap-2">
-                                        <div className="col-span-4 ml-5">
-                                            <ApiInfo lrdDocsItem={lrdDocsItem} method={method}/>
-                                        </div>
-                                        <div className="col-span-5 ml-5">
-                                            <ApiAction lrdDocsItem={lrdDocsItem} method={method} host={host}/>
-                                        </div>
+                        <div key={shortid.generate()}>
+                            <div className="min-h-screen">
+                                <div className="main-grid grid grid-cols-10 gap-2">
+                                    <div className="col-span-4 ml-5">
+                                        <ApiInfo lrdDocsItem={lrdDocsItem} method={lrdDocsItem.http_method}/>
+                                    </div>
+                                    <div className="col-span-5 ml-5">
+                                        <ApiAction lrdDocsItem={lrdDocsItem} method={lrdDocsItem.http_method} host={host}/>
                                     </div>
                                 </div>
-                                <div className="divider"></div>
                             </div>
-                        ))
+                            <div className="divider"></div>
+                        </div>
                     ))}
                 </div>
             </div>
