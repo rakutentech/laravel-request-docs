@@ -2,6 +2,8 @@
 
 ## Local UI Development
 
+nodejs >= 16
+
 ```
 cd ui/
 npm install
