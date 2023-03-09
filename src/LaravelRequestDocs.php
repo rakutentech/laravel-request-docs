@@ -3,6 +3,7 @@
 namespace Rakutentech\LaravelRequestDocs;
 
 use Illuminate\Http\Request;
+use Illuminate\Routing\RouteAction;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -174,7 +175,7 @@ class LaravelRequestDocs
             $method             = '';
 
             // `$route->action['uses']` value is either 'Class@method' string or Closure.
-            if (is_string($route->action['uses'])) {
+            if (is_string($route->action['uses']) && !RouteAction::containsSerializedClosure($route->action)) {
                 $controllerCallback = Str::parseCallback($route->action['uses']);
                 $controllerFullPath = $controllerCallback[0];
                 $method             = $controllerCallback[1];
