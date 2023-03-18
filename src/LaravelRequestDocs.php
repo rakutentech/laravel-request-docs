@@ -13,6 +13,13 @@ use Throwable;
 
 class LaravelRequestDocs
 {
+    private RoutePath $routePath;
+
+    public function __construct(RoutePath $routePath)
+    {
+        $this->routePath = $routePath;
+    }
+
     /**
      * Get a collection of {@see \Rakutentech\LaravelRequestDocs\Doc} with route and rules information.
      *
@@ -182,6 +189,11 @@ class LaravelRequestDocs
                 $controllerName     = (new ReflectionClass($controllerFullPath))->getShortName();
             }
 
+            $paths = [];
+            if (Str::startsWith($route->uri, 'user')) {
+                $paths = $this->routePath->getPaths($route);
+            }
+
             $doc = new Doc(
                 $route->uri,
                 $routeMethods,
@@ -190,6 +202,7 @@ class LaravelRequestDocs
                 config('request-docs.hide_meta_data') ? '' : $controllerFullPath,
                 config('request-docs.hide_meta_data') ? '' : $method,
                 '',
+                $paths,
                 [],
                 '',
             );

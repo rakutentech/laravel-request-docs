@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\API\Group1Controller;
 use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\API\Group2Controller;
+use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\PathController;
 use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\UserController;
 use Rakutentech\LaravelRequestDocs\Tests\TestCase;
 
@@ -25,10 +26,8 @@ class LaravelRequestDocsControllerTest extends TestCase
             true,
         );
 
-        $docs = collect($response->json());
-
         /** {@see \Rakutentech\LaravelRequestDocs\Tests\TestCase::registerRoutes()} */
-        $this->assertCount(28, $docs);
+        $this->assertCount(28, $response->json());
 
         $this->assertSame($expected, $response->json());
     }
@@ -398,5 +397,117 @@ class LaravelRequestDocsControllerTest extends TestCase
     {
         $this->get(route('request-docs.api') . '?openapi=true')
             ->assertStatus(Response::HTTP_OK);
+    }
+
+    public function testPath()
+    {
+        Route::get('user/{id}', [PathController::class, 'index'])
+            ->where('id', '[0-9]+');
+
+        $response = $this->get(route('request-docs.api'))
+            ->assertStatus(Response::HTTP_OK);
+
+        $expected = [
+            'id' => 'integer|required|regex:/[0-9]+/',
+        ];
+
+        $docs = collect($response->json());
+
+        $pathParameter = $docs->filter(fn(array $doc) => Str::startsWith($doc['uri'], 'user') && $doc['http_method'] === 'GET')
+            ->pluck('path_parameters')
+            ->first();
+
+        $this->assertSame($expected, $pathParameter);
+    }
+
+    public function testPathWithOptional()
+    {
+        Route::get('user/{name?}', [PathController::class, 'optional'])
+            ->where('name', '[A-Za-z]+');
+
+        $response = $this->get(route('request-docs.api'))
+            ->assertStatus(Response::HTTP_OK);
+
+        $expected = [
+            'name' => 'string|nullable|regex:/[A-Za-z]+/',
+        ];
+
+        $docs = collect($response->json());
+
+        $pathParameter = $docs->filter(fn(array $doc) => Str::startsWith($doc['uri'], 'user') && $doc['http_method'] === 'GET')
+            ->pluck('path_parameters')
+            ->first();
+
+        $this->assertSame($expected, $pathParameter);
+    }
+
+    public function testPathWithModelBinding()
+    {
+        Route::get('user/{user}/{post}/{comment:name}', [PathController::class, 'model']);
+
+        $response = $this->get(route('request-docs.api'))
+            ->assertStatus(Response::HTTP_OK);
+
+        $expected = [
+            'user'         => 'integer|required',
+            'post'         => 'string|required',
+            'comment:name' => 'string|required',
+        ];
+
+        $docs = collect($response->json());
+
+        $pathParameter = $docs->filter(fn(array $doc) => Str::startsWith($doc['uri'], 'user') && $doc['http_method'] === 'GET')
+            ->pluck('path_parameters')
+            ->first();
+
+        $this->assertSame($expected, $pathParameter);
+    }
+
+    public function testPathWithMethodParametersIsLesser()
+    {
+        Route::get('user/{id}/{user}/{valid?}', [PathController::class, 'index'])
+            ->where('missing', '[A-Za-z]+')
+            ->where('valid', '[A-Za-z]+');
+
+        $response = $this->get(route('request-docs.api'))
+            ->assertStatus(Response::HTTP_OK);
+
+        $expected = [
+            'id'    => 'integer|required',
+            'user'  => 'string|required',
+            'valid' => 'string|nullable|regex:/[A-Za-z]+/',
+        ];
+
+        $docs = collect($response->json());
+
+        $pathParameter = $docs->filter(fn(array $doc) => Str::startsWith($doc['uri'], 'user') && $doc['http_method'] === 'GET')
+            ->pluck('path_parameters')
+            ->first();
+
+        $this->assertSame($expected, $pathParameter);
+    }
+
+    public function testPathWithGlobalPattern()
+    {
+        Route::pattern('id', '[0-9]+');
+
+        Route::get('/user/{id}', function (string $id) {
+            // Only executed if {id} is numeric...
+        });
+
+        $response = $this->get(route('request-docs.api'))
+            ->assertStatus(Response::HTTP_OK);
+
+        $expected = [
+            'id' => 'string|required|regex:/[0-9]+/',
+        ];
+
+        $docs = collect($response->json());
+
+        $pathParameter = $docs->filter(fn(array $doc) => Str::startsWith($doc['uri'], 'user') && $doc['http_method'] === 'GET')
+            ->pluck('path_parameters')
+            ->first();
+
+        $this->assertSame($expected, $pathParameter);
     }
 }
