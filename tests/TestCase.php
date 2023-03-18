@@ -4,21 +4,15 @@ namespace Rakutentech\LaravelRequestDocs\Tests;
 
 use Illuminate\Support\Facades\Route;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Rakutentech\LaravelRequestDocs\LaravelRequestDocs;
 use Rakutentech\LaravelRequestDocs\LaravelRequestDocsServiceProvider;
-use Rakutentech\LaravelRequestDocs\LaravelRequestDocsToOpenApi;
 use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers;
 
 class TestCase extends Orchestra
 {
-    protected LaravelRequestDocs          $lrd;
-    protected LaravelRequestDocsToOpenApi $lrdToOpenApi;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->lrd          = new LaravelRequestDocs();
-        $this->lrdToOpenApi = new LaravelRequestDocsToOpenApi();
         $this->registerRoutes();
     }
 
