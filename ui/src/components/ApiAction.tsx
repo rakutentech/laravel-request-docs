@@ -10,6 +10,7 @@ import ApiActionInfo from './elements/ApiActionInfo'
 import ApiActionSQL from './elements/ApiActionSQL'
 import ApiActionLog from './elements/ApiActionLog'
 import ApiActionEvents from './elements/ApiActionEvents'
+import { objectToFormData } from '../libs/object';
 
 interface Props {
     lrdDocsItem: IAPIInfo,
@@ -29,7 +30,7 @@ export default function ApiAction(props: Props) {
     const [sendingRequest, setSendingRequest] = useState(false);
     const [queryParams, setQueryParams] = useState('');
     const [bodyParams, setBodyParams] = useState('');
-    const [fileParams, setFileParams] = useState(null);
+    const [fileParams, setFileParams] = useState<FormData>();
     const [responseData, setResponseData] = useState("");
     const [sqlQueriesCount, setSqlQueriesCount] = useState(0);
     const [sqlData, setSqlData] = useState("");
@@ -43,15 +44,21 @@ export default function ApiAction(props: Props) {
     const [responseHeaders, setResponseHeaders] = useState("");
     const [activeTab, setActiveTab] = useState('info');
 
-    const handleFileChange = (files: any, file: any) => {
-        const formData: any = new FormData()
-        if (file.includes('.*')) {
-            const fileParam = file.replace('.*', '')
+    const handleFileChange = (files: any, key: any) => {
+        const formData = fileParams || new FormData();
+        const parts = key.split('.');
+        const fileKey = key.split(".").reduce((current: string, part: string, index: number) => {
+            if (index === parts.length - 1 && (part === '*' || !isNaN(Number(part)))) {
+                return current
+            }
+            return !current ? part : `${current}[${part}]`
+        }, '')
+        if (key.includes('.*')) {
             for (let i = 0; i < files.length; i++) {
-                formData.append(`${fileParam}[${i}]`, files[i]);
+                formData.append(`${fileKey}[${i}]`, files[i]);
             }
         } else {
-            formData.append(file, files[0])
+            formData.append(fileKey, files[0])
         }
         setFileParams(formData)
     }
@@ -79,7 +86,7 @@ export default function ApiAction(props: Props) {
         }
         const headers = JSON.parse(requestHeaders)
         headers['X-Request-LRD'] = true
-        if (fileParams != null) {
+        if (fileParams) {
             delete headers['Content-Type']
             headers['Accept'] = 'multipart/form-data'
         }
@@ -90,13 +97,11 @@ export default function ApiAction(props: Props) {
             headers: headers,
         }
 
+
         if (method == 'POST' || method == 'PUT' || method == 'PATCH') {
             try {
-                JSON.parse(bodyParams)
                 if (fileParams != null) {
-                    for (const [key, value] of Object.entries(JSON.parse(bodyParams))) {
-                        fileParams.append(key, value)
-                    }
+                    objectToFormData(JSON.parse(bodyParams), fileParams as FormData)
                 }
 
             } catch (error: any) {
@@ -201,10 +206,14 @@ export default function ApiAction(props: Props) {
             let index = 0
             for (const [key] of Object.entries(lrdDocsItem.rules)) {
                 index++
+                const parts = key.split('.');
+                const queryKey = parts.reduce((current: string, part: string) => {
+                    return current ? `${current}[${part !== '*' ? part : 0}]` : part
+                }, '')
                 if (index == 1) {
-                    queries += `?${key}=\n`
+                    queries += `?${queryKey}=\n`
                 } else {
-                    queries += `&${key}=\n`
+                    queries += `&${queryKey}=\n`
                 }
             }
             setQueryParams(queries)
@@ -217,30 +226,39 @@ export default function ApiAction(props: Props) {
                 setCurlCommand(makeCurlCommand(host, lrdDocsItem.uri, method, cached, requestHeaders))
                 return
             }
-            const body: any = {}
-            for (const [key, rule] of Object.entries(lrdDocsItem.rules)) {
+            const body: any = Object.entries(lrdDocsItem.rules).reduce((acc, [key, rule]) => {
                 if (rule.length == 0) {
-                    continue
-                }
-                const theRule = rule[0].split("|")
-                if (theRule.includes('file') || theRule.includes('image')) {
-                    continue
-                }
-                if (key.includes(".*")) {
-                    body[key] = []
-                    continue
-                }
-                if (key.includes(".")) {
-                    const keys = key.split(".")
-                    if (keys.length == 2) {
-                        body[keys[0]] = {}
-                        body[keys[0]][keys[1]] = ""
-                    }
-                    continue
+                    return acc
                 }
 
-                body[key] = ""
-            }
+                const ruleObj = rule[0].split('|');
+
+                if (ruleObj.includes('file') || ruleObj.includes('image')) {
+                    return acc
+                }
+
+                const keys = key.split('.');
+                keys.reduce((current: any, key, index) => {
+                    key = key === "*" ? "0" : key;
+                    if (index === keys.length - 1) {
+                        if (!isNaN(Number(key))) {
+                            current = !Array.isArray(current) ? [] : current;
+                            return current
+                        }
+                        current[key] = ruleObj.includes('array') ? [] : "";
+                    } else {
+                        if (ruleObj.includes('array') || keys[index + 1] === "*" || !isNaN(Number(keys[index + 1]))) {
+                            current[key] = current[key] || [];
+                        } else {
+                            current[key] = current[key] || {};
+                        }
+                    }
+                    return current[key];
+                }, acc);
+
+                return acc;
+            }, {})
+
             const jsonBody = JSON.stringify(body, null, 2)
             setBodyParams(jsonBody)
             setCurlCommand(makeCurlCommand(host, lrdDocsItem.uri, method, jsonBody, requestHeaders))
