@@ -87,7 +87,7 @@ class Doc implements Arrayable
     /**
      * A list of route path parameters, such as `/users/{id}`.
      *
-     * @var string[]
+     * @var array<string, string>
      */
     private array $pathParameters;
 
