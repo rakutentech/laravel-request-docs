@@ -325,6 +325,14 @@ class Doc implements Arrayable
         $this->responses = $responses;
     }
 
+    /**
+     * @return array<string, string>
+     */
+    public function getPathParameters(): array
+    {
+        return $this->pathParameters;
+    }
+
     public function clone(): Doc
     {
         return clone $this;
