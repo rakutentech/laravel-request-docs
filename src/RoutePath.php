@@ -21,7 +21,7 @@ class RoutePath
      * @return array<string, string>
      * @throws \ReflectionException
      */
-    public function getPaths(Route $route): array
+    public function getPathParameters(Route $route): array
     {
         $pathParameters = $this->initAllParametersWithStringType($route);
 
