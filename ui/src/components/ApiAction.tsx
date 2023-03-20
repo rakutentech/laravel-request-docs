@@ -174,7 +174,12 @@ export default function ApiAction(props: Props) {
                     })
                 }
                 if (isJson) {
-                    setResponseData(JSON.stringify(data?.data, null, 2))
+                    if (data?.data) {
+                        setResponseData(JSON.stringify(data?.data, null, 2))
+                    } else {
+                        setResponseData(JSON.stringify(data, null, 2))
+                    }
+                    
                 } else {
                     setResponseData(dataString)
                 }
