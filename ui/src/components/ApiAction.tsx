@@ -140,6 +140,7 @@ export default function ApiAction(props: Props) {
                 let data
                 try {
                     data = JSON.parse(dataString) as LRDResponse
+                    console.log(data)
                 } catch (error: any) {
                     isJson = false
                     // do nothing
@@ -174,7 +175,12 @@ export default function ApiAction(props: Props) {
                     })
                 }
                 if (isJson) {
-                    setResponseData(JSON.stringify(data?.data, null, 2))
+                    if (data?.data) {
+                        setResponseData(JSON.stringify(data?.data, null, 2))
+                    } else {
+                        setResponseData(JSON.stringify(data, null, 2))
+                    }
+                    
                 } else {
                     setResponseData(dataString)
                 }
