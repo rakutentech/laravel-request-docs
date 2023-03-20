@@ -140,7 +140,6 @@ export default function ApiAction(props: Props) {
                 let data
                 try {
                     data = JSON.parse(dataString) as LRDResponse
-                    console.log(data)
                 } catch (error: any) {
                     isJson = false
                     // do nothing
