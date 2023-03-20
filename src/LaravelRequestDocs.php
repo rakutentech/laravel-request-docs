@@ -189,7 +189,7 @@ class LaravelRequestDocs
                 $controllerName     = (new ReflectionClass($controllerFullPath))->getShortName();
             }
 
-            $paths = $this->routePath->getPaths($route);
+            $pathParameters = $this->routePath->getPaths($route);
 
             $doc = new Doc(
                 $route->uri,
@@ -199,7 +199,7 @@ class LaravelRequestDocs
                 config('request-docs.hide_meta_data') ? '' : $controllerFullPath,
                 config('request-docs.hide_meta_data') ? '' : $method,
                 '',
-                $paths,
+                $pathParameters,
                 [],
                 '',
             );

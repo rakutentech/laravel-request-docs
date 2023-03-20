@@ -18,31 +18,32 @@ class RoutePath
     ];
 
     /**
+     * @return array<string, string>
      * @throws \ReflectionException
      */
     public function getPaths(Route $route): array
     {
-        $paths = $this->initAllParametersWithStringType($route);
+        $pathParameters = $this->initAllParametersWithStringType($route);
 
-        $paths = $this->setParameterType($route, $paths);
+        $pathParameters = $this->setParameterType($route, $pathParameters);
 
-        $paths = $this->setOptional($route, $paths);
+        $pathParameters = $this->setOptional($route, $pathParameters);
 
-        $paths = $this->mutateKeyNameWithBindingField($route, $paths);
+        $pathParameters = $this->mutateKeyNameWithBindingField($route, $pathParameters);
 
-        return $this->setRegex($route, $paths);
+        return $this->setRegex($route, $pathParameters);
     }
 
     /**
      * Set route path parameter type.
-     * This method will overwrite `$paths` type with the real types found from route declaration.
+     * This method will overwrite `$pathParameters` type with the real types found from route declaration.
      *
      * @param  \Illuminate\Routing\Route  $route
-     * @param  array<string, string>  $paths
+     * @param  array<string, string>  $pathParameters
      * @return array<string, string>
      * @throws \ReflectionException
      */
-    private function setParameterType(Route $route, array $paths): array
+    private function setParameterType(Route $route, array $pathParameters): array
     {
         $bindableParameters = $this->getBindableParameters($route);
 
@@ -56,7 +57,7 @@ class RoutePath
 
             // For builtin type, always get the type from reflection parameter.
             if ($bindableParameter['class'] === null) {
-                $paths[$parameterName] = $this->getParameterType($bindableParameter['parameter']);
+                $pathParameters[$parameterName] = $this->getParameterType($bindableParameter['parameter']);
                 continue;
             }
 
@@ -84,10 +85,10 @@ class RoutePath
 
             // Try set type from model key type.
             if ($model->getKeyName() === $model->getRouteKeyName()) {
-                $paths[$parameterName] = self::TYPE_MAP[$model->getKeyType()] ?? $model->getKeyType();
+                $pathParameters[$parameterName] = self::TYPE_MAP[$model->getKeyType()] ?? $model->getKeyType();
             }
         }
-        return $paths;
+        return $pathParameters;
     }
 
     private function getOptionalParameterNames(string $uri): array
@@ -139,39 +140,39 @@ class RoutePath
 
     /**
      * @param  \Illuminate\Routing\Route  $route
-     * @param  array<string, string>  $paths
+     * @param  array<string, string>  $pathParameters
      * @return array<string, string>
      */
-    private function setOptional(Route $route, array $paths): array
+    private function setOptional(Route $route, array $pathParameters): array
     {
         $optionalParameters = $this->getOptionalParameterNames($route->uri);
 
-        foreach ($paths as $parameter => $rule) {
+        foreach ($pathParameters as $parameter => $rule) {
             if (in_array($parameter, $optionalParameters)) {
-                $paths[$parameter] .= '|nullable';
+                $pathParameters[$parameter] .= '|nullable';
                 continue;
             }
 
-            $paths[$parameter] .= '|required';
+            $pathParameters[$parameter] .= '|required';
         }
-        return $paths;
+        return $pathParameters;
     }
 
     /**
      * @param  \Illuminate\Routing\Route  $route
-     * @param  array<string, string>  $paths
+     * @param  array<string, string>  $pathParameters
      * @return array<string, string>
      */
-    private function setRegex(Route $route, array $paths): array
+    private function setRegex(Route $route, array $pathParameters): array
     {
-        foreach ($paths as $parameter => $rule) {
+        foreach ($pathParameters as $parameter => $rule) {
             if (!isset($route->wheres[$parameter])) {
                 continue;
             }
-            $paths[$parameter] .= '|regex:/' . $route->wheres[$parameter] . '/';
+            $pathParameters[$parameter] .= '|regex:/' . $route->wheres[$parameter] . '/';
         }
 
-        return $paths;
+        return $pathParameters;
     }
 
     /**
@@ -210,10 +211,10 @@ class RoutePath
 
     /**
      * @param  \Illuminate\Routing\Route  $route
-     * @param  array<string, string>  $paths
+     * @param  array<string, string>  $pathParameters
      * @return array<string, string>
      */
-    private function mutateKeyNameWithBindingField(Route $route, array $paths): array
+    private function mutateKeyNameWithBindingField(Route $route, array $pathParameters): array
     {
         $mutatedPath = [];
 
@@ -221,11 +222,11 @@ class RoutePath
             $bindingName = $route->bindingFieldFor($name);
 
             if ($bindingName === null) {
-                $mutatedPath[$name] = $paths[$name];
+                $mutatedPath[$name] = $pathParameters[$name];
                 continue;
             }
 
-            $mutatedPath["$name:$bindingName"] = $paths[$name];
+            $mutatedPath["$name:$bindingName"] = $pathParameters[$name];
         }
 
         return $mutatedPath;
