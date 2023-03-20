@@ -189,10 +189,7 @@ class LaravelRequestDocs
                 $controllerName     = (new ReflectionClass($controllerFullPath))->getShortName();
             }
 
-            $paths = [];
-            if (Str::startsWith($route->uri, 'user')) {
-                $paths = $this->routePath->getPaths($route);
-            }
+            $paths = $this->routePath->getPaths($route);
 
             $doc = new Doc(
                 $route->uri,
