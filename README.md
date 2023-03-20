@@ -214,6 +214,7 @@ Fixing lints
 - v2.6 File uploads
 - v2.7 Show activity on Eloquent models
 - v2.8 Show full activity on Eloquent models
+- v2.13 Bug fixes, and nested params support
 
 
 # Contributors
