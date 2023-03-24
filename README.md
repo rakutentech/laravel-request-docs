@@ -215,6 +215,7 @@ Fixing lints
 - v2.7 Show activity on Eloquent models
 - v2.8 Show full activity on Eloquent models
 - v2.13 Bug fixes, and nested params support
+- v2.14 Adds path params support
 
 
 # Contributors
