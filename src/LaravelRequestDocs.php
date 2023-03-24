@@ -190,7 +190,7 @@ class LaravelRequestDocs
             }
 
             $pathParameters = [];
-            $pp = $this->routePath->getPathParameters($route);
+            $pp             = $this->routePath->getPathParameters($route);
             // same format as rules
             foreach ($pp as $k => $v) {
                 $pathParameters[$k] = [$v];
