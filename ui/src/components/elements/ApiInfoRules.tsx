@@ -1,16 +1,15 @@
 import React from 'react';
 import { explode } from '../../libs/strings'
 import shortid from 'shortid';
-import type { IAPIInfo } from '../../libs/types'
 import { ChevronRightIcon, LinkIcon, EnvelopeIcon } from '@heroicons/react/24/outline'
 
 interface Props {
-    lrdDocsItem: any,
+    rules: string[],
     mainRule: string,
 }
 
 export default function ApiInfoRules(props: Props) {
-    const { lrdDocsItem, mainRule } = props
+    const { rules, mainRule } = props
     const StyledRule = (rule: any): JSX.Element => {
         const theRule = rule.rule
         const split = theRule.split(':')
@@ -83,14 +82,14 @@ export default function ApiInfoRules(props: Props) {
                             <ChevronRightIcon key={shortid.generate()} className='inline-block w-4 h-4' />
                         ) : (<span key={shortid.generate()}></span>)}
                     </code>
-                    {lrdDocsItem.rules[mainRule].map((rule) => (
+                    {rules.map((rule) => (
                         rule.split('|').map((theRule) => (
                             (theRule == "file" || theRule == "image") ? (
                                 <div key={shortid.generate()} className="block badge badge-success badge-outline ml-4 mt-1 mb-1 rounded-sm title">{theRule}</div>
                             ) : (<span key={shortid.generate()}></span>)
                         ))
                     ))}
-                    {lrdDocsItem.rules[mainRule].map((rule) => (
+                    {rules.map((rule) => (
                         rule.split('|').map((theRule) => (
                             (theRule == "required") ? (
                                 <div className='block ml-6' key={shortid.generate()}>
@@ -99,7 +98,7 @@ export default function ApiInfoRules(props: Props) {
                             ) : (<span key={shortid.generate()}></span>)
                         ))
                     ))}
-                    {lrdDocsItem.rules[mainRule].map((rule) => (
+                    {rules.map((rule) => (
                         rule.split('|').map((theRule) => (
                             (theRule.startsWith("required_if")) ? (
                                 <div className='block ml-6' key={shortid.generate()}>
@@ -110,7 +109,7 @@ export default function ApiInfoRules(props: Props) {
                     ))}
                 </th>
                 <td>
-                    {lrdDocsItem.rules[mainRule].map((rule) => (
+                    {rules.map((rule) => (
                         rule.split('|').map((theRule) => {
                             if (theRule == "required") {
                                 return (<span key={shortid.generate()}></span>)
@@ -131,7 +130,7 @@ export default function ApiInfoRules(props: Props) {
                             return (<span key={shortid.generate()}></span>)
                         })
                     ))}
-                    {lrdDocsItem.rules[mainRule].map((rule) => (
+                    {rules.map((rule) => (
                         rule.split('|').map((theRule) => {
                             if (theRule == "required") {
                                 return (<span key={shortid.generate()}></span>)
@@ -139,7 +138,7 @@ export default function ApiInfoRules(props: Props) {
                             return (<span key={shortid.generate()}></span>)
                         })
                     ))}
-                    {lrdDocsItem.rules[mainRule].map((rule) => (
+                    {rules.map((rule) => (
                         rule.split('|').map((theRule) => {
                             if (theRule == "required"
                                 || theRule == "integer"

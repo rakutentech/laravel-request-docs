@@ -47,16 +47,25 @@ export default function ApiInfo(props: Props) {
                 </code>
             </h3>
             {(Object.keys(lrdDocsItem.path_parameters).length > 0) && (
-                <h3 className='pt-4'>
-                    <span className='text-sm text-slate-500'>
-                        PATH PARAMETERS
-                    </span>
-                    {(Object.keys(lrdDocsItem.path_parameters).map((rule) => (
-                        <div key={shortid.generate()}>
-                            <ApiInfoRules key={shortid.generate()} mainRule={rule} lrdDocsItem={ lrdDocsItem } />
-                        </div>
-                    )))}
-                </h3>
+                <>
+                    <h3 className='pt-4'>
+                        <span className='text-sm text-slate-500'>
+                            PATH PARAMETERS
+                        </span>
+                    </h3>
+                    <div className='pt-4'>
+
+                        <table className="table table-fixed table-compact w-full">
+                            <tbody>
+                                {Object.keys(lrdDocsItem.path_parameters).map((rule) => (
+                                    <ApiInfoRules key={shortid.generate()} mainRule={rule} rules={lrdDocsItem.path_parameters[rule]} />
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </>
+
+
             )}
 
             <h3 className='pt-4'>
@@ -74,7 +83,7 @@ export default function ApiInfo(props: Props) {
                 <table className="table table-fixed table-compact w-full">
                     <tbody>
                         {lrdDocsItem.rules && Object.keys(lrdDocsItem.rules).map((rule) => (
-                            <ApiInfoRules key={shortid.generate()} mainRule={rule} lrdDocsItem={lrdDocsItem} />
+                            <ApiInfoRules key={shortid.generate()} mainRule={rule} rules={lrdDocsItem.rules[rule]} />
                         ))}
                     </tbody>
                 </table>
