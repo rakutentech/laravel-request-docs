@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import shortid from 'shortid';
-import { explode } from '../libs/strings'
 import type { IAPIInfo } from '../libs/types'
 import ApiInfoRules from './elements/ApiInfoRules'
-import { ChevronRightIcon, LinkIcon, EnvelopeIcon } from '@heroicons/react/24/outline'
 
 interface Props {
     lrdDocsItem: IAPIInfo,
