@@ -10,10 +10,12 @@ export interface IAPIInfo {
     method: string;
     http_method: string;
     rules: IAPIRule;
+    path_parameters: IAPIRule;
     doc_block: string;
     group: string;
     group_index: number;
     responses: string[];
+    
 }
 
 export interface LRDResponse {

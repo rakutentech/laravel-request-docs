@@ -189,7 +189,12 @@ class LaravelRequestDocs
                 $controllerName     = (new ReflectionClass($controllerFullPath))->getShortName();
             }
 
-            $pathParameters = $this->routePath->getPathParameters($route);
+            $pathParameters = [];
+            $pp             = $this->routePath->getPathParameters($route);
+            // same format as rules
+            foreach ($pp as $k => $v) {
+                $pathParameters[$k] = [$v];
+            }
 
             $doc = new Doc(
                 $route->uri,
