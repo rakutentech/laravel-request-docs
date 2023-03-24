@@ -175,7 +175,7 @@
         "method": "show",
         "http_method": "GET",
         "path_parameters": {
-            "id": "string|required"
+            "id": ["string|required"]
         },
         "rules": [],
         "doc_block": "",
@@ -200,7 +200,7 @@
         "method": "show",
         "http_method": "HEAD",
         "path_parameters": {
-            "id": "string|required"
+            "id": ["string|required"]
         },
         "rules": [],
         "doc_block": "",
@@ -557,7 +557,7 @@
         "method": "show",
         "http_method": "GET",
         "path_parameters": {
-            "account": "string|required"
+            "account": ["string|required"]
         },
         "rules": [],
         "doc_block": "",
@@ -582,7 +582,7 @@
         "method": "show",
         "http_method": "HEAD",
         "path_parameters": {
-            "account": "string|required"
+            "account": ["string|required"]
         },
         "rules": [],
         "doc_block": "",
@@ -607,7 +607,7 @@
         "method": "update",
         "http_method": "PUT",
         "path_parameters": {
-            "account": "string|required"
+            "account": ["string|required"]
         },
         "rules": [],
         "doc_block": "",
@@ -632,7 +632,7 @@
         "method": "update",
         "http_method": "PATCH",
         "path_parameters": {
-            "account": "string|required"
+            "account": ["string|required"]
         },
         "rules": [],
         "doc_block": "",
@@ -657,7 +657,7 @@
         "method": "destroy",
         "http_method": "DELETE",
         "path_parameters": {
-            "account": "string|required"
+            "account": ["string|required"]
         },
         "rules": [],
         "doc_block": "",

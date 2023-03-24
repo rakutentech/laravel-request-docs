@@ -408,7 +408,7 @@ class LaravelRequestDocsControllerTest extends TestCase
             ->assertStatus(Response::HTTP_OK);
 
         $expected = [
-            'id' => 'integer|required|regex:/[0-9]+/',
+            'id' => ['integer|required|regex:/[0-9]+/'],
         ];
 
         $docs = collect($response->json());
@@ -429,7 +429,7 @@ class LaravelRequestDocsControllerTest extends TestCase
             ->assertStatus(Response::HTTP_OK);
 
         $expected = [
-            'name' => 'string|nullable|regex:/[A-Za-z]+/',
+            'name' => ['string|nullable|regex:/[A-Za-z]+/'],
         ];
 
         $docs = collect($response->json());
@@ -449,9 +449,9 @@ class LaravelRequestDocsControllerTest extends TestCase
             ->assertStatus(Response::HTTP_OK);
 
         $expected = [
-            'user'         => 'integer|required',
-            'post'         => 'string|required',
-            'comment:name' => 'string|required',
+            'user'         => ['integer|required'],
+            'post'         => ['string|required'],
+            'comment:name' => ['string|required'],
         ];
 
         $docs = collect($response->json());
@@ -473,9 +473,9 @@ class LaravelRequestDocsControllerTest extends TestCase
             ->assertStatus(Response::HTTP_OK);
 
         $expected = [
-            'id'    => 'integer|required',
-            'user'  => 'string|required',
-            'valid' => 'string|nullable|regex:/[A-Za-z]+/',
+            'id'    => ['integer|required'],
+            'user'  => ['string|required'],
+            'valid' => ['string|nullable|regex:/[A-Za-z]+/'],
         ];
 
         $docs = collect($response->json());
@@ -499,7 +499,7 @@ class LaravelRequestDocsControllerTest extends TestCase
             ->assertStatus(Response::HTTP_OK);
 
         $expected = [
-            'id' => 'string|required|regex:/[0-9]+/',
+            'id' => ['string|required|regex:/[0-9]+/'],
         ];
 
         $docs = collect($response->json());

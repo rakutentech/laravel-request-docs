@@ -88,8 +88,11 @@ class LaravelRequestDocsToOpenApi
         return str_contains($rule, 'file') || str_contains($rule, 'image');
     }
 
-    protected function makeQueryParameterItem(string $attribute, string $rule): array
+    protected function makeQueryParameterItem(string $attribute, $rule): array
     {
+        if (is_array($rule)) {
+            $rule = implode('|', $rule);
+        }
         $parameter = [
             'name'        => $attribute,
             'description' => $rule,
