@@ -85,6 +85,13 @@ class Doc implements Arrayable
     private array $responses;
 
     /**
+     * A list of route path parameters, such as `/users/{id}`.
+     *
+     * @var array<string, string>
+     */
+    private array $pathParameters;
+
+    /**
      * The group name of the route.
      *
      * @var string
@@ -117,6 +124,7 @@ class Doc implements Arrayable
         string $controllerFullPath,
         string $method,
         string $httpMethod,
+        array $pathParameters,
         array $rules,
         string $docBlock
     ) {
@@ -127,6 +135,7 @@ class Doc implements Arrayable
         $this->controllerFullPath = $controllerFullPath;
         $this->method             = $method;
         $this->httpMethod         = $httpMethod;
+        $this->pathParameters     = $pathParameters;
         $this->rules              = $rules;
         $this->docBlock           = $docBlock;
         $this->responses          = [];
@@ -316,6 +325,14 @@ class Doc implements Arrayable
         $this->responses = $responses;
     }
 
+    /**
+     * @return array<string, string>
+     */
+    public function getPathParameters(): array
+    {
+        return $this->pathParameters;
+    }
+
     public function clone(): Doc
     {
         return clone $this;
@@ -330,6 +347,7 @@ class Doc implements Arrayable
             'controller_full_path' => $this->controllerFullPath,
             'method'               => $this->method,
             'http_method'          => $this->httpMethod,
+            'path_parameters'      => $this->pathParameters,
             'rules'                => $this->rules,
             'doc_block'            => $this->docBlock,
             'responses'            => $this->responses,

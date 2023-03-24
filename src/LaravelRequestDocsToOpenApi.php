@@ -34,17 +34,22 @@ class LaravelRequestDocsToOpenApi
     {
         $this->openApi['paths'] = [];
         foreach ($docs as $doc) {
-            $requestHasFile = false;
-            $httpMethod     = strtolower($doc->getHttpMethod());
-            $isGet          = $httpMethod == 'get';
-            $isPost         = $httpMethod == 'post';
-            $isPut          = $httpMethod == 'put';
-            $isDelete       = $httpMethod == 'delete';
+            $requestHasFile  = false;
+            $httpMethod      = strtolower($doc->getHttpMethod());
+            $isGet           = $httpMethod == 'get';
+            $isPost          = $httpMethod == 'post';
+            $isPut           = $httpMethod == 'put';
+            $isDelete        = $httpMethod == 'delete';
+            $uriLeadingSlash = '/' . $doc->getUri();
 
-            $this->openApi['paths'][$doc->getUri()][$httpMethod]['description'] = $doc->getDocBlock();
-            $this->openApi['paths'][$doc->getUri()][$httpMethod]['parameters']  = [];
+            $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['description'] = $doc->getDocBlock();
+            $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['parameters']  = [];
 
-            $this->openApi['paths'][$doc->getUri()][$httpMethod]['responses'] = config('request-docs.open_api.responses', []);
+            foreach ($doc->getPathParameters() as $parameter => $rule) {
+                $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['parameters'][] = $this->makeQueryParameterItem($parameter, $rule);
+            }
+
+            $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['responses'] = config('request-docs.open_api.responses', []);
 
             foreach ($doc->getRules() as $attribute => $rules) {
                 foreach ($rules as $rule) {
@@ -60,21 +65,18 @@ class LaravelRequestDocsToOpenApi
 
             $contentType = $requestHasFile ? 'multipart/form-data' : 'application/json';
 
-            if ($isGet) {
-                $this->openApi['paths'][$doc->getUri()][$httpMethod]['parameters'] = [];
-            }
             if ($isPost || $isPut || $isDelete) {
-                $this->openApi['paths'][$doc->getUri()][$httpMethod]['requestBody'] = $this->makeRequestBodyItem($contentType);
+                $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['requestBody'] = $this->makeRequestBodyItem($contentType);
             }
 
             foreach ($doc->getRules() as $attribute => $rules) {
                 foreach ($rules as $rule) {
                     if ($isGet) {
-                        $parameter                                                           = $this->makeQueryParameterItem($attribute, $rule);
-                        $this->openApi['paths'][$doc->getUri()][$httpMethod]['parameters'][] = $parameter;
+                        $parameter                                                             = $this->makeQueryParameterItem($attribute, $rule);
+                        $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['parameters'][] = $parameter;
                     }
                     if ($isPost || $isPut || $isDelete) {
-                        $this->openApi['paths'][$doc->getUri()][$httpMethod]['requestBody']['content'][$contentType]['schema']['properties'][$attribute] = $this->makeRequestBodyContentPropertyItem($rule);
+                        $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['requestBody']['content'][$contentType]['schema']['properties'][$attribute] = $this->makeRequestBodyContentPropertyItem($rule);
                     }
                 }
             }
@@ -86,8 +88,11 @@ class LaravelRequestDocsToOpenApi
         return str_contains($rule, 'file') || str_contains($rule, 'image');
     }
 
-    protected function makeQueryParameterItem(string $attribute, string $rule): array
+    protected function makeQueryParameterItem(string $attribute, $rule): array
     {
+        if (is_array($rule)) {
+            $rule = implode('|', $rule);
+        }
         $parameter = [
             'name'        => $attribute,
             'description' => $rule,
