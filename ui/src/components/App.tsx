@@ -65,7 +65,6 @@ export default function App() {
         if (anchor) {
             const anchorId = anchor.replace('#', '');
             const element = document.getElementById(anchorId);
-            console.log(element)
             if (element) {
                 element.scrollIntoView();
             }
