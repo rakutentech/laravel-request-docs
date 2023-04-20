@@ -59,6 +59,19 @@ export default function App() {
         generateDocs(api)
     }, [])
 
+    const scrollToAnchorOnHistory = () => {
+        // get the anchor link and scroll to it
+        const anchor = window.location.hash;
+        if (anchor) {
+            const anchorId = anchor.replace('#', '');
+            const element = document.getElementById(anchorId);
+            console.log(element)
+            if (element) {
+                element.scrollIntoView();
+            }
+        }
+    }
+
     const generateDocs = (url: string) => {
         setSendingRequest(true)
         const response = fetch(url);
@@ -75,6 +88,9 @@ export default function App() {
                 setLrdDocsJson(lrdDocsJson)
                 setLrdDocsJsonCopy(lrdDocsJson)
                 setSendingRequest(false)
+                setTimeout(() => {
+                    scrollToAnchorOnHistory()
+                }, 10) // greater than 1 is fine
             }).catch((error) => {
                 setError(error.message)
                 setSendingRequest(false)

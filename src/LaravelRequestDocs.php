@@ -295,7 +295,7 @@ class LaravelRequestDocs
             }
             if ($counter == 1 && !Str::contains($comment, '@lrd')) {
                 if (Str::startsWith($comment, '*')) {
-                    $comment = trim(substr($comment, 1));
+                    $comment = substr($comment, 1);
                 }
                 // remove first character from string
                 $lrdComment .= $comment . "\n";
