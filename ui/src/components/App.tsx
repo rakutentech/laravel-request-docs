@@ -126,18 +126,20 @@ export default function App() {
     }
     return (
         <>
-            <TopNav handleChangeSettings={handleChangeSettings} handleSearch={handleSearch} />
-            {sendingRequest && (
-                <progress className="progress progress-success w-full"></progress>
-            )}
-            {!sendingRequest && (
-                <progress className="progress w-full" value="100"></progress>
-            )}
-            {error && (
-                <div className="alert alert-error rounded-none">
-                    {error}
-                </div>
-            )}
+            <div className="sticky top-0 z-50 bg-gray-400">
+                <TopNav handleChangeSettings={handleChangeSettings} handleSearch={handleSearch} />
+                {sendingRequest && (
+                    <progress className="progress progress-success w-full"></progress>
+                )}
+                {!sendingRequest && (
+                    <progress className="progress w-full" value="100"></progress>
+                )}
+                {error && (
+                    <div className="alert alert-error rounded-none">
+                        {error}
+                    </div>
+                )}
+            </div>
             <div className="main-grid grid grid-cols-10 gap-2">
                 <div className="sidebar-wrapper col-span-3">
                     <div className='min-h-screen'>
@@ -150,10 +152,10 @@ export default function App() {
                             <div className="min-h-screen">
                                 <div className="main-grid grid grid-cols-10 gap-2">
                                     <div className="col-span-4 ml-5">
-                                        <ApiInfo lrdDocsItem={lrdDocsItem} method={lrdDocsItem.http_method}/>
+                                        <ApiInfo lrdDocsItem={lrdDocsItem} method={lrdDocsItem.http_method} />
                                     </div>
                                     <div className="col-span-5 ml-5">
-                                        <ApiAction lrdDocsItem={lrdDocsItem} method={lrdDocsItem.http_method} host={host}/>
+                                        <ApiAction lrdDocsItem={lrdDocsItem} method={lrdDocsItem.http_method} host={host} />
                                     </div>
                                 </div>
                             </div>
