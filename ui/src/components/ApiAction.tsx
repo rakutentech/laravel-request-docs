@@ -145,6 +145,8 @@ export default function ApiAction(props: Props) {
                     // do nothing
                 }
 
+                const wasDataWrapped = (data && data._lrd)
+
                 if (data && data._lrd && data._lrd.queries) {
                     const sqlQueries = data._lrd.queries.map((query: any) => {
                         return "Connection: "
@@ -174,12 +176,12 @@ export default function ApiAction(props: Props) {
                     })
                 }
                 if (isJson) {
-                    if (data?.data) {
+                    if (wasDataWrapped && data?.data) {
                         setResponseData(JSON.stringify(data?.data, null, 2))
                     } else {
                         setResponseData(JSON.stringify(data, null, 2))
                     }
-                    
+
                 } else {
                     setResponseData(dataString)
                 }
