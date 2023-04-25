@@ -5,9 +5,18 @@
 </p>
 
 <p align="center">
-  The Hassle-Free automatic API documentation generation for Laravel. <br>
-  A Swagger alternative. <br>
+  The Hassle-Free automatic API documentation generation for Laravel.
+  <br>
+  A Swagger alternative.
+  <br>
   Supports Open API 3.0.0
+  <br>
+  <br>
+  <b>
+     <a href="https://rakutentech.github.io/laravel-request-docs/?api=https://raw.githubusercontent.com/rakutentech/laravel-request-docs/master/ui/public/sample.json" target="_blank">Try latest DEMO!</a>
+  </b>
+  <br>
+  <br>
 </p>
 
 <p align="center">
