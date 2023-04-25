@@ -16,5 +16,5 @@ export default defineConfig({
     react()
   ],
   outDir: '../resources/dist',
-  base: '/request-docs',
+  base: process.env.PUBLIC_BASE || '/request-docs',
 });

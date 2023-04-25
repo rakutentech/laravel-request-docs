@@ -19,7 +19,7 @@ jobs:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
         with:
-          access_token: ${{ github.token }}    
+          access_token: ${{ github.token }}
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -33,17 +33,33 @@ jobs:
         working-directory: ./ui
         run: npm install
 
-      - name: Lint, build/export
+      - name: Lint
         working-directory: ./ui
         run: |
           npm run lint
+
+      - name: Export dist to resources for Laravel
+        working-directory: ./ui
+        run: |
           npm run export
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
           commit-message: (action) Update dist
-          title: '(action) update dist astro'
+          title: "(action) update dist astro"
 
+      - name: Export dist to resources for gh-pages
+        working-directory: ./ui
+        run: |
+          PUBLIC_BASE=laravel-request-docs npm run export
 
+      - name: .nojekyll
+        run: touch ./resources/dist/.nojekyll
 
+      - name: Deploy Demo
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./resources/dist
+          publish_branch: gh-pages
