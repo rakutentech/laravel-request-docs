@@ -29,9 +29,9 @@ export default function Sidebar(props: Props) {
                             )}
                             <li>
                                 <AnchorLink href={'#' + lrdDocsItem.http_method + lrdDocsItem.uri}
+                                    offset={() => 120}
                                     onClick={() => {
                                         window.history.pushState({}, '', '#' + lrdDocsItem.http_method + lrdDocsItem.uri);
-                                        setTimeout(() => {window.scrollBy(0, -128)}, 600); 
                                     }}
                                     className="flex flex-row px-0 py-1">
                                         <span className={`method-${lrdDocsItem.http_method} uppercase text-xs w-12 p-0 flex flex-row-reverse`}>
