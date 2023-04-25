@@ -46,6 +46,10 @@ td {
     overflow: scroll;
 }
 
+h2[id] {
+    scroll-margin: 8rem;
+}
+
 .table th.param-cell {
     @apply font-normal;
     @apply truncate;

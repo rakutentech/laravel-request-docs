@@ -29,6 +29,7 @@ export default function Sidebar(props: Props) {
                             )}
                             <li>
                                 <AnchorLink href={'#' + lrdDocsItem.http_method + lrdDocsItem.uri}
+                                    offset={() => 120}
                                     onClick={() => {
                                         window.history.pushState({}, '', '#' + lrdDocsItem.http_method + lrdDocsItem.uri);
                                     }}
