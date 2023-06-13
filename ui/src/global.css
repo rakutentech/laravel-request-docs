@@ -15,18 +15,18 @@ html {
 }
 
 .main-grid {
-    
+
 }
 .sidebar-wrapper {
     @apply pt-10 bg-base-200;
     position: relative;
     width: 100%;
-    
+
 }
 aside {
     @apply h-screen;
     position: fixed;
-    overflow-y: scroll;
+    overflow-y: auto;
     width: 30%;
 }
 
@@ -43,7 +43,7 @@ aside > ui > li {
 }
 
 td {
-    overflow: scroll;
+    overflow: auto;
 }
 
 h2[id] {
