@@ -10,7 +10,8 @@
         "controller": "AuthController",
         "controller_full_path": "App\\Http\\Controllers\\AuthController",
         "method": "register",
-        "httpMethod": "POST",
+        "http_method": "POST",
+        "path_parameters": [],
         "rules": {
             "first_name": [
                 "required|string|max:100"
@@ -37,7 +38,7 @@
             ]
         },
         "docBlock": ""
-    },    
+    },
     {
         "uri": "api/chart",
         "methods": [
@@ -51,7 +52,8 @@
         "controller": "DashboardController",
         "controller_full_path": "App\\Http\\Controllers\\DashboardController",
         "method": "chart",
-        "httpMethod": "GET",
+        "http_method": "GET",
+        "path_parameters": [],
         "rules": [],
         "docBlock": "Documentation for the dashboard chart"
     },
@@ -67,7 +69,8 @@
         "controller": "SwaggerController",
         "controller_full_path": "\\L5Swagger\\Http\\Controllers\\SwaggerController",
         "method": "api",
-        "httpMethod": "GET",
+        "http_method": "GET",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -84,7 +87,8 @@
         "controller": "OrderController",
         "controller_full_path": "App\\Http\\Controllers\\OrderController",
         "method": "export",
-        "httpMethod": "GET",
+        "http_method": "GET",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -99,7 +103,8 @@
         "controller": "AuthController",
         "controller_full_path": "App\\Http\\Controllers\\AuthController",
         "method": "login",
-        "httpMethod": "POST",
+        "http_method": "POST",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -116,7 +121,8 @@
         "controller": "AuthController",
         "controller_full_path": "App\\Http\\Controllers\\AuthController",
         "method": "logout",
-        "httpMethod": "GET",
+        "http_method": "GET",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -132,7 +138,8 @@
         "controller": "SwaggerController",
         "controller_full_path": "\\L5Swagger\\Http\\Controllers\\SwaggerController",
         "method": "oauth2Callback",
-        "httpMethod": "GET",
+        "http_method": "GET",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -149,7 +156,8 @@
         "controller": "OrderController",
         "controller_full_path": "App\\Http\\Controllers\\OrderController",
         "method": "index",
-        "httpMethod": "GET",
+        "http_method": "GET",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -166,7 +174,12 @@
         "controller": "OrderController",
         "controller_full_path": "App\\Http\\Controllers\\OrderController",
         "method": "show",
-        "httpMethod": "GET",
+        "http_method": "GET",
+        "path_parameters": {
+            "order": [
+                "string|required"
+            ]
+        },
         "rules": [],
         "docBlock": ""
     },
@@ -183,7 +196,8 @@
         "controller": "PermissionController",
         "controller_full_path": "App\\Http\\Controllers\\PermissionController",
         "method": "index",
-        "httpMethod": "GET",
+        "http_method": "GET",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -199,7 +213,8 @@
         "controller": "ProductController",
         "controller_full_path": "App\\Http\\Controllers\\ProductController",
         "method": "store",
-        "httpMethod": "POST",
+        "http_method": "POST",
+        "path_parameters": [],
         "rules": {
             "image": [
                 "required"
@@ -229,7 +244,8 @@
         "controller": "ProductController",
         "controller_full_path": "App\\Http\\Controllers\\ProductController",
         "method": "index",
-        "httpMethod": "GET",
+        "http_method": "GET",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -245,7 +261,12 @@
         "controller": "ProductController",
         "controller_full_path": "App\\Http\\Controllers\\ProductController",
         "method": "destroy",
-        "httpMethod": "DELETE",
+        "http_method": "DELETE",
+        "path_parameters": {
+            "product": [
+                "string|required"
+            ]
+        },
         "rules": [],
         "docBlock": ""
     },
@@ -262,7 +283,12 @@
         "controller": "ProductController",
         "controller_full_path": "App\\Http\\Controllers\\ProductController",
         "method": "show",
-        "httpMethod": "GET",
+        "http_method": "GET",
+        "path_parameters": {
+            "product": [
+                "string|required"
+            ]
+        },
         "rules": [],
         "docBlock": ""
     },
@@ -279,7 +305,12 @@
         "controller": "ProductController",
         "controller_full_path": "App\\Http\\Controllers\\ProductController",
         "method": "update",
-        "httpMethod": "PUT",
+        "http_method": "PUT",
+        "path_parameters": {
+            "product": [
+                "string|required"
+            ]
+        },
         "rules": {
             "title": [
                 "required"
@@ -304,7 +335,8 @@
         "controller": "AuthController",
         "controller_full_path": "App\\Http\\Controllers\\AuthController",
         "method": "register",
-        "httpMethod": "POST",
+        "http_method": "POST",
+        "path_parameters": [],
         "rules": {
             "first_name": [
                 "required"
@@ -337,7 +369,8 @@
         "controller": "RoleController",
         "controller_full_path": "App\\Http\\Controllers\\RoleController",
         "method": "store",
-        "httpMethod": "POST",
+        "http_method": "POST",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -354,7 +387,8 @@
         "controller": "RoleController",
         "controller_full_path": "App\\Http\\Controllers\\RoleController",
         "method": "index",
-        "httpMethod": "GET",
+        "http_method": "GET",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -370,7 +404,12 @@
         "controller": "RoleController",
         "controller_full_path": "App\\Http\\Controllers\\RoleController",
         "method": "destroy",
-        "httpMethod": "DELETE",
+        "http_method": "DELETE",
+        "path_parameters": {
+            "role": [
+                "string|required"
+            ]
+        },
         "rules": [],
         "docBlock": ""
     },
@@ -387,7 +426,12 @@
         "controller": "RoleController",
         "controller_full_path": "App\\Http\\Controllers\\RoleController",
         "method": "show",
-        "httpMethod": "GET",
+        "http_method": "GET",
+        "path_parameters": {
+            "role": [
+                "string|required"
+            ]
+        },
         "rules": [],
         "docBlock": ""
     },
@@ -404,7 +448,12 @@
         "controller": "RoleController",
         "controller_full_path": "App\\Http\\Controllers\\RoleController",
         "method": "update",
-        "httpMethod": "PUT",
+        "http_method": "PUT",
+        "path_parameters": {
+            "role": [
+                "string|required"
+            ]
+        },
         "rules": [],
         "docBlock": ""
     },
@@ -420,7 +469,8 @@
         "controller": "ImageController",
         "controller_full_path": "App\\Http\\Controllers\\ImageController",
         "method": "upload",
-        "httpMethod": "POST",
+        "http_method": "POST",
+        "path_parameters": [],
         "rules": {
             "image": [
                 "required|mimes:jpg,jpeg,gif,png|max:8192"
@@ -441,7 +491,8 @@
         "controller": "UserController",
         "controller_full_path": "App\\Http\\Controllers\\UserController",
         "method": "user",
-        "httpMethod": "GET",
+        "http_method": "GET",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -457,7 +508,8 @@
         "controller": "UserController",
         "controller_full_path": "App\\Http\\Controllers\\UserController",
         "method": "store",
-        "httpMethod": "POST",
+        "http_method": "POST",
+        "path_parameters": [],
         "rules": {
             "first_name": [
                 "required"
@@ -487,7 +539,8 @@
         "controller": "UserController",
         "controller_full_path": "App\\Http\\Controllers\\UserController",
         "method": "index",
-        "httpMethod": "GET",
+        "http_method": "GET",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -503,7 +556,8 @@
         "controller": "UserController",
         "controller_full_path": "App\\Http\\Controllers\\UserController",
         "method": "updateInfo",
-        "httpMethod": "PUT",
+        "http_method": "PUT",
+        "path_parameters": [],
         "rules": {
             "password": [
                 "required"
@@ -526,7 +580,8 @@
         "controller": "UserController",
         "controller_full_path": "App\\Http\\Controllers\\UserController",
         "method": "updatePassword",
-        "httpMethod": "PUT",
+        "http_method": "PUT",
+        "path_parameters": [],
         "rules": {
             "password": [
                 "required"
@@ -549,7 +604,12 @@
         "controller": "UserController",
         "controller_full_path": "App\\Http\\Controllers\\UserController",
         "method": "destroy",
-        "httpMethod": "DELETE",
+        "http_method": "DELETE",
+        "path_parameters": {
+            "user": [
+                "int|required"
+            ]
+        },
         "rules": [],
         "docBlock": ""
     },
@@ -566,7 +626,12 @@
         "controller": "UserController",
         "controller_full_path": "App\\Http\\Controllers\\UserController",
         "method": "show",
-        "httpMethod": "GET",
+        "http_method": "GET",
+        "path_parameters": {
+            "user": [
+                "int|required"
+            ]
+        },
         "rules": [],
         "docBlock": ""
     },
@@ -583,7 +648,12 @@
         "controller": "UserController",
         "controller_full_path": "App\\Http\\Controllers\\UserController",
         "method": "update",
-        "httpMethod": "PUT",
+        "http_method": "PUT",
+        "path_parameters": {
+            "user": [
+                "int|required"
+            ]
+        },
         "rules": {
             "first_name": [
                 "required"
@@ -612,7 +682,8 @@
         "controller": "DenyAuthorizationController",
         "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\DenyAuthorizationController",
         "method": "deny",
-        "httpMethod": "DELETE",
+        "http_method": "DELETE",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -628,7 +699,8 @@
         "controller": "ApproveAuthorizationController",
         "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\ApproveAuthorizationController",
         "method": "approve",
-        "httpMethod": "POST",
+        "http_method": "POST",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -645,7 +717,8 @@
         "controller": "AuthorizationController",
         "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\AuthorizationController",
         "method": "authorize",
-        "httpMethod": "GET",
+        "http_method": "GET",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -661,7 +734,8 @@
         "controller": "ClientController",
         "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\ClientController",
         "method": "store",
-        "httpMethod": "POST",
+        "http_method": "POST",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -678,7 +752,8 @@
         "controller": "ClientController",
         "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\ClientController",
         "method": "forUser",
-        "httpMethod": "GET",
+        "http_method": "GET",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -694,7 +769,12 @@
         "controller": "ClientController",
         "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\ClientController",
         "method": "destroy",
-        "httpMethod": "DELETE",
+        "http_method": "DELETE",
+        "path_parameters": {
+            "client_id": [
+                "int|required"
+            ]
+        },
         "rules": [],
         "docBlock": ""
     },
@@ -710,7 +790,12 @@
         "controller": "ClientController",
         "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\ClientController",
         "method": "update",
-        "httpMethod": "PUT",
+        "http_method": "PUT",
+        "path_parameters": {
+            "client_id": [
+                "int|required"
+            ]
+        },
         "rules": [],
         "docBlock": ""
     },
@@ -726,7 +811,8 @@
         "controller": "PersonalAccessTokenController",
         "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\PersonalAccessTokenController",
         "method": "store",
-        "httpMethod": "POST",
+        "http_method": "POST",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -743,7 +829,8 @@
         "controller": "PersonalAccessTokenController",
         "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\PersonalAccessTokenController",
         "method": "forUser",
-        "httpMethod": "GET",
+        "http_method": "GET",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -759,7 +846,12 @@
         "controller": "PersonalAccessTokenController",
         "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\PersonalAccessTokenController",
         "method": "destroy",
-        "httpMethod": "DELETE",
+        "http_method": "DELETE",
+        "path_parameters": {
+            "token_id": [
+                "int|required"
+            ]
+        },
         "rules": [],
         "docBlock": ""
     },
@@ -776,7 +868,8 @@
         "controller": "ScopeController",
         "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\ScopeController",
         "method": "all",
-        "httpMethod": "GET",
+        "http_method": "GET",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -791,7 +884,8 @@
         "controller": "AccessTokenController",
         "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\AccessTokenController",
         "method": "issueToken",
-        "httpMethod": "POST",
+        "http_method": "POST",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -807,7 +901,8 @@
         "controller": "TransientTokenController",
         "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\TransientTokenController",
         "method": "refresh",
-        "httpMethod": "POST",
+        "http_method": "POST",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -824,7 +919,8 @@
         "controller": "AuthorizedAccessTokenController",
         "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\AuthorizedAccessTokenController",
         "method": "forUser",
-        "httpMethod": "GET",
+        "http_method": "GET",
+        "path_parameters": [],
         "rules": [],
         "docBlock": ""
     },
@@ -840,7 +936,12 @@
         "controller": "AuthorizedAccessTokenController",
         "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\AuthorizedAccessTokenController",
         "method": "destroy",
-        "httpMethod": "DELETE",
+        "http_method": "DELETE",
+        "path_parameters": {
+            "token_id": [
+                "int|required"
+            ]
+        },
         "rules": [],
         "docBlock": ""
     }
