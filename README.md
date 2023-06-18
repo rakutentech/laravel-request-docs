@@ -79,6 +79,9 @@ You can publish the config file with:
 ```bash
 php artisan vendor:publish --tag=request-docs-config
 php artisan route:cache
+
+# Optional publish assets
+# php artisan vendor:publish --tag=request-docs-assets
 ```
 
 (optional) Add the following middleware to your API, so that the SQL logs and model events are captured.
