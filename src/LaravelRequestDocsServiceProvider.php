@@ -21,6 +21,10 @@ class LaravelRequestDocsServiceProvider extends PackageServiceProvider
             // ->hasAssets()
             ->hasViews();
             // ->hasAssets();
+        // publish resources/dist/_astro to public/
+        $this->publishes([
+            __DIR__.'/../resources/dist/_astro' => public_path('request-docs/_astro'),
+        ], 'request-docs-assets');
     }
 
     public function packageBooted()
