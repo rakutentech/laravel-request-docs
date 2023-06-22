@@ -229,6 +229,7 @@ Fixing lints
 - v2.13 Bug fixes, and nested params support
 - v2.14 Adds path params support
 - v2.16 Top Navbar is fixed
+- v2.19 Publish _astro assets
 
 
 # Contributors
