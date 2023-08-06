@@ -94,6 +94,7 @@ class LaravelRequestDocsToOpenApi
         if (is_array($rule)) {
             $rule = implode('|', $rule);
         }
+
         $parameter = [
             'name'        => $attribute,
             'description' => $rule,
@@ -112,11 +113,12 @@ class LaravelRequestDocsToOpenApi
         if (is_array($rule)) {
             $rule = implode('|', $rule);
         }
+
         $parameter = [
             'name'        => $attribute,
             'description' => $rule,
-            'in'          => 'query',
-            'style'       => 'form',
+            'in'          => 'path',
+            'style'       => 'simple',
             'required'    => str_contains($rule, 'required'),
             'schema'      => [
                 'type' => $this->getAttributeType($rule),
