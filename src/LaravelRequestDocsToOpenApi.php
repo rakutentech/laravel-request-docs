@@ -33,6 +33,7 @@ class LaravelRequestDocsToOpenApi
     private function docsToOpenApi(array $docs): void
     {
         $this->openApi['paths'] = [];
+//        dd($docs);
         foreach ($docs as $doc) {
             $requestHasFile  = false;
             $httpMethod      = strtolower($doc->getHttpMethod());
@@ -46,7 +47,7 @@ class LaravelRequestDocsToOpenApi
             $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['parameters']  = [];
 
             foreach ($doc->getPathParameters() as $parameter => $rule) {
-                $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['parameters'][] = $this->makeQueryParameterItem($parameter, $rule);
+                $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['parameters'][] = $this->makePathParameterItem($parameter, $rule);
             }
 
             $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['responses'] = config('request-docs.open_api.responses', []);
@@ -89,6 +90,24 @@ class LaravelRequestDocsToOpenApi
     }
 
     protected function makeQueryParameterItem(string $attribute, $rule): array
+    {
+        if (is_array($rule)) {
+            $rule = implode('|', $rule);
+        }
+        $parameter = [
+            'name'        => $attribute,
+            'description' => $rule,
+            'in'          => 'query',
+            'style'       => 'form',
+            'required'    => str_contains($rule, 'required'),
+            'schema'      => [
+                'type' => $this->getAttributeType($rule),
+            ],
+        ];
+        return $parameter;
+    }
+
+    protected function makePathParameterItem(string $attribute, $rule): array
     {
         if (is_array($rule)) {
             $rule = implode('|', $rule);
