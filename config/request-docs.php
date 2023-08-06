@@ -69,6 +69,8 @@ return [
         //openapi 3.0.x doesn't support request body for develop operation
         //ref: https://github.com/OAI/OpenAPI-Specification/pull/2117
         'include_body_on_delete' => false,
+        //exclude http methods that will be excluded from openapi export
+        'exclude_http_methods' => [],
         // for now putting default responses for all. This can be changed later based on specific needs
         'responses' => [
             '200' => [
