@@ -47,7 +47,7 @@ class LaravelRequestDocs
             Request::METHOD_PATCH  => $showPatch,
             Request::METHOD_DELETE => $showDelete,
             Request::METHOD_HEAD   => $showHead,
-        ], fn(bool $shouldShow) => $shouldShow);
+        ], fn (bool $shouldShow) => $shouldShow);
 
         /** @var string[] $methods */
         $methods = array_keys($filteredMethods);
@@ -402,7 +402,7 @@ class LaravelRequestDocs
             $comments = $this->multiExplode([' ', '|'], $comment);
 
             if (count($comments) > 0) {
-                $params[$comments[0]] = array_values(array_filter($comments, fn($item) => $item !== $comments[0]));
+                $params[$comments[0]] = array_values(array_filter($comments, fn ($item) => $item !== $comments[0]));
             }
         }
 
