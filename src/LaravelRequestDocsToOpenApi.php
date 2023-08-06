@@ -33,7 +33,7 @@ class LaravelRequestDocsToOpenApi
     private function docsToOpenApi(array $docs): void
     {
         $this->openApi['paths'] = [];
-//        dd($docs);
+        $includeBodyForDelete = config('request-docs.open_api.include_body_on_delete');
         foreach ($docs as $doc) {
             $requestHasFile  = false;
             $httpMethod      = strtolower($doc->getHttpMethod());
@@ -66,7 +66,7 @@ class LaravelRequestDocsToOpenApi
 
             $contentType = $requestHasFile ? 'multipart/form-data' : 'application/json';
 
-            if ($isPost || $isPut || $isDelete) {
+            if ($isPost || $isPut || ($isDelete && $includeBodyForDelete)) {
                 $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['requestBody'] = $this->makeRequestBodyItem($contentType);
             }
 
@@ -76,7 +76,7 @@ class LaravelRequestDocsToOpenApi
                         $parameter                                                             = $this->makeQueryParameterItem($attribute, $rule);
                         $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['parameters'][] = $parameter;
                     }
-                    if ($isPost || $isPut || $isDelete) {
+                    if ($isPost || $isPut || ($isDelete && $includeBodyForDelete)) {
                         $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['requestBody']['content'][$contentType]['schema']['properties'][$attribute] = $this->makeRequestBodyContentPropertyItem($rule);
                     }
                 }
