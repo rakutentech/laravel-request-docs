@@ -14,8 +14,8 @@ class LaravelRequestDocsToOpenApi
     {
         $this->openApi['openapi']                 = config('request-docs.open_api.version', '3.0.0');
         $this->openApi['info']['version']         = config('request-docs.open_api.document_version', '1.0.0');
-        $this->openApi['info']['title']           = "Laravel Request Docs";
-        $this->openApi['info']['description']     = "Laravel Request Docs";
+        $this->openApi['info']['title']           = config('request-docs.open_api.document_title', 'Laravel Request Docs');
+        $this->openApi['info']['description']     = config('request-docs.open_api.document_description', 'Laravel Request Docs');
         $this->openApi['info']['license']['name'] = config('request-docs.open_api.license', 'Apache 2.0');
         $this->openApi['info']['license']['url']  = config('request-docs.open_api.license_url', 'https://www.apache.org/licenses/LICENSE-2.0.html');
         $this->openApi['servers'][]               = [
