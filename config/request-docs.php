@@ -58,11 +58,7 @@ return [
         'description' => 'Laravel Request Docs',
         // default version that this library provides
         'version' => '3.0.0',
-        // api document title
-        'document_title' => 'Laravel Request',
-        // api document description
-        'document_description' => 'Laravel Request',
-        //api document version
+        //changeable
         'document_version' => '1.0.0',
         // license that you want to display
         'license' => 'Apache 2.0',
