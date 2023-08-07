@@ -28,9 +28,9 @@
     "shortid": "^2.2.16"
   },
   "devDependencies": {
+    "@otterlord/astro-compress": "^1.1.48",
     "@typescript-eslint/eslint-plugin": "^5.52.0",
     "@typescript-eslint/parser": "^5.52.0",
-    "astro-compress": "1.1.29",
     "autoprefixer": "^10.4.13",
     "daisyui": "^2.50.0",
     "eslint": "^8.34.0",
