@@ -1,0 +1,948 @@
+[
+    {
+        "uri": "api/register",
+        "methods": [
+            "POST"
+        ],
+        "middlewares": [
+            "api"
+        ],
+        "controller": "AuthController",
+        "controller_full_path": "App\\Http\\Controllers\\AuthController",
+        "method": "register",
+        "http_method": "POST",
+        "path_parameters": [],
+        "rules": {
+            "first_name": [
+                "required|string|max:100"
+            ],
+            "last_name": [
+                "required|string|max:100"
+            ],
+            "nick_name": [
+                "required|string|min:7|max:100"
+            ],
+            "age": ["integer"],
+            "birthdate": ["date"],
+            "email": [
+                "required|email|unique:users"
+            ],
+            "roles": [
+                "array"
+            ],
+            "password": [
+                "required"
+            ],
+            "password_confirm": [
+                "required|same:password"
+            ]
+        },
+        "docBlock": ""
+    },
+    {
+        "uri": "api/chart",
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "DashboardController",
+        "controller_full_path": "App\\Http\\Controllers\\DashboardController",
+        "method": "chart",
+        "http_method": "GET",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": "Documentation for the dashboard chart"
+    },
+    {
+        "uri": "api/documentation",
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "middlewares": [
+            "L5Swagger\\Http\\Middleware\\Config"
+        ],
+        "controller": "SwaggerController",
+        "controller_full_path": "\\L5Swagger\\Http\\Controllers\\SwaggerController",
+        "method": "api",
+        "http_method": "GET",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "api/export",
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "OrderController",
+        "controller_full_path": "App\\Http\\Controllers\\OrderController",
+        "method": "export",
+        "http_method": "GET",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "api/login",
+        "methods": [
+            "POST"
+        ],
+        "middlewares": [
+            "api"
+        ],
+        "controller": "AuthController",
+        "controller_full_path": "App\\Http\\Controllers\\AuthController",
+        "method": "login",
+        "http_method": "POST",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "api/logout",
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "AuthController",
+        "controller_full_path": "App\\Http\\Controllers\\AuthController",
+        "method": "logout",
+        "http_method": "GET",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "api/oauth2-callback",
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "middlewares": [
+            "L5Swagger\\Http\\Middleware\\Config"
+        ],
+        "controller": "SwaggerController",
+        "controller_full_path": "\\L5Swagger\\Http\\Controllers\\SwaggerController",
+        "method": "oauth2Callback",
+        "http_method": "GET",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "api/orders",
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "OrderController",
+        "controller_full_path": "App\\Http\\Controllers\\OrderController",
+        "method": "index",
+        "http_method": "GET",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "api/orders/{order}",
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "OrderController",
+        "controller_full_path": "App\\Http\\Controllers\\OrderController",
+        "method": "show",
+        "http_method": "GET",
+        "path_parameters": {
+            "order": [
+                "string|required"
+            ]
+        },
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "api/permissions",
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "PermissionController",
+        "controller_full_path": "App\\Http\\Controllers\\PermissionController",
+        "method": "index",
+        "http_method": "GET",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "api/products",
+        "methods": [
+            "POST"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "ProductController",
+        "controller_full_path": "App\\Http\\Controllers\\ProductController",
+        "method": "store",
+        "http_method": "POST",
+        "path_parameters": [],
+        "rules": {
+            "image": [
+                "required"
+            ],
+            "title": [
+                "required"
+            ],
+            "description": [
+                "required"
+            ],
+            "price": [
+                "required|numeric"
+            ]
+        },
+        "docBlock": ""
+    },
+    {
+        "uri": "api/products",
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "ProductController",
+        "controller_full_path": "App\\Http\\Controllers\\ProductController",
+        "method": "index",
+        "http_method": "GET",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "api/products/{product}",
+        "methods": [
+            "DELETE"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "ProductController",
+        "controller_full_path": "App\\Http\\Controllers\\ProductController",
+        "method": "destroy",
+        "http_method": "DELETE",
+        "path_parameters": {
+            "product": [
+                "string|required"
+            ]
+        },
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "api/products/{product}",
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "ProductController",
+        "controller_full_path": "App\\Http\\Controllers\\ProductController",
+        "method": "show",
+        "http_method": "GET",
+        "path_parameters": {
+            "product": [
+                "string|required"
+            ]
+        },
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "api/products/{product}",
+        "methods": [
+            "PUT",
+            "PATCH"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "ProductController",
+        "controller_full_path": "App\\Http\\Controllers\\ProductController",
+        "method": "update",
+        "http_method": "PUT",
+        "path_parameters": {
+            "product": [
+                "string|required"
+            ]
+        },
+        "rules": {
+            "title": [
+                "required"
+            ],
+            "description": [
+                "required"
+            ],
+            "price": [
+                "required|numeric"
+            ]
+        },
+        "docBlock": ""
+    },
+    {
+        "uri": "api/register",
+        "methods": [
+            "POST"
+        ],
+        "middlewares": [
+            "api"
+        ],
+        "controller": "AuthController",
+        "controller_full_path": "App\\Http\\Controllers\\AuthController",
+        "method": "register",
+        "http_method": "POST",
+        "path_parameters": [],
+        "rules": {
+            "first_name": [
+                "required"
+            ],
+            "last_name": [
+                "required"
+            ],
+            "nick_name": [],
+            "email": [
+                "required"
+            ],
+            "password": [
+                "required"
+            ],
+            "password_confirm": [
+                "required|same:password"
+            ]
+        },
+        "docBlock": ""
+    },
+    {
+        "uri": "api/roles",
+        "methods": [
+            "POST"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "RoleController",
+        "controller_full_path": "App\\Http\\Controllers\\RoleController",
+        "method": "store",
+        "http_method": "POST",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "api/roles",
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "RoleController",
+        "controller_full_path": "App\\Http\\Controllers\\RoleController",
+        "method": "index",
+        "http_method": "GET",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "api/roles/{role}",
+        "methods": [
+            "DELETE"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "RoleController",
+        "controller_full_path": "App\\Http\\Controllers\\RoleController",
+        "method": "destroy",
+        "http_method": "DELETE",
+        "path_parameters": {
+            "role": [
+                "string|required"
+            ]
+        },
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "api/roles/{role}",
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "RoleController",
+        "controller_full_path": "App\\Http\\Controllers\\RoleController",
+        "method": "show",
+        "http_method": "GET",
+        "path_parameters": {
+            "role": [
+                "string|required"
+            ]
+        },
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "api/roles/{role}",
+        "methods": [
+            "PUT",
+            "PATCH"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "RoleController",
+        "controller_full_path": "App\\Http\\Controllers\\RoleController",
+        "method": "update",
+        "http_method": "PUT",
+        "path_parameters": {
+            "role": [
+                "string|required"
+            ]
+        },
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "api/upload",
+        "methods": [
+            "POST"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "ImageController",
+        "controller_full_path": "App\\Http\\Controllers\\ImageController",
+        "method": "upload",
+        "http_method": "POST",
+        "path_parameters": [],
+        "rules": {
+            "image": [
+                "required|mimes:jpg,jpeg,gif,png|max:8192"
+            ]
+        },
+        "docBlock": ""
+    },
+    {
+        "uri": "api/user",
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "UserController",
+        "controller_full_path": "App\\Http\\Controllers\\UserController",
+        "method": "user",
+        "http_method": "GET",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "api/users",
+        "methods": [
+            "POST"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "UserController",
+        "controller_full_path": "App\\Http\\Controllers\\UserController",
+        "method": "store",
+        "http_method": "POST",
+        "path_parameters": [],
+        "rules": {
+            "first_name": [
+                "required"
+            ],
+            "last_name": [
+                "required"
+            ],
+            "email": [
+                "required|email|unique:users"
+            ],
+            "role_id": [
+                "required"
+            ]
+        },
+        "docBlock": ""
+    },
+    {
+        "uri": "api/users",
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "UserController",
+        "controller_full_path": "App\\Http\\Controllers\\UserController",
+        "method": "index",
+        "http_method": "GET",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "api/users/info",
+        "methods": [
+            "PUT"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "UserController",
+        "controller_full_path": "App\\Http\\Controllers\\UserController",
+        "method": "updateInfo",
+        "http_method": "PUT",
+        "path_parameters": [],
+        "rules": {
+            "password": [
+                "required"
+            ],
+            "password_confirm": [
+                "required|same:password"
+            ]
+        },
+        "docBlock": ""
+    },
+    {
+        "uri": "api/users/password",
+        "methods": [
+            "PUT"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "UserController",
+        "controller_full_path": "App\\Http\\Controllers\\UserController",
+        "method": "updatePassword",
+        "http_method": "PUT",
+        "path_parameters": [],
+        "rules": {
+            "password": [
+                "required"
+            ],
+            "password_confirm": [
+                "required|same:password"
+            ]
+        },
+        "docBlock": ""
+    },
+    {
+        "uri": "api/users/{user}",
+        "methods": [
+            "DELETE"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "UserController",
+        "controller_full_path": "App\\Http\\Controllers\\UserController",
+        "method": "destroy",
+        "http_method": "DELETE",
+        "path_parameters": {
+            "user": [
+                "int|required"
+            ]
+        },
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "api/users/{user}",
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "UserController",
+        "controller_full_path": "App\\Http\\Controllers\\UserController",
+        "method": "show",
+        "http_method": "GET",
+        "path_parameters": {
+            "user": [
+                "int|required"
+            ]
+        },
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "api/users/{user}",
+        "methods": [
+            "PUT",
+            "PATCH"
+        ],
+        "middlewares": [
+            "api",
+            "auth:api"
+        ],
+        "controller": "UserController",
+        "controller_full_path": "App\\Http\\Controllers\\UserController",
+        "method": "update",
+        "http_method": "PUT",
+        "path_parameters": {
+            "user": [
+                "int|required"
+            ]
+        },
+        "rules": {
+            "first_name": [
+                "required"
+            ],
+            "last_name": [
+                "required"
+            ],
+            "email": [
+                "required|email"
+            ],
+            "role_id": [
+                "required"
+            ]
+        },
+        "docBlock": ""
+    },
+    {
+        "uri": "oauth/authorize",
+        "methods": [
+            "DELETE"
+        ],
+        "middlewares": [
+            "web",
+            "auth"
+        ],
+        "controller": "DenyAuthorizationController",
+        "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\DenyAuthorizationController",
+        "method": "deny",
+        "http_method": "DELETE",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "oauth/authorize",
+        "methods": [
+            "POST"
+        ],
+        "middlewares": [
+            "web",
+            "auth"
+        ],
+        "controller": "ApproveAuthorizationController",
+        "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\ApproveAuthorizationController",
+        "method": "approve",
+        "http_method": "POST",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "oauth/authorize",
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "middlewares": [
+            "web",
+            "auth"
+        ],
+        "controller": "AuthorizationController",
+        "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\AuthorizationController",
+        "method": "authorize",
+        "http_method": "GET",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "oauth/clients",
+        "methods": [
+            "POST"
+        ],
+        "middlewares": [
+            "web",
+            "auth"
+        ],
+        "controller": "ClientController",
+        "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\ClientController",
+        "method": "store",
+        "http_method": "POST",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "oauth/clients",
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "middlewares": [
+            "web",
+            "auth"
+        ],
+        "controller": "ClientController",
+        "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\ClientController",
+        "method": "forUser",
+        "http_method": "GET",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "oauth/clients/{client_id}",
+        "methods": [
+            "DELETE"
+        ],
+        "middlewares": [
+            "web",
+            "auth"
+        ],
+        "controller": "ClientController",
+        "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\ClientController",
+        "method": "destroy",
+        "http_method": "DELETE",
+        "path_parameters": {
+            "client_id": [
+                "int|required"
+            ]
+        },
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "oauth/clients/{client_id}",
+        "methods": [
+            "PUT"
+        ],
+        "middlewares": [
+            "web",
+            "auth"
+        ],
+        "controller": "ClientController",
+        "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\ClientController",
+        "method": "update",
+        "http_method": "PUT",
+        "path_parameters": {
+            "client_id": [
+                "int|required"
+            ]
+        },
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "oauth/personal-access-tokens",
+        "methods": [
+            "POST"
+        ],
+        "middlewares": [
+            "web",
+            "auth"
+        ],
+        "controller": "PersonalAccessTokenController",
+        "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\PersonalAccessTokenController",
+        "method": "store",
+        "http_method": "POST",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "oauth/personal-access-tokens",
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "middlewares": [
+            "web",
+            "auth"
+        ],
+        "controller": "PersonalAccessTokenController",
+        "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\PersonalAccessTokenController",
+        "method": "forUser",
+        "http_method": "GET",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "oauth/personal-access-tokens/{token_id}",
+        "methods": [
+            "DELETE"
+        ],
+        "middlewares": [
+            "web",
+            "auth"
+        ],
+        "controller": "PersonalAccessTokenController",
+        "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\PersonalAccessTokenController",
+        "method": "destroy",
+        "http_method": "DELETE",
+        "path_parameters": {
+            "token_id": [
+                "int|required"
+            ]
+        },
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "oauth/scopes",
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "middlewares": [
+            "web",
+            "auth"
+        ],
+        "controller": "ScopeController",
+        "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\ScopeController",
+        "method": "all",
+        "http_method": "GET",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "oauth/token",
+        "methods": [
+            "POST"
+        ],
+        "middlewares": [
+            "throttle"
+        ],
+        "controller": "AccessTokenController",
+        "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\AccessTokenController",
+        "method": "issueToken",
+        "http_method": "POST",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "oauth/token/refresh",
+        "methods": [
+            "POST"
+        ],
+        "middlewares": [
+            "web",
+            "auth"
+        ],
+        "controller": "TransientTokenController",
+        "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\TransientTokenController",
+        "method": "refresh",
+        "http_method": "POST",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "oauth/tokens",
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "middlewares": [
+            "web",
+            "auth"
+        ],
+        "controller": "AuthorizedAccessTokenController",
+        "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\AuthorizedAccessTokenController",
+        "method": "forUser",
+        "http_method": "GET",
+        "path_parameters": [],
+        "rules": [],
+        "docBlock": ""
+    },
+    {
+        "uri": "oauth/tokens/{token_id}",
+        "methods": [
+            "DELETE"
+        ],
+        "middlewares": [
+            "web",
+            "auth"
+        ],
+        "controller": "AuthorizedAccessTokenController",
+        "controller_full_path": "\\Laravel\\Passport\\Http\\Controllers\\AuthorizedAccessTokenController",
+        "method": "destroy",
+        "http_method": "DELETE",
+        "path_parameters": {
+            "token_id": [
+                "int|required"
+            ]
+        },
+        "rules": [],
+        "docBlock": ""
+    }
+]
