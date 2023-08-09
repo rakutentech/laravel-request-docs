@@ -64,7 +64,11 @@ return [
         'license' => 'Apache 2.0',
         'license_url' => 'https://www.apache.org/licenses/LICENSE-2.0.html',
         'server_url' => env('APP_URL', 'http://localhost'),
-
+        //openapi 3.0.x doesn't support request body for delete operation
+        //ref: https://github.com/OAI/OpenAPI-Specification/pull/2117
+        'delete_with_body' => false,
+        //exclude http methods that will be excluded from openapi export
+        'exclude_http_methods' => [],
         // for now putting default responses for all. This can be changed later based on specific needs
         'responses' => [
             '200' => [
