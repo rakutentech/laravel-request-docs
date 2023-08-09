@@ -33,12 +33,11 @@ class LaravelRequestDocsToOpenApi
     private function docsToOpenApi(array $docs): void
     {
         $this->openApi['paths'] = [];
-        $deleteWithBody   = config('request-docs.open_api.delete_with_body', false);
+        $deleteWithBody         = config('request-docs.open_api.delete_with_body', false);
         $excludeHttpMethods     = array_map(fn ($item) => strtolower($item), config('request-docs.open_api.exclude_http_methods', []));
 
         foreach ($docs as $doc) {
-
-            $httpMethod      = strtolower($doc->getHttpMethod());
+            $httpMethod = strtolower($doc->getHttpMethod());
 
             if (in_array($httpMethod, $excludeHttpMethods)) {
                 continue;
