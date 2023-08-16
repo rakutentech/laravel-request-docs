@@ -1,5 +1,5 @@
 import { defineConfig } from 'astro/config'
-import compress from 'otterlord/astro-compress'
+import compress from 'astro-compress'
 import react from '@astrojs/react'
 
 import git from 'git-rev-sync'
