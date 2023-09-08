@@ -95,7 +95,7 @@ class LaravelRequestDocs
         }
 
         if ($sortBy === 'route_names') {
-            return $docs->sort();
+            return $docs->sort()->values();
         }
 
         // Sort by `method_names`.
