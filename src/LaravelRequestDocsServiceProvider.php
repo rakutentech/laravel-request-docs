@@ -3,6 +3,7 @@
 namespace Rakutentech\LaravelRequestDocs;
 
 use Illuminate\Support\Facades\Route;
+use Rakutentech\LaravelRequestDocs\Commands\ExportRequestDocsCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -18,6 +19,7 @@ class LaravelRequestDocsServiceProvider extends PackageServiceProvider
         $package
             ->name('laravel-request-docs')
             ->hasConfigFile('request-docs')
+            ->hasCommand(ExportRequestDocsCommand::class)
             // ->hasAssets()
             ->hasViews();
         // ->hasAssets();
