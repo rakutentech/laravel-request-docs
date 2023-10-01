@@ -2,7 +2,10 @@
 
 namespace Rakutentech\LaravelRequestDocs\Commands;
 
+use ErrorException;
+use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 use Rakutentech\LaravelRequestDocs\LaravelRequestDocs;
 use Rakutentech\LaravelRequestDocs\LaravelRequestDocsToOpenApi;
 
@@ -15,7 +18,7 @@ class ExportRequestDocsCommand extends Command
     {
         parent::__construct();
 
-        $this->laravelRequestDocs          = $laravelRequestDoc;
+        $this->laravelRequestDocs = $laravelRequestDoc;
         $this->laravelRequestDocsToOpenApi = $laravelRequestDocsToOpenApi;
     }
 
@@ -42,49 +45,45 @@ class ExportRequestDocsCommand extends Command
      */
     public function handle()
     {
-        if ($this->confirmFilePath()) {
-            try {
-                $excludedMethods = config('request-docs.open_api.exclude_http_methods', []);
+        if (!$this->confirmFilePathAvailability()) {
+            //silently stop command
+            return self::SUCCESS;
+        }
 
-                $excludedMethods = array_map(fn($item) => strtolower($item), $excludedMethods);
+        try {
+            //get the excluded methods list from config
+            $excludedMethods = config('request-docs.open_api.exclude_http_methods', []);
+            $excludedMethods = array_map(fn($item) => strtolower($item), $excludedMethods);
 
-                $showGet    = !in_array('get', $excludedMethods);
-                $showPost   = !in_array('post', $excludedMethods);
-                $showPut    = !in_array('put', $excludedMethods);
-                $showPatch  = !in_array('patch', $excludedMethods);
-                $showDelete = !in_array('delete', $excludedMethods);
-                $showHead   = !in_array('head', $excludedMethods);
+            //filter while method apis to export
+            $showGet = !in_array('get', $excludedMethods);
+            $showPost = !in_array('post', $excludedMethods);
+            $showPut = !in_array('put', $excludedMethods);
+            $showPatch = !in_array('patch', $excludedMethods);
+            $showDelete = !in_array('delete', $excludedMethods);
+            $showHead = !in_array('head', $excludedMethods);
 
-                // Get a list of Doc with route and rules information.
-                // If user defined `Route::match(['get', 'post'], 'uri', ...)`,
-                // only a single Doc will be generated.
-                $docs = $this->laravelRequestDocs->getDocs(
-                    $showGet,
-                    $showPost,
-                    $showPut,
-                    $showPatch,
-                    $showDelete,
-                    $showHead,
-                );
+            // Get a list of Doc with route and rules information.
+            $docs = $this->laravelRequestDocs->getDocs(
+                $showGet,
+                $showPost,
+                $showPut,
+                $showPatch,
+                $showDelete,
+                $showHead,
+            );
 
-                // Loop and split Doc by the `methods` property.
-                // `Route::match([...n], 'uri', ...)` will generate n number of Doc.
-                $docs = $this->laravelRequestDocs->splitByMethods($docs);
-                $docs = $this->laravelRequestDocs->sortDocs($docs, 'default');
-                $docs = $this->laravelRequestDocs->groupDocs($docs, 'default');
+            // Loop and split Doc by the `methods` property.
+            $docs = $this->laravelRequestDocs->splitByMethods($docs);
+            $docs = $this->laravelRequestDocs->sortDocs($docs, 'default');
+            $docs = $this->laravelRequestDocs->groupDocs($docs, 'default');
 
-                $content = json_encode(
-                    $this->laravelRequestDocsToOpenApi->openApi($docs->all())->toArray(),
-                    JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
-                );
-
-                if (!$this->writeFile($content)) {
-                    throw new \ErrorException("Failed to write on [{$this->exportFilePath}] file.");
-                }
-            } catch (\Exception $exception) {
-                $this->error('Error : ' . $exception->getMessage());
-                return self::FAILURE;
+            if (!$this->writeApiDocsToFile($docs)) {
+                throw new ErrorException("Failed to write on [{$this->exportFilePath}] file.");
             }
+        } catch (Exception $exception) {
+            $this->error('Error : ' . $exception->getMessage());
+            return self::FAILURE;
         }
 
         return self::SUCCESS;
@@ -93,7 +92,7 @@ class ExportRequestDocsCommand extends Command
     /**
      * @return bool
      */
-    private function confirmFilePath(): bool
+    private function confirmFilePathAvailability(): bool
     {
         $path = $this->argument('path');
 
@@ -118,17 +117,23 @@ class ExportRequestDocsCommand extends Command
     }
 
     /**
-     * @param $content
+     * @param $docs
      * @return false|int
      */
-    private function writeFile($content)
+    private function writeApiDocsToFile(Collection $docs): bool
     {
+        $content = json_encode(
+            $this->laravelRequestDocsToOpenApi->openApi($docs->all())->toArray(),
+            JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+        );
+
         $targetDirectory = dirname($this->exportFilePath);
 
+        //create parent directory if not exists
         if (!is_dir($targetDirectory)) {
             mkdir($targetDirectory, 0755, true);
         }
 
-        return file_put_contents($this->exportFilePath, $content);
+        return (bool)file_put_contents($this->exportFilePath, $content);
     }
 }
