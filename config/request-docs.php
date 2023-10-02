@@ -153,4 +153,8 @@ return [
             ],
         ],
     ],
+
+    //export request docs as json file from terminal
+    //from project root directory
+    'export_path' => 'api.json'
 ];
