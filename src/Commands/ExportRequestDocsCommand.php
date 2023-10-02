@@ -18,7 +18,7 @@ class ExportRequestDocsCommand extends Command
     {
         parent::__construct();
 
-        $this->laravelRequestDocs = $laravelRequestDoc;
+        $this->laravelRequestDocs          = $laravelRequestDoc;
         $this->laravelRequestDocsToOpenApi = $laravelRequestDocsToOpenApi;
     }
 
@@ -56,12 +56,12 @@ class ExportRequestDocsCommand extends Command
             $excludedMethods = array_map(fn($item) => strtolower($item), $excludedMethods);
 
             //filter while method apis to export
-            $showGet = !in_array('get', $excludedMethods);
-            $showPost = !in_array('post', $excludedMethods);
-            $showPut = !in_array('put', $excludedMethods);
-            $showPatch = !in_array('patch', $excludedMethods);
+            $showGet    = !in_array('get', $excludedMethods);
+            $showPost   = !in_array('post', $excludedMethods);
+            $showPut    = !in_array('put', $excludedMethods);
+            $showPatch  = !in_array('patch', $excludedMethods);
             $showDelete = !in_array('delete', $excludedMethods);
-            $showHead = !in_array('head', $excludedMethods);
+            $showHead   = !in_array('head', $excludedMethods);
 
             // Get a list of Doc with route and rules information.
             $docs = $this->laravelRequestDocs->getDocs(
@@ -118,7 +118,7 @@ class ExportRequestDocsCommand extends Command
 
     /**
      * @param $docs
-     * @return false|int
+     * @return bool
      */
     private function writeApiDocsToFile(Collection $docs): bool
     {
@@ -134,6 +134,6 @@ class ExportRequestDocsCommand extends Command
             mkdir($targetDirectory, 0755, true);
         }
 
-        return (bool)file_put_contents($this->exportFilePath, $content);
+        return file_put_contents($this->exportFilePath, $content) !== false;
     }
 }
