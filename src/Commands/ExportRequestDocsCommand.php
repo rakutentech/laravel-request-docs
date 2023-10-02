@@ -118,7 +118,7 @@ class ExportRequestDocsCommand extends Command
 
     /**
      * @param $docs
-     * @return false|int
+     * @return bool
      */
     private function writeApiDocsToFile(Collection $docs): bool
     {
@@ -134,6 +134,6 @@ class ExportRequestDocsCommand extends Command
             mkdir($targetDirectory, 0755, true);
         }
 
-        return (bool)file_put_contents($this->exportFilePath, $content);
+        return file_put_contents($this->exportFilePath, $content) !== false;
     }
 }
