@@ -29,7 +29,10 @@ class ExportRequestDocsCommand extends Command
      */
     protected $signature = 'laravel-request-docs:export
                             {path? : Export file location}
+                            {--sort=default : Sort the data by route names}
+                            {--groupby=default : Group the data by API URI}
                             {--force : Whether to overwrite existing file}';
+
 
     /**
      * The console command description.
@@ -75,8 +78,8 @@ class ExportRequestDocsCommand extends Command
 
             // Loop and split Doc by the `methods` property.
             $docs = $this->laravelRequestDocs->splitByMethods($docs);
-            $docs = $this->laravelRequestDocs->sortDocs($docs, 'default');
-            $docs = $this->laravelRequestDocs->groupDocs($docs, 'default');
+            $docs = $this->laravelRequestDocs->sortDocs($docs, $this->option('sort'));
+            $docs = $this->laravelRequestDocs->groupDocs($docs, $this->option('groupby'));
 
             if (!$this->writeApiDocsToFile($docs)) {
                 throw new ErrorException("Failed to write on [{$this->exportFilePath}] file.");
