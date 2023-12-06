@@ -52,7 +52,7 @@ h2[id] {
 
 .table th.param-cell {
     @apply font-normal;
-    @apply truncate;
+    overflow: auto;
     border-left: 1px solid rgb(59 130 246);
     padding-left: 0px;
 
