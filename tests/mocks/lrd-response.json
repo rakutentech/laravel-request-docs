@@ -457,10 +457,10 @@
         ]
     },
     {
-        "uri": "comments-on-rules-method",
+        "uri": "comments-on-request-rules-method",
         "middlewares": [],
-        "controller": "CommentsOnRulesController",
-        "controller_full_path": "Rakutentech\\LaravelRequestDocs\\Tests\\Stubs\\TestControllers\\CommentsOnRulesController",
+        "controller": "CommentsOnRequestRulesMethodController",
+        "controller_full_path": "Rakutentech\\LaravelRequestDocs\\Tests\\Stubs\\TestControllers\\CommentsOnRequestRulesMethodController",
         "method": "index",
         "http_method": "POST",
         "path_parameters": [],

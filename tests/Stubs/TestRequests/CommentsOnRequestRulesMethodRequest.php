@@ -4,7 +4,7 @@ namespace Rakutentech\LaravelRequestDocs\Tests\Stubs\TestRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CommentsOnRulesRequest extends FormRequest
+class CommentsOnRequestRulesMethodRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
