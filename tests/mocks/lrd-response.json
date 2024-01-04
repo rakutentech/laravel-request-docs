@@ -457,6 +457,47 @@
         ]
     },
     {
+        "uri": "comments-on-request-rules-method",
+        "middlewares": [],
+        "controller": "CommentsOnRequestRulesMethodController",
+        "controller_full_path": "Rakutentech\\LaravelRequestDocs\\Tests\\Stubs\\TestControllers\\CommentsOnRequestRulesMethodController",
+        "method": "index",
+        "http_method": "POST",
+        "path_parameters": [],
+        "rules": {
+            "message_param": [
+                "nullable|string"
+            ],
+            "extra_rules_field_1": [
+                "string",
+                "max:32"
+            ],
+            "extra_rules_field_2": [
+                "string",
+                "nullable",
+                "max:32"
+            ],
+            "this_is_a_duplicate_param": [
+                "controller",
+                "description"
+            ],
+            "extra_index_field_1": [
+                "string",
+                "max:32"
+            ],
+            "extra_index_field_2": [
+                "string",
+                "nullable",
+                "max:32"
+            ]
+        },
+        "doc_block": " # Request\n ## Rules Method Comment\n\n # Controller\n ## Index Method Comment\n",
+        "responses": [
+            "201",
+            "244"
+        ]
+    },
+    {
         "uri": "closure",
         "middlewares": [],
         "controller": "",

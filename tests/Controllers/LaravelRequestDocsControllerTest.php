@@ -27,7 +27,7 @@ class LaravelRequestDocsControllerTest extends TestCase
         );
 
         /** {@see \Rakutentech\LaravelRequestDocs\Tests\TestCase::registerRoutes()} */
-        $this->assertCount(28, $response->json());
+        $this->assertCount(29, $response->json());
 
         $this->assertSame($expected, $response->json());
     }
