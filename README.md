@@ -166,7 +166,7 @@ You write extra params with rules with @LRDparam in the comment line as one line
      * // either space or pipe
      * @LRDparam nickaname string|nullable|max:32
      * // override the default response codes
-     * @LRDparam responses 200,422
+     * @LRDparam responses 200|422
      */
     public function index(MyIndexRequest $request): Resource
     {
