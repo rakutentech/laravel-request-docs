@@ -43,6 +43,7 @@ class TestCase extends Orchestra
         Route::get('health', [TestControllers\WelcomeController::class, 'health']);
         Route::get('single', TestControllers\SingleActionController::class);
         Route::delete('welcome/no-rules', [TestControllers\WelcomeController::class, 'noRules']);
+        Route::post('comments-on-rules-method', [TestControllers\CommentsOnRulesController::class, 'index']);
 
         Route::get('closure', function () {
             return true;
