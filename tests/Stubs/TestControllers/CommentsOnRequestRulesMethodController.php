@@ -2,9 +2,9 @@
 
 namespace Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers;
 
-use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestRequests\CommentsOnRulesRequest;
+use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestRequests\CommentsOnRequestRulesMethodRequest;
 
-class CommentsOnRulesController
+class CommentsOnRequestRulesMethodController
 {
     /**
      * Before
@@ -24,7 +24,7 @@ class CommentsOnRulesController
      *
      * After
      */
-    public function index(CommentsOnRulesRequest $request)
+    public function index(CommentsOnRequestRulesMethodRequest $request)
     {
         return 1;
     }

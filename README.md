@@ -247,7 +247,7 @@ Fixing lints
 - v2.16 Top Navbar is fixed
 - v2.19 Publish _astro assets
 - v2.25 `laravel-request-docs:export`  command to export
-- v2.28 Allow extra documentation to be defined on the `rules` method of the Request class by @Ken-vdE
+- v2.28 Allow extra documentation to be defined on the `rules` method of the Request class. By @Ken-vdE
 
 
 # Contributors
