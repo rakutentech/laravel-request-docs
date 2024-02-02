@@ -81,7 +81,7 @@ class LaravelRequestDocsMiddleware extends QueryLogger
         $jsonContent = json_encode($content);
 
         if (in_array('gzip', $request->getEncodings()) && function_exists('gzencode')) {
-            $level = 9; // Best compression.
+            $level             = 9; // Best compression.
             $compressedContent = gzencode($jsonContent, $level);
 
             // Create a new response object with compressed content.
