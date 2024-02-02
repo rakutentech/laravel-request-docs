@@ -4,6 +4,7 @@ namespace Rakutentech\LaravelRequestDocs;
 
 use Closure;
 use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Foundation\Http\Events\RequestHandled;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -77,6 +78,11 @@ class LaravelRequestDocsMiddleware extends QueryLogger
                 'memory'         => ((string) round(memory_get_peak_usage(true) / 1048576, 2)) . "MB",
             ],
         ];
+
+        if (Event::hasListeners(RequestHandled::class)) {
+            $response->setData($content);
+            return $response;
+        }
 
         $jsonContent = json_encode($content);
 
