@@ -81,16 +81,29 @@ class LaravelRequestDocsMiddleware extends QueryLogger
         $jsonContent = json_encode($content);
 
         if (in_array('gzip', $request->getEncodings()) && function_exists('gzencode')) {
-            $level       = 9; // best compression;
-            $jsonContent = gzencode($jsonContent, $level);
+            $level             = 9; // Best compression.
+            $compressedContent = gzencode($jsonContent, $level);
+
+            // Create a new response object with compressed content.
+            $response = new Response($compressedContent);
+
+            // Add necessary headers.
             $response->headers->add([
-                'Content-type'     => 'application/json; charset=utf-8',
-                'Content-Length'   => strlen($jsonContent),
+                'Content-Type' => 'application/json; charset=utf-8',
+                'Content-Length' => strlen($compressedContent),
                 'Content-Encoding' => 'gzip',
             ]);
+
+            return $response; // Return the response object directly.
+        } else {
+            // Fallback for clients that do not support gzip.
+            $response = new Response($jsonContent);
+            $response->headers->add([
+                'Content-Type' => 'application/json; charset=utf-8',
+            ]);
+
+            return $response;
         }
-        $response->setContent($jsonContent);
-        return $response;
     }
 
     public function listenToDB(): void
