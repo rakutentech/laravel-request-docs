@@ -12,6 +12,6 @@ class LaravelRequestDocsFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'laravel-request-docs';
+        return LaravelRequestDocs::class;
     }
 }
