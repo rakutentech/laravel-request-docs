@@ -121,4 +121,18 @@ class LaravelRequestDocsController extends Controller
         }
         return response()->json(['error' => 'file not found'], 404);
     }
+
+    /**
+     * @codeCoverageIgnore
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function config(Request $request)
+    {
+        $config = [
+            'default_responses' => config('request-docs.default_responses'),
+            'default_headers'  => config('request-docs.default_headers'),
+        ];
+        return response()->json($config);
+    }
 }

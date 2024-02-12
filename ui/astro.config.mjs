@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config'
 import compress from 'astro-compress'
 import react from '@astrojs/react'
+import process from 'process'
 
 import git from 'git-rev-sync'
 const version = git.tag()

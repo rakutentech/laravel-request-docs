@@ -47,6 +47,10 @@ class LaravelRequestDocsServiceProvider extends PackageServiceProvider
             ->name('request-docs.api')
             ->middleware(config('request-docs.middlewares'));
 
+        Route::get("request-docs/config", [\Rakutentech\LaravelRequestDocs\Controllers\LaravelRequestDocsController::class, 'config'])
+            ->name('request-docs.config')
+            ->middleware(config('request-docs.middlewares'));
+
         Route::get("request-docs/_astro/{slug}", [\Rakutentech\LaravelRequestDocs\Controllers\LaravelRequestDocsController::class, 'assets'])
             // where slug is either js or css
             ->where('slug', '.*js|.*css|.*png|.*jpg|.*jpeg|.*gif|.*svg|.*ico|.*woff|.*woff2|.*ttf|.*eot|.*otf|.*map')
