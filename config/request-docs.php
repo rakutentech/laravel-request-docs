@@ -41,6 +41,9 @@ return [
         'rules'
     ],
 
+    // Can be overridden as // @LRDresponses 200|400|401
+    'default_responses' => [ "200", "400", "401", "403", "404", "405", "422", "429", "500", "503"],
+
     // changes default headers on first load for Set Global Headers
     // Later the local storage is used when edits are made
     'default_headers' => [
