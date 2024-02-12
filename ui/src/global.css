@@ -31,7 +31,7 @@ aside {
 }
 
 aside > ul {
-    @apply menu menu-compact flex flex-col p-0 px-4;
+    @apply menu flex flex-col p-0 px-4;
 }
 
 aside > ui > li {
