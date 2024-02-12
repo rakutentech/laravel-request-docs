@@ -13,10 +13,10 @@
     "lint:fix": "eslint \"src/**/*.{js,jsx,tsx}\" --fix"
   },
   "dependencies": {
-    "@astrojs/react": "^2.0.2",
+    "@astrojs/react": "^3.0.10",
     "@fontsource/roboto": "^4.5.8",
     "@heroicons/react": "^2.0.15",
-    "astro": "^2.0.6",
+    "astro": "^4.3.5",
     "fuse.js": "^6.6.2",
     "git-rev-sync": "^3.0.2",
     "react-ace": "^10.1.0",
@@ -28,7 +28,7 @@
     "shortid": "^2.2.16"
   },
   "devDependencies": {
-    "astro-compress": "^2.0.8",
+    "astro-compress": "^2.2.9",
     "@typescript-eslint/eslint-plugin": "^5.52.0",
     "@typescript-eslint/parser": "^5.52.0",
     "autoprefixer": "^10.4.13",
