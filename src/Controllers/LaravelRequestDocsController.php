@@ -130,7 +130,7 @@ class LaravelRequestDocsController extends Controller
     public function config(Request $request)
     {
         $config = [
-            'default_responses' => config('request-docs.default_responses'),
+            'title' => config('request-docs.title'),
             'default_headers'  => config('request-docs.default_headers'),
         ];
         return response()->json($config);

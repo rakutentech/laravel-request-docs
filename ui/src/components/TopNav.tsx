@@ -38,7 +38,7 @@ export default function TopNav(props: Props) {
     const [showDelete, setShowDelete] = useLocalStorage('showDelete', 'true');
     const [showPut, setShowPut] = useLocalStorage('showPut', 'true');
     const [showPatch, setShowPatch] = useLocalStorage('showPatch', 'true');
-    const [showHead, setShowHead] = useLocalStorage('showHead', 'true');
+    const [showHead, setShowHead] = useLocalStorage('showHead', 'false');
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const handleChangeGroupby = (e: any) => {
