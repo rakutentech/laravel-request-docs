@@ -30,7 +30,6 @@ export default function App() {
     const [showPut] = useLocalStorage('showPut', 'true');
     const [showPatch] = useLocalStorage('showPatch', 'true');
     const [showHead] = useLocalStorage('showHead', 'false');
-    const [savePreviousResponse] = useLocalStorage('savePreviousResponse', 'false');
 
     const searchOptions = {
         keys: ['uri', 'doc_block'],

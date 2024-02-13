@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import "ace-builds";
 import jsonWorkerUrl from 'ace-builds/src-min-noconflict/worker-json?url';
 

@@ -6,7 +6,6 @@ import {
     CircleStackIcon,
     DocumentTextIcon,
     TableCellsIcon,
-    EllipsisVerticalIcon,
     ReceiptRefundIcon
 } from '@heroicons/react/24/outline'
 
