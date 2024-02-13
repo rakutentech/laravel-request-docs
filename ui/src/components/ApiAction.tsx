@@ -319,6 +319,8 @@ export default function ApiAction(props: Props) {
 
                 {activeTab == 'response' && (
                     <ApiActionResponse
+                        requestUri={requestUri}
+                        method={method}
                         responseHeaders={responseHeaders}
                         responseData={responseData}
                         timeTaken={timeTaken}

@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import "ace-builds";
 import jsonWorkerUrl from 'ace-builds/src-min-noconflict/worker-json?url';
+
 ace.config.setModuleUrl('ace/mode/json_worker', jsonWorkerUrl);
 
 import AceEditor from 'react-ace';
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-one_dark";
 import "ace-builds/src-noconflict/ext-language_tools";
+import useLocalStorage from 'react-use-localstorage';
 
 
 interface Props {
@@ -15,10 +17,19 @@ interface Props {
     timeTaken: number,
     responseStatus: number,
     serverMemory: string,
+    requestUri: string,
+    method: string,
 }
 
 export default function ApiActionResponse(props: Props) {
-    const { responseHeaders, responseData, timeTaken, responseStatus, serverMemory } = props
+    const { responseHeaders, responseData, timeTaken, responseStatus, serverMemory, requestUri, method } = props
+    const [savePreviousResponse] = useLocalStorage('savePreviousResponse', 'false');
+    const [previousResponse, setPreviousResponse] = useLocalStorage('previousResponse' + requestUri + method, '');
+    useEffect(() => {
+        if (responseData && savePreviousResponse === 'true') {
+            setPreviousResponse(responseData)
+        }
+    }, [])
 
     return (
         <>
@@ -48,9 +59,27 @@ export default function ApiActionResponse(props: Props) {
                     <br />
                 </>
             )}
-            {!responseData && (
+            {(!responseData && !previousResponse) && (
                 <div className='text-center text-sm text-slate-500'>
                     No Response Data
+                </div>
+            )}
+            {(!responseData && previousResponse) && (
+                <div className="mockup-code mb-5">
+                    <span className='pl-5 text-sm text-warning'>Previous Response</span>
+                    <AceEditor
+                        maxLines={50}
+                        width='100%'
+                        mode="json"
+                        wrapEnabled={true}
+                        readOnly={true}
+                        value={previousResponse}
+                        theme="one_dark"
+                        onLoad={function (editor) { editor.renderer.setPadding(0); editor.renderer.setScrollMargin(5, 5, 5, 5); editor.renderer.setShowPrintMargin(false); }}
+                        editorProps={{
+                            $blockScrolling: true
+                        }}
+                    />
                 </div>
             )}
             {responseData && (

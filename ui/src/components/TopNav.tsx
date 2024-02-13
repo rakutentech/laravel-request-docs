@@ -39,6 +39,7 @@ export default function TopNav(props: Props) {
     const [showPut, setShowPut] = useLocalStorage('showPut', 'true');
     const [showPatch, setShowPatch] = useLocalStorage('showPatch', 'true');
     const [showHead, setShowHead] = useLocalStorage('showHead', 'false');
+    const [savePreviousResponse, setSavePreviousResponse] = useLocalStorage('savePreviousResponse', 'false');
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const handleChangeGroupby = (e: any) => {
@@ -72,6 +73,9 @@ export default function TopNav(props: Props) {
     const handleChangeHead = (e: any) => {
         setShowHead(e.target.checked)
         handleChangeSettings(showGet, showPost, showDelete, showPut, showPatch, e.target.checked, sort, groupby)
+    }
+    const handleSavePreviousResponse = (e: any) => {
+        setSavePreviousResponse(e.target.checked)
     }
 
     const handleClearLocalStorage = () => {
@@ -147,7 +151,7 @@ export default function TopNav(props: Props) {
                             <div className="modal-box">
                                 <div className="modal-action float-right">
                                     <a href="#" className="btn btn-sm btn-ghost">
-                                        <XMarkIcon className="h-6 w-6" /> Close
+                                        <span className='text-error'> <XMarkIcon className="h-6 w-6 inline" /> Close</span>
                                     </a>
                                 </div>
                                 <h3 className="font-bold text-lg mt-7">
@@ -224,6 +228,18 @@ export default function TopNav(props: Props) {
                                 </div>
                                 <h4 className="font-bold mt-10">
                                     <CircleStackIcon className="inline-block h-6 w-6 mr-1" />
+                                    Save Responses
+                                </h4>
+                                <div className='divider'></div>
+                                <div className="form-control">
+                                    <label className="label">
+                                        <span className="label-text">Save</span>
+                                        <input type="checkbox" onChange={handleSavePreviousResponse} className="toggle toggle-success" checked={savePreviousResponse == 'true'} />
+                                    </label>
+                                    <small className='pl-1'>Should you want to save previous response on local storage</small>
+                                </div>
+                                <h4 className="font-bold mt-10">
+                                    <CircleStackIcon className="inline-block h-6 w-6 mr-1" />
                                     Storage
                                 </h4>
                                 <div className='divider'></div>
@@ -236,11 +252,6 @@ export default function TopNav(props: Props) {
                                         <button className="btn btn-sm btn-error" onClick={handleClearLocalStorage}>Clear</button>
                                     </label>
                                 </div>
-                                {/* <div className="modal-action">
-                                    <a href="#" className="btn btn-sm">
-                                        <XMarkIcon className="h-6 w-6" /> Close
-                                    </a>
-                                </div> */}
                             </div>
                         </div>
                     </div>
