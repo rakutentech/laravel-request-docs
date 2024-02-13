@@ -165,7 +165,7 @@ You can use `@LRDparam` in PHPDoc on both the `rules` methods and the controller
 You can also overwrite rules using `@LRDparam`.
 Meaning, when rules are defined in the `rules` method, you can overwrite those rules using `@LRDparam` in the PHPDoc above the `rules` method.
 And you can overwrite those rules using `@LRDparam` in a PHPDoc on the controller methods.\
-So, the precedence is `Controller method PHPDoc` < `Rules method PHPDoc` < `Rules method values`. 
+So, the precedence is `Controller method PHPDoc` < `Rules method PHPDoc` < `Rules method values`.
 
 ```php
     /**
@@ -180,7 +180,7 @@ So, the precedence is `Controller method PHPDoc` < `Rules method PHPDoc` < `Rule
 ```
 
 # Response codes
-Without explicitly declaring response codes, 
+Without explicitly declaring response codes,
 all routes are documented to return any of the response codes defined in the request-docs.php `default_responses` configuration.\
 However, using `@LRDresponse 200|422` (spaces or pipes) within the PHPDoc on your controller methods,
 you are able to explicitly define what status codes can be returned by the server.
@@ -248,6 +248,7 @@ Fixing lints
 - v2.19 Publish _astro assets
 - v2.25 `laravel-request-docs:export`  command to export
 - v2.28 Allow extra documentation to be defined on the `rules` method of the Request class. By @Ken-vdE
+- v2.29 Customized title, vup js and PHP to latest. Customized headers. Save response history.
 
 
 # Contributors
