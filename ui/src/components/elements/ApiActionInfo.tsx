@@ -50,7 +50,7 @@ export default function ApiActionInfo(props: Props) {
                         {lrdDocsItem.middlewares.length != 0 && (
                             <tr>
                                 <th>Middlewares</th>
-                                <td>
+                                <td className='no-scrollbar'>
                                     {lrdDocsItem.middlewares.map((middleware) => (
                                         <div key={shortid.generate()}>
                                             <span className="badge badge-ghost badge-md mb-1 rounded-sm">{middleware}</span>

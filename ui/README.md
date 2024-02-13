@@ -12,9 +12,9 @@ npm run dev
 
 ## 1) Mode: Readonly
 
-**Open in Browser** 
+**Open in Browser**
 
-http://localhost:3000/request-docs?api=http://localhost:3000/request-docs/sample.json
+http://localhost:3000/request-docs/?api=http://localhost:3000/request-docs/sample.json
 
 
 ## 2) Mode: Developing with Laravel via npm

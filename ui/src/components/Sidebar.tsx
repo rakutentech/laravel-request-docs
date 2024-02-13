@@ -13,7 +13,7 @@ export default function Sidebar(props: Props) {
 
     return (
         <>
-            <aside>
+            <aside className='no-scrollbar'>
                 <h2 className="title pl-5 pt-2 mb-5">
                     <ListBulletIcon className='inline-block w-4 h-4 mr-1' />
                     API List  <span className='text-slate-500 capitalize float-right mr-5'>Total {lrdDocsJson.length}</span>

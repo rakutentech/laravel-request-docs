@@ -76,8 +76,8 @@ export default function ApiActionRequest(props: Props) {
         <>
             <div className="form-control">
                 <label className="input-group input-group-sm">
-                    <span className={`method-${method}`}>{method}</span>
-                    <input type="text" defaultValue={requestUri} onChange={(e) => setRequestUri(e.target.value)} placeholder="Type here" className="focus:outline-none input w-full input-bordered input-sm" />
+                    <span className={`method-${method} pr-1`}>{method}</span>
+                    <input type="text" defaultValue={requestUri} onChange={(e) => setRequestUri(e.target.value)} placeholder="Type here" className="focus:outline-none input w-4/6 input-bordered input-sm mr-2" />
                     <button className="btn btn-sm btn-success" onClick={handleSendRequest}>
                         GO <PaperAirplaneIcon className='inline-block w-4 h-4 ml-1' />
                     </button>

@@ -1,8 +1,4 @@
 
-export const defaultHeaders = `{
-    "Content-Type": "application/json",
-    "Accept": "application/json"
-}`
 export const explode = (str: string, maxLength: number, by: string) => {
     let buff = "";
     const numOfLines = Math.floor(str.length / maxLength);
@@ -13,9 +9,9 @@ export const explode = (str: string, maxLength: number, by: string) => {
 }
 
 export const makeCurlCommand = (host:string, url: string, method: string, queries: string, headers: any): string => {
-    
+
     let curl = `curl`
-    curl += `\n -X ${method}`        
+    curl += `\n -X ${method}`
     try {
         const jsonRequestHeaders = JSON.parse(headers)
         for (const [key, value] of Object.entries(jsonRequestHeaders)) {

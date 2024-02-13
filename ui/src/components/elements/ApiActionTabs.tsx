@@ -6,7 +6,6 @@ import {
     CircleStackIcon,
     DocumentTextIcon,
     TableCellsIcon,
-    EllipsisVerticalIcon,
     ReceiptRefundIcon
 } from '@heroicons/react/24/outline'
 
@@ -27,14 +26,11 @@ export default function ApiActionTabs(props: Props) {
             <a className={`tab ${activeTab == 'info' ? 'tab-active' : ''}`} onClick={() => setActiveTab('info')}>
                 <InformationCircleIcon className='inline-block w-5 h-5' /> Info
             </a>
-            <a className={`tab ${activeTab == 'request' ? 'tab-active' : ''}`} onClick={() => setActiveTab('request')}>
-                <span className='text-success font-bold'>
+            <a className={`tab ${activeTab == 'request' ? 'tab-active' : 'text-success'}`} onClick={() => setActiveTab('request')}>
+                <span className='font-bold'>
                     <PaperAirplaneIcon className='inline-block w-5 h-5' /> Send
                 </span>
             </a>
-            <span className='pr-1 mb-1'>
-                <EllipsisVerticalIcon className='inline-block w-5 h-5' />
-            </span>
             <a className={`pl-0 tab ${activeTab == 'response' ? 'tab-active' : ''}`} onClick={() => setActiveTab('response')}>
                 <ReceiptRefundIcon className='inline-block w-5 h-5' /> Response
                 {responseStatus != 0 && (
