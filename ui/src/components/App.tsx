@@ -29,7 +29,7 @@ export default function App() {
     const [showDelete] = useLocalStorage('showDelete', 'true');
     const [showPut] = useLocalStorage('showPut', 'true');
     const [showPatch] = useLocalStorage('showPatch', 'true');
-    const [showHead] = useLocalStorage('showHead', 'true');
+    const [showHead] = useLocalStorage('showHead', 'false');
 
     const searchOptions = {
         keys: ['uri', 'doc_block'],

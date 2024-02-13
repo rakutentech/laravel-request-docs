@@ -6,7 +6,17 @@
 html {
     font-family: 'Roboto', sans-serif;
 }
-
+@layer utilities {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+   /* Hide scrollbar for IE, Edge and Firefox */
+    .no-scrollbar {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+  }
+}
 .ace_editor {
     @apply rounded;
 }
@@ -23,6 +33,7 @@ html {
     width: 100%;
 
 }
+
 aside {
     @apply h-screen;
     position: fixed;
