@@ -248,7 +248,7 @@ Fixing lints
 - v2.19 Publish _astro assets
 - v2.25 `laravel-request-docs:export`  command to export
 - v2.28 Allow extra documentation to be defined on the `rules` method of the Request class. By @Ken-vdE
-- v2.29 Customized title, vup js and PHP to latest. Customized headers. Save response history.
+- v2.31 Customized title, vup js and PHP to latest. Customized headers. Save response history.
 
 
 # Contributors
