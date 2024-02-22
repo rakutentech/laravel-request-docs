@@ -57,7 +57,7 @@ class LaravelRequestDocsToOpenApi
                 $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['parameters'][] = $this->makePathParameterItem($parameter, $rule);
             }
 
-            $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['responses'] = config('request-docs.open_api.responses', []);
+            $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['responses'] = $this->setAndFilterResponses($doc);
 
             foreach ($doc->getRules() as $attribute => $rules) {
                 foreach ($rules as $rule) {
@@ -89,6 +89,19 @@ class LaravelRequestDocsToOpenApi
                 }
             }
         }
+    }
+    protected function setAndFilterResponses(Doc $doc): array
+    {
+        $docResponses = $doc->getResponses();
+        $configResponses = config('request-docs.open_api.responses', []);
+        if (empty($docResponses) || empty($configResponses)) {
+            return $configResponses;
+        }
+        $rtn = [];
+        foreach ($docResponses as $responseCode) {
+            $rtn[$responseCode] = $configResponses[$responseCode] ?? $configResponses['default'] ?? [];
+        }
+        return $rtn;
     }
 
     protected function attributeIsFile(string $rule): bool
