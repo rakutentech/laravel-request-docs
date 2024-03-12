@@ -121,7 +121,7 @@ h2[id] {
     @apply bg-success;
 }
 
-.badge-422,.badge-429, {
+.badge-422,.badge-429 {
     @apply bg-warning;
 }
 .badge-400,.badge-401,.badge-402,.badge-403,.badge-404,.badge-405 {

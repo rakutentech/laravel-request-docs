@@ -8,33 +8,39 @@ export const explode = (str: string, maxLength: number, by: string) => {
     return buff;
 }
 
-export const makeCurlCommand = (host:string, url: string, method: string, queries: string, headers: any): string => {
+export const makeCurlCommand = (host: string, url: string, method: string, queries: string, headers: any): string => {
 
-    let curl = `curl`
-    curl += `\n -X ${method}`
+    let curl = `curl \\`
+    curl += `\n -X ${method} \\`
     try {
         const jsonRequestHeaders = JSON.parse(headers)
         for (const [key, value] of Object.entries(jsonRequestHeaders)) {
-            curl += `\n -H "${key}: ${value}"`
+            curl += `\n -H "${key}: ${value}" \\`
         }
     } catch (error: any) {
-        curl += `\n -H "Content-Type: application/json"`
+        curl += `\n -H "Content-Type: application/json" \\`
     }
     const get = (queries: string) => {
-        curl += `\n ${host}/${url}`
-        curl += `\n${queries}`
+        curl += `\n ${host}/${url} \\`
+        curl += `\n${queries} \\`
         return curl
     }
     const post = (jsonBody: string) => {
-        curl += `\n ${host}/${url}`
-        curl += `\n -d '${jsonBody}'`
+        curl += `\n ${host}/${url} \\`
+        curl += `\n -d '${jsonBody}' \\`
         return curl
     }
     if (method === "GET" || method === "DELETE" || method === "HEAD") {
-        return get(queries)
+        return removeLast(get(queries), "\\")
     }
     if (method === "POST" || method === "PUT" || method === "PATCH") {
-        return post(queries)
+        return removeLast(post(queries), "\\")
     }
     return ""
+}
+
+
+export const removeLast = (s: string, r: string) => {
+    const ss = s.split(r)
+    return ss.slice(0,-1).join(r) + ss.pop()
 }
