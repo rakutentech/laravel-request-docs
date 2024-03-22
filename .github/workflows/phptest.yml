@@ -1,16 +1,16 @@
-on: [push]
+on:
+  - push
 
-name: "CI PHP"
+name: CI PHP
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         php: [7.4, 8.0, 8.1, 8.2, 8.3]
-        laravel: [8.*]
+        laravel: ['8.*', '11.*']
         include:
           - php: 8.0
             laravel: 9.*
@@ -24,6 +24,15 @@ jobs:
             laravel: 10.*
           - php: 8.3
             laravel: 10.*
+          - php: '8.2'
+            laravel: 11.*
+        exclude:
+          - laravel: 11.*
+            php: 7.4
+          - laravel: 11.*
+            php: 8.0
+          - laravel: 11.*
+            php: 8.1
 
     name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
 
@@ -47,12 +56,12 @@ jobs:
 
       - name: Composer Install
         run: |
-            composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
-            composer install
+          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+          composer install
 
       - name: PHPUNIT Tests
         run: |
-            ./vendor/bin/phpunit --coverage-clover=coverage.xml
+          ./vendor/bin/phpunit --coverage-clover=coverage.xml
 
       - name: Upload to codecov
         uses: codecov/codecov-action@v3

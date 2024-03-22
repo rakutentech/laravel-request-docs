@@ -3,7 +3,7 @@ on:
     branches:
       - master
 
-name: "CI Release Dist"
+name: CI Release Dist
 
 jobs:
   test:
@@ -13,13 +13,15 @@ jobs:
 
     strategy:
       matrix:
-        node-versions: [20]
+        node-versions:
+          - 20
 
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
         with:
           access_token: ${{ github.token }}
+
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -47,7 +49,7 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           commit-message: (action) Update dist
-          title: "(action) update dist astro"
+          title: (action) update dist astro
 
       - name: Export dist to resources for gh-pages
         working-directory: ./ui
