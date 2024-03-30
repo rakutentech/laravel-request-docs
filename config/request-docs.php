@@ -165,11 +165,11 @@ return [
         // if type set null then doc will exclude global security schema.
         // Ref: https://spec.openapis.org/oas/v3.0.3#security-scheme-object
         'security' => [
-            //available options [null, bearer, basic, apikey]
+            //available options [null, bearer, basic, apikey, jwt]
             'type' => 'bearer',
-            //Note: only works for "apikey", available options [query, header, cookie]
+            'name' => 'api_key',
+            //Note: only works for "apikey" & "jwt", available options [query, header, cookie]
             'position' => 'header',
-            'key_name' => 'api_key'
         ],
     ],
 
