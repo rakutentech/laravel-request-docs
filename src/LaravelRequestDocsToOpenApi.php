@@ -204,7 +204,8 @@ class LaravelRequestDocsToOpenApi
             case 'bearer':
                 $this->openApi['components']['securitySchemes']['bearerAuth'] = [
                     'type' => 'http',
-                    'name' => config('request-docs.open_api.security.name', 'Bearer Authorization Token'),
+                    'name' => config('request-docs.open_api.security.name', 'Bearer Token'),
+                    'description' => 'Http Bearer Authorization Token',
                     'scheme' => 'bearer'
                 ];
                 $this->openApi['security'][]                                  = [
@@ -215,7 +216,8 @@ class LaravelRequestDocsToOpenApi
             case 'basic':
                 $this->openApi['components']['securitySchemes']['basicAuth'] = [
                     'type' => 'http',
-                    'name' => config('request-docs.open_api.security.name', 'Basic Authorization Username and Password'),
+                    'name' => config('request-docs.open_api.security.name', 'Basic Username and Password'),
+                    'description' => 'Http Basic Authorization Username and Password',
                     'scheme' => 'basic'
                 ];
                 $this->openApi['security'][]                                 = [
@@ -227,7 +229,8 @@ class LaravelRequestDocsToOpenApi
                 $this->openApi['components']['securitySchemes']['apiKeyAuth'] = [
                     'type' => 'apiKey',
                     'name' => config('request-docs.open_api.security.name', 'api_key'),
-                    'in' => config('request-docs.open_api.security.position', 'header')
+                    'in' => config('request-docs.open_api.security.position', 'header'),
+                    'description' => config('app.name').' Provided Authorization Api Key',
                 ];
                 $this->openApi['security'][]                                  = ['apiKeyAuth' => []];
                 break;
@@ -236,8 +239,9 @@ class LaravelRequestDocsToOpenApi
                 $this->openApi['components']['securitySchemes']['bearerAuth'] = [
                     'type' => 'http',
                     'scheme' => 'bearer',
-                    'name' => config('request-docs.open_api.security.name', 'Bearer Authorization Token'),
+                    'name' => config('request-docs.open_api.security.name', 'Bearer JWT Token'),
                     'in' => config('request-docs.open_api.security.position', 'header'),
+                    'description' => 'JSON Web Token',
                     'bearerFormat' => 'JWT'
                 ];
                 $this->openApi['security'][]                                  = [
