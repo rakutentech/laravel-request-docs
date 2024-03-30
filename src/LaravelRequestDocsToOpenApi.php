@@ -23,6 +23,7 @@ class LaravelRequestDocsToOpenApi
         ];
 
         $this->docsToOpenApi($docs);
+        $this->appendGlobalSecurityScheme();
         return $this;
     }
 
@@ -190,6 +191,48 @@ class LaravelRequestDocsToOpenApi
         return "object";
     }
 
+    protected function appendGlobalSecurityScheme(): void
+    {
+        $securityType = config('request-docs.open_api.security.type');
+
+        if ($securityType == null) {
+            return;
+        }
+
+        switch ($securityType) {
+            case 'bearer':
+                $this->openApi['components']['securitySchemes']['bearerAuth'] = [
+                    'type' => 'http',
+                    'scheme' => 'bearer'
+                ];
+                $this->openApi['security'][]                                  = [
+                    'bearerAuth' => []
+                ];
+                break;
+
+            case 'basic':
+                $this->openApi['components']['securitySchemes']['basicAuth'] = [
+                    'type' => 'http',
+                    'scheme' => 'basic'
+                ];
+                $this->openApi['security'][]                                 = [
+                    'basicAuth' => []
+                ];
+                break;
+
+            case 'apikey':
+                $this->openApi['components']['securitySchemes']['apiKeyAuth'] = [
+                    'type' => 'apiKey',
+                    'name' => config('request-docs.open_api.security.key_name', 'api_key'),
+                    'in' => config('request-docs.open_api.security.position', 'header')
+                ];
+                $this->openApi['security'][]                                  = ['apiKeyAuth' => []];
+                break;
+
+            default:
+                break;
+        }
+    }
     /**
      * @codeCoverageIgnore
      */
