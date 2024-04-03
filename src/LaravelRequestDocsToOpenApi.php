@@ -7,7 +7,7 @@ class LaravelRequestDocsToOpenApi
     private array $openApi = [];
 
     /**
-     * @param  \Rakutentech\LaravelRequestDocs\Doc[]  $docs
+     * @param \Rakutentech\LaravelRequestDocs\Doc[] $docs
      * @return $this
      */
     public function openApi(array $docs): LaravelRequestDocsToOpenApi
@@ -23,18 +23,19 @@ class LaravelRequestDocsToOpenApi
         ];
 
         $this->docsToOpenApi($docs);
+        $this->appendGlobalSecurityScheme();
         return $this;
     }
 
     /**
-     * @param  \Rakutentech\LaravelRequestDocs\Doc[]  $docs
+     * @param \Rakutentech\LaravelRequestDocs\Doc[] $docs
      * @return void
      */
     private function docsToOpenApi(array $docs): void
     {
         $this->openApi['paths'] = [];
         $deleteWithBody         = config('request-docs.open_api.delete_with_body', false);
-        $excludeHttpMethods     = array_map(fn ($item) => strtolower($item), config('request-docs.open_api.exclude_http_methods', []));
+        $excludeHttpMethods     = array_map(fn($item) => strtolower($item), config('request-docs.open_api.exclude_http_methods', []));
 
         foreach ($docs as $doc) {
             $httpMethod = strtolower($doc->getHttpMethod());
@@ -90,6 +91,7 @@ class LaravelRequestDocsToOpenApi
             }
         }
     }
+
     protected function setAndFilterResponses(Doc $doc): array
     {
         $docResponses    = $doc->getResponses();
@@ -115,12 +117,12 @@ class LaravelRequestDocsToOpenApi
             $rule = implode('|', $rule);
         }
         $parameter = [
-            'name'        => $attribute,
+            'name' => $attribute,
             'description' => $rule,
-            'in'          => 'query',
-            'style'       => 'form',
-            'required'    => str_contains($rule, 'required'),
-            'schema'      => [
+            'in' => 'query',
+            'style' => 'form',
+            'required' => str_contains($rule, 'required'),
+            'schema' => [
                 'type' => $this->getAttributeType($rule),
             ],
         ];
@@ -134,12 +136,12 @@ class LaravelRequestDocsToOpenApi
         }
 
         $parameter = [
-            'name'        => $attribute,
+            'name' => $attribute,
             'description' => $rule,
-            'in'          => 'path',
-            'style'       => 'simple',
-            'required'    => str_contains($rule, 'required'),
-            'schema'      => [
+            'in' => 'path',
+            'style' => 'simple',
+            'required' => str_contains($rule, 'required'),
+            'schema' => [
                 'type' => $this->getAttributeType($rule),
             ],
         ];
@@ -150,10 +152,10 @@ class LaravelRequestDocsToOpenApi
     {
         $requestBody = [
             'description' => "Request body",
-            'content'     => [
+            'content' => [
                 $contentType => [
                     'schema' => [
-                        'type'       => 'object',
+                        'type' => 'object',
                         'properties' => [],
                     ],
                 ],
@@ -167,9 +169,9 @@ class LaravelRequestDocsToOpenApi
         $type = $this->getAttributeType($rule);
 
         return [
-            'type'     => $type,
+            'type' => $type,
             'nullable' => str_contains($rule, 'nullable'),
-            'format'   => $this->attributeIsFile($rule) ? 'binary' : $type,
+            'format' => $this->attributeIsFile($rule) ? 'binary' : $type,
         ];
     }
 
@@ -188,6 +190,68 @@ class LaravelRequestDocsToOpenApi
             return 'boolean';
         }
         return "object";
+    }
+
+    protected function appendGlobalSecurityScheme(): void
+    {
+        $securityType = config('request-docs.open_api.security.type');
+
+        if ($securityType == null) {
+            return;
+        }
+
+        switch ($securityType) {
+            case 'bearer':
+                $this->openApi['components']['securitySchemes']['bearerAuth'] = [
+                    'type' => 'http',
+                    'name' => config('request-docs.open_api.security.name', 'Bearer Token'),
+                    'description' => 'Http Bearer Authorization Token',
+                    'scheme' => 'bearer'
+                ];
+                $this->openApi['security'][]                                  = [
+                    'bearerAuth' => []
+                ];
+                break;
+
+            case 'basic':
+                $this->openApi['components']['securitySchemes']['basicAuth'] = [
+                    'type' => 'http',
+                    'name' => config('request-docs.open_api.security.name', 'Basic Username and Password'),
+                    'description' => 'Http Basic Authorization Username and Password',
+                    'scheme' => 'basic'
+                ];
+                $this->openApi['security'][]                                 = [
+                    'basicAuth' => []
+                ];
+                break;
+
+            case 'apikey':
+                $this->openApi['components']['securitySchemes']['apiKeyAuth'] = [
+                    'type' => 'apiKey',
+                    'name' => config('request-docs.open_api.security.name', 'api_key'),
+                    'in' => config('request-docs.open_api.security.position', 'header'),
+                    'description' => config('app.name').' Provided Authorization Api Key',
+                ];
+                $this->openApi['security'][]                                  = ['apiKeyAuth' => []];
+                break;
+
+            case 'jwt':
+                $this->openApi['components']['securitySchemes']['bearerAuth'] = [
+                    'type' => 'http',
+                    'scheme' => 'bearer',
+                    'name' => config('request-docs.open_api.security.name', 'Bearer JWT Token'),
+                    'in' => config('request-docs.open_api.security.position', 'header'),
+                    'description' => 'JSON Web Token',
+                    'bearerFormat' => 'JWT'
+                ];
+                $this->openApi['security'][]                                  = [
+                    'bearerAuth' => []
+                ];
+                break;
+
+            default:
+                break;
+        }
     }
 
     /**
