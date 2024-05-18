@@ -48,7 +48,7 @@ export default function App() {
 
         if (!url) {
             // get current url without query params
-            const domain = location.protocol + '//' + location.host
+            const domain = 'http://localhost'
             setHost(domain)
             url = domain + "/request-docs/api"
             configAPI = domain + "/request-docs/config"

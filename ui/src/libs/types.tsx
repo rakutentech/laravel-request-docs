@@ -7,6 +7,10 @@ export interface IConfig {
     default_headers: string[];
 }
 
+export interface IAPIExample {
+    [key: string]: string[];
+}
+
 export interface IAPIInfo {
     uri: string;
     middlewares: string[];
@@ -20,6 +24,7 @@ export interface IAPIInfo {
     group: string;
     group_index: number;
     responses: string[];
+    examples: IAPIExample;
 
 }
 
