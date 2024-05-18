@@ -175,5 +175,10 @@ return [
 
     //export request docs as json file from terminal
     //from project root directory
-    'export_path' => 'api.json'
+    'export_path' => 'api.json',
+
+    'exclude_fields' => [
+    ],
+
+    'use_factory' => false,
 ];
