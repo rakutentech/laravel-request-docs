@@ -71,6 +71,13 @@ class Doc implements Arrayable
     private array $rules;
 
     /**
+     * The parsed validation rules.
+     *
+     * @var array<string, string[]>
+     */
+    private array $examples;
+
+    /**
      * The additional description about this route.
      *
      * @var string
@@ -115,6 +122,7 @@ class Doc implements Arrayable
      * @param  string  $httpMethod
      * @param  array<string, string[]>  $rules
      * @param  string  $docBlock
+     * @param array<string, string[]> $examples
      */
     public function __construct(
         string $uri,
@@ -126,7 +134,8 @@ class Doc implements Arrayable
         string $httpMethod,
         array $pathParameters,
         array $rules,
-        string $docBlock
+        string $docBlock,
+        array $examples,
     ) {
         $this->uri                = $uri;
         $this->methods            = $methods;
@@ -139,6 +148,7 @@ class Doc implements Arrayable
         $this->rules              = $rules;
         $this->docBlock           = $docBlock;
         $this->responses          = [];
+        $this->examples           = $rules;
     }
 
     /**
@@ -274,6 +284,33 @@ class Doc implements Arrayable
         $this->rules = $rules;
     }
 
+    /**
+     * @param  array<string, string[]>  $examples
+     */
+    public function mergeExamples(array $examples): void
+    {
+        $this->examples = array_merge(
+            $this->examples,
+            $examples,
+        );
+    }
+
+    /**
+     * @return array<string, string[]>
+     */
+    public function getExamples(): array
+    {
+        return $this->examples;
+    }
+
+    /**
+     * @param  array<string, string[]>  $rules
+     */
+    public function setExamples(array $rules): void
+    {
+        $this->examples = $examples;
+    }
+
     public function getDocBlock(): string
     {
         return $this->docBlock;
@@ -351,6 +388,7 @@ class Doc implements Arrayable
             'rules'                => $this->rules,
             'doc_block'            => $this->docBlock,
             'responses'            => $this->responses,
+            'examples'             => $this->examples,
         ];
 
         if (isset($this->group)) {
