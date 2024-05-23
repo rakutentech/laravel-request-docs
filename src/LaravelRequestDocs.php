@@ -382,7 +382,8 @@ class LaravelRequestDocs
             ->filter(function ($item) {
                 return count($item[0]) > 0;
             })
-            ->transform(function (array $item, int $key) {
+            // @phpstan-ignore-next-line
+            ->transform(function ($item) {
                 $fieldName         = Str::of($item[0][0])->replace(['"', "'"], '');
                 $definedFieldRules = collect(array_slice($item[0], 1))->transform(function ($rule) {
                     return Str::of($rule)->replace(['"', "'"], '')->__toString();
