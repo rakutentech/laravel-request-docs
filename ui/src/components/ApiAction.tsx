@@ -89,7 +89,7 @@ export default function ApiAction(props: Props) {
         headers['X-Request-LRD'] = true
         if (fileParams) {
             delete headers['Content-Type']
-            headers['Accept'] = 'multipart/form-data'
+            // headers['Accept'] = 'multipart/form-data'
         }
 
         const options: any = {
