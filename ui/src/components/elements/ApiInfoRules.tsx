@@ -1,164 +1,123 @@
 import React from 'react';
-import { explode } from '../../libs/strings'
 import shortid from 'shortid';
-import { ChevronRightIcon, LinkIcon, EnvelopeIcon } from '@heroicons/react/24/outline'
+import {InformationCircleIcon} from "@heroicons/react/24/outline";
 
 interface Props {
     rules: string[],
     mainRule: string,
+    infos?: { [key: string]: { description: string, example: string} },
+    rulesOrder?: string[]
+}
+
+const orderingRules = (rule: string, rulesOrder: string[]): string => {
+    if (!rulesOrder) {
+        return rule;
+    }
+    const ruleArray = rule.split('|');
+    const lastRules = ['min', 'max', 'nullable'];
+    ruleArray.sort((a, b) => {
+        const aKey = a.split(':')[0];
+        const bKey = b.split(':')[0];
+        let aIndex = rulesOrder.indexOf(aKey);
+        let bIndex = rulesOrder.indexOf(bKey);
+
+        // Defina um valor de índice padrão para min, max e nullable
+        const lastIndex = rulesOrder.length + 1;
+        const defaultIndex = lastIndex / 2;
+
+        // Se a regra não estiver na lista de ordenação, defina seu índice para um valor menor que min, max e nullable
+        aIndex = aIndex === -1 ? (lastRules.includes(aKey) ? lastIndex : defaultIndex) : aIndex;
+        bIndex = bIndex === -1 ? (lastRules.includes(bKey) ? lastIndex : defaultIndex) : bIndex;
+
+        return aIndex - bIndex;
+    });
+    return ruleArray.join('|');
+}
+
+const generateJSX = (rule: string, className: string): JSX.Element => {
+    return (<code key={shortid.generate()} className={className}>{rule} </code>);
 }
 
 export default function ApiInfoRules(props: Props) {
-    const { rules, mainRule } = props
-    const StyledRule = (rule: any): JSX.Element => {
-        const theRule = rule.rule
-        const split = theRule.split(':')
+    const { rules, mainRule, infos, rulesOrder } = props
 
-        if (theRule == 'url') {
-            return (
-                <div className="block">
-                    <LinkIcon className='inline-block w-4 h-4' />  {theRule}
-                </div>
-            )
-        }
-        if (theRule == 'email') {
-            return (
-                <div className="block">
-                    <EnvelopeIcon className='inline-block w-4 h-4' />  {theRule}
-                </div>
-            )
-        }
+    const FormatRules = (rules: string[]): JSX.Element => {
+        const concatRules: React.JSX.Element[] = [];
 
-        if (split.length < 2) {
-            return (
-                <div className='' dangerouslySetInnerHTML={{ __html: explode(theRule, 50, "<br/>") }} />
-            )
-        }
+        const ruleHandlers: { [key: string]: (rule: string, split: string[]) => void } = {
+            "file": (rule: string) => concatRules.push(generateJSX(rule, 'text-success text-xs')),
+            "image": (rule: string) => concatRules.push(generateJSX(rule, 'text-success text-xs')),
+            "required": (rule: string) => concatRules.push(generateJSX(rule, 'text-error text-xs')),
+            "required_if": () => concatRules.push(generateJSX('required_if', 'text-red-400 text-xs')),
+            "max": (rule, split) => concatRules.push(generateJSX(`<=${split[1]}`, 'text-primary text-xs')),
+            "min": (rule, split) => concatRules.push(generateJSX(`>=${split[1]}`, 'text-primary text-xs')),
+            "date_format": (rule: string , split: string[]) => concatRules.push(generateJSX(`Format: ${split.slice(1).join(' ')}`, 'text-xs  text-gray-500')),
+            "regex": (rule: string , split: string[]) => concatRules.push(generateJSX(`Regex: ${split.slice(1).join(' ')}`, 'text-primary text-xs')),
+            "nullable": () => concatRules.push(generateJSX('or null', 'text-xs text-gray-500')),
+            "exists": () => concatRules.push(generateJSX('exists', 'text-xs text-gray-500')),
+            "default": (rule: string) => concatRules.push(generateJSX(rule, 'text-xs text-gray-500'))
+        };
 
-        const keyPart = split[0]
-        const valuePart = split.slice(1).join(' ')
-        if (keyPart == 'max') {
-            return (
-                <div className="block badge badge-primary badge-outline mt-1 mb-1 rounded-sm">{`<= ${valuePart}`}</div>
-            )
-        }
-        if (keyPart == 'min') {
-            return (
-                <div className="block badge badge-primary badge-outline mt-1 mb-1 rounded-sm">{`>= ${valuePart}`}</div>
-            )
-        }
-        if (keyPart == 'date_format') {
-            return (
-                <div className="block badge badge-info badge-outline mt-1 mb-1 rounded-sm">
-                    {`Format: ${valuePart}`}
-                </div>
-            )
-        }
-        if (keyPart == 'regex') {
-            return (
-                <>
-                    <div className="inline-block badge badge-info badge-outline mt-1 mb-1 mr-2 rounded-sm">
-                        Regexp
-                    </div>
-                    <code>${valuePart}</code>
-                </>
-            )
-        }
+        rules.map((rule) => {
+            const orderedRule = orderingRules(rule, rulesOrder || []);
+            orderedRule.split('|').map((theRule) => {
+                const split = theRule.split(':');
+                const handler = ruleHandlers[theRule.split(':')[0]] || ruleHandlers["default"];
+                handler(theRule, split);
+            });
+        });
 
-        return (
-            <div className='' dangerouslySetInnerHTML={{ __html: explode(theRule, 50, "<br/>") }} />
-        )
+        return (<>{concatRules}</>);
     }
-
-
     return (
         <>
-            <tr>
-                <th className='param-cell'>
-                    <span className='text-blue-500 pr-1'>¬</span>
-                    <code className='pl-1'>
-                        {mainRule}
-                        {(mainRule.endsWith(".*")) ? (
-                            <ChevronRightIcon key={shortid.generate()} className='inline-block w-4 h-4' />
-                        ) : (<span key={shortid.generate()}></span>)}
-                    </code>
-                    {rules.map((rule) => (
-                        rule.split('|').map((theRule) => (
-                            (theRule == "file" || theRule == "image") ? (
-                                <div key={shortid.generate()} className="block badge badge-success badge-outline ml-4 mt-1 mb-1 rounded-sm title">{theRule}</div>
-                            ) : (<span key={shortid.generate()}></span>)
-                        ))
-                    ))}
-                    {rules.map((rule) => (
-                        rule.split('|').map((theRule) => (
-                            (theRule == "required") ? (
-                                <div className='block ml-6' key={shortid.generate()}>
-                                    <code className='text-error font-normal'>{theRule}</code>
-                                </div>
-                            ) : (<span key={shortid.generate()}></span>)
-                        ))
-                    ))}
-                    {rules.map((rule) => (
-                        rule.split('|').map((theRule) => (
-                            (theRule.startsWith("required_if")) ? (
-                                <div className='block ml-6' key={shortid.generate()}>
-                                    <code className='text-red-300 font-normal'>required_if</code>
-                                </div>
-                            ) : (<span key={shortid.generate()}></span>)
-                        ))
-                    ))}
+            <tr className="-pb-2">
+                <th className='param-cell -pb-2'>
+                    <div className="grid grid-cols-6 gap-4">
+                        <div className="col-span-2">
+                            <span className='text-blue-500 pr-1'>¬</span>
+                            <code className='pl-1'>
+                                {mainRule}
+                            </code>
+                        </div>
+                        <div className="col-span-4">
+                            {FormatRules(rules)}
+                        </div>
+                    </div>
+                    {infos?.[mainRule]?.description && (
+                        <div className="collapse collapse-arrow -mb-3">
+                            <input type="checkbox"/>
+                            <div className="collapse-title text-xs text-slate-500">
+                                <InformationCircleIcon className='inline-block h-4 w-4'/>
+                                <span className="pl-2">Field Info</span>
+                            </div>
+                            <div className="collapse-content p-0">
+                                {infos?.[mainRule]?.description && (
+                                    <div className="grid grid-cols-5 pl-10">
+                                        <div className="col-span-1">
+                                            <code className="text-xs text-gray-500">Description: </code>
+                                        </div>
+                                        <div className="col-span-4">
+                                            <code
+                                                className="text-xs text-gray-500">{infos?.[mainRule]?.description} </code>
+                                        </div>
+                                    </div>
+                                )}
+                                {infos?.[mainRule]?.example && (
+                                    <div className="grid grid-cols-5 pl-10">
+                                        <div className="col-span-1">
+                                            <code className="text-xs text-gray-500">Example: </code>
+                                        </div>
+                                        <div className="col-span-4">
+                                            <code className="text-xs text-gray-500">{infos?.[mainRule]?.example} </code>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </th>
-                <td>
-                    {rules.map((rule) => (
-                        rule.split('|').map((theRule) => {
-                            if (theRule == "required") {
-                                return (<span key={shortid.generate()}></span>)
-                            }
-                            if (theRule == "integer"
-                                || theRule == "string"
-                                || theRule == "bool"
-                                || theRule == "date"
-                                || theRule == "file"
-                                || theRule == "image"
-                                || theRule == "array"
-                                || theRule == "nullable") {
-                                return (
-                                    <div key={shortid.generate()} className='capitalize text-slate-500'>
-                                        {theRule}
-                                    </div>)
-                            }
-                            return (<span key={shortid.generate()}></span>)
-                        })
-                    ))}
-                    {rules.map((rule) => (
-                        rule.split('|').map((theRule) => {
-                            if (theRule == "required") {
-                                return (<span key={shortid.generate()}></span>)
-                            }
-                            return (<span key={shortid.generate()}></span>)
-                        })
-                    ))}
-                    {rules.map((rule) => (
-                        rule.split('|').map((theRule) => {
-                            if (theRule == "required"
-                                || theRule == "integer"
-                                || theRule == "string"
-                                || theRule == "bool"
-                                || theRule == "date"
-                                || theRule == "file"
-                                || theRule == "image"
-                                || theRule == "array"
-                                || theRule == "nullable") {
-                                return (<span key={shortid.generate()}></span>)
-                            }
-                            return (<span key={shortid.generate()}>
-                                <StyledRule rule={theRule} />
-                            </span>)
-                        })
-                    ))}
-                </td>
             </tr>
-
         </>
     )
 }
