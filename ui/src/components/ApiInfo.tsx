@@ -31,8 +31,17 @@ export default function ApiInfo(props: Props) {
         <>
             <h2 className='text-lg' id={method + lrdDocsItem.uri}>
                 <span className={`badge badge-ghost rounded-none method-${method}`}>{method}</span>
-                <span className='pl-5'>{lrdDocsItem.uri}</span>
+                {lrdDocsItem?.tags ? (
+                    <span className='pl-5'>{lrdDocsItem.tags}</span>
+                ) : (
+                    <span className='pl-5'>{lrdDocsItem.uri}</span>
+                )}
             </h2>
+            <h3 className="pt-4 pl-3">
+                <span className='text-sm text-slate-500'>{lrdDocsItem.summary}</span>
+                <br/>
+                <span className='text-sm text-slate-500'>{lrdDocsItem.description}</span>
+            </h3>
             <h3 className='pt-4'>
                 <span className='text-sm text-slate-500'>REQUEST SCHEMA</span>
                 <br />
@@ -81,7 +90,7 @@ export default function ApiInfo(props: Props) {
                 <table className="table table-fixed table-compact w-full">
                     <tbody>
                         {lrdDocsItem.rules && Object.keys(lrdDocsItem.rules).map((rule) => (
-                            <ApiInfoRules key={shortid.generate()} mainRule={rule} rules={lrdDocsItem.rules[rule]} />
+                            <ApiInfoRules key={shortid.generate()} mainRule={rule} rules={lrdDocsItem.rules[rule]} infos={lrdDocsItem.fieldInfo} rulesOrder={lrdDocsItem.rulesOrder}/>
                         ))}
                     </tbody>
                 </table>
