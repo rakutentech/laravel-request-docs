@@ -7,6 +7,8 @@ use Illuminate\Routing\RouteAction;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use phpDocumentor\Reflection\DocBlockFactory;
+use phpDocumentor\Reflection\DocBlockFactoryInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use Throwable;
@@ -14,10 +16,12 @@ use Throwable;
 class LaravelRequestDocs
 {
     private RoutePath $routePath;
+    private DocBlockFactoryInterface $documentator;
 
     public function __construct(RoutePath $routePath)
     {
         $this->routePath = $routePath;
+        $this->documentator = DocBlockFactory::createInstance();
     }
 
     /**
@@ -191,6 +195,14 @@ class LaravelRequestDocs
 
             $pathParameters = [];
             $pp             = $this->routePath->getPathParameters($route);
+
+            if ($controllerFullPath) {
+                $classDoc = (new ReflectionClass($controllerFullPath));
+                $docBlock = $this->documentator->create($classDoc->getDocComment());
+                $classDoc = $docBlock?->getTagsByName('LRDtags') ?? null;
+                $classDoc = $classDoc ? explode("\n", $classDoc[0]->__toString())[0] : '';
+            }
+
             // same format as rules
             foreach ($pp as $k => $v) {
                 $pathParameters[$k] = [$v];
@@ -208,6 +220,11 @@ class LaravelRequestDocs
                 [],
                 '',
                 [],
+                [],
+                config('request-docs.rules_order') ?? [],
+                '',
+                '',
+                $classDoc
             );
 
             $docs->push($doc);
@@ -226,6 +243,7 @@ class LaravelRequestDocs
      */
     public function appendRequestRules(Collection $docs): Collection
     {
+        /** @var Doc $doc */
         foreach ($docs as $doc) {
             if ($doc->isClosure()) {
                 // Skip to next if controller is not exists.
@@ -235,6 +253,9 @@ class LaravelRequestDocs
             $controllerReflectionMethod = new ReflectionMethod($doc->getControllerFullPath(), $doc->getMethod());
 
             $controllerMethodDocComment = $this->getDocComment($controllerReflectionMethod);
+            $docBlock  = $this->documentator->create($controllerMethodDocComment);
+            $doc->setSummary($docBlock->getSummary());
+            $doc->setDescription($docBlock->getDescription()->render());
 
             $controllerMethodLrdComment = $this->lrdDocComment($controllerMethodDocComment);
             $controllerMethodDocRules   = $this->customParamsDocComment($controllerMethodDocComment);
@@ -251,12 +272,15 @@ class LaravelRequestDocs
 
                 try {
                     $requestClassName = $namedType->getName();
-
                     $reflectionClass  = new ReflectionClass($requestClassName);
                     try {
                         $requestObject = $reflectionClass->newInstance();
                     } catch (Throwable $th) {
                         $requestObject = $reflectionClass->newInstanceWithoutConstructor();
+                    }
+
+                    if (method_exists($requestObject, 'fieldDescriptions')) {
+                        $doc->setFieldInfo($requestObject->fieldDescriptions());
                     }
 
                     foreach (config('request-docs.rules_methods') as $requestMethod) {
