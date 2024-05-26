@@ -160,21 +160,21 @@ export default function App() {
                     </div>
                 )}
             </div>
-            <div className="main-grid grid grid-cols-10 gap-2">
+            <div className="main-grid grid grid-cols-12 gap-2">
                 <div className="sidebar-wrapper col-span-3">
                     <div className='min-h-screen'>
                         <Sidebar lrdDocsJson={lrdDocsJson} />
                     </div>
                 </div>
-                <div className="pt-10 col-span-7">
+                <div className="pt-10 col-span-9">
                     {lrdDocsJson.map((lrdDocsItem) => (
                         <div key={shortid.generate()}>
                             <div className="min-h-screen">
                                 <div className="main-grid grid grid-cols-10 gap-2">
-                                    <div className="col-span-4 ml-5">
+                                    <div className="col-span-5 ml-3">
                                         <ApiInfo lrdDocsItem={lrdDocsItem} method={lrdDocsItem.http_method} />
                                     </div>
-                                    <div className="col-span-5 ml-5">
+                                    <div className="col-span-5 ml-3 mr-5">
                                         <ApiAction lrdDocsItem={lrdDocsItem} method={lrdDocsItem.http_method} host={host} config={config} />
                                     </div>
                                 </div>
