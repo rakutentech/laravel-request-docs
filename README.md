@@ -158,6 +158,38 @@ Example of using it in the controller:
     {
 ```
 
+# Route grouping
+You can add a `@LRDtags` parameter to the description of your controller to group the routes on the dashboard. Endpoint grouping is still done by routes and these tags will only be used as a friendly name for viewing the dashboard.
+@LRDTags is used to generate documentation in OpenAPI format
+Example of using it in the controller:
+
+```php
+    /**
+     * Class DemoController
+     * @package App\Http\Controllers
+     * @LRDtags Demonstration
+     * Demonstration management endpoint
+     */
+     class DemoController extends Controller
+     {
+```
+
+# Endpoint summary and description
+
+The LRD extracts the summary and description of the PHPDoc endpoint from the controller method, this information is rendered as a summary and description of the routes in the LRD dashboard.  
+To extract this information, the standard established by Laravel's PHPDoc is used, where the first line of the PHPDoc is the summary and the rest of the PHPDoc is the description until a tag with @ [PHPDoc documentation ](https://docs.phpdoc.org/3.0/guide/references/phpdoc/basic-syntax.html#:~:text=param%20and%20%40return.-,Summary,-The%20summary%20is).
+Summary and description are used to generate documentation in OpenAPI format
+
+```php
+    /**
+     * Summary of method.
+     * Description of method
+     * @param MyIndexRequest $request
+     */
+    public function index(MyIndexRequest $request): Resource
+    {
+```
+
 # Extra parameters
 
 You define extra parameters using `@LRDparam`.\
@@ -177,6 +209,69 @@ So, the precedence is `Controller method PHPDoc` < `Rules method PHPDoc` < `Rule
      */
     public function index(MyIndexRequest $request): Resource
     {
+```
+# Rules and field description and example
+Para obter uma descrição do campos e das regras você pode adicionar um método `fieldDescriptions()` a seu `formRequest` e retornar um array associativo onde a chave é o nome do campo e o valor é a descrição e o exemplo do campo.
+Esse método não é requerido, caso não seja encontrado não será adicionada as descrições.
+Os exemplos são utilizados tão somente para a documentação não sendo usado para o envio da requisição.
+As descrições e exemplos são utilizadas para a geração da documentação no formato OpenAPI
+```php
+    class UserRequest extends FormRequest
+    {
+    /**
+     * Get the validation rules that apply to the request.
+     */
+    public function rules(): array
+    {
+        return [
+            'name' => 'required|string|max:50',
+            'password' => 'string|min:8|max:100|',
+            'remember' => 'required|boolean|required_if',
+        ];
+    }
+    
+    /**
+     * Provides a detailed description of the expected parameters
+     * in the body of an HTTP request.
+     */
+    public function fieldDescriptions(): array
+    {
+        return [
+            'name' => [
+                'description' => 'Name of user',
+                'example' => 'Jhon Doe'
+            ],
+            'password' => [
+                'description' => 'The password of the user being created',
+                'example' => '###123@@@890'
+            ],
+            'remember' => [
+                'description' => 'Whether or not the user should be reminded'
+            ],
+        ];
+    }
+```
+
+# Rule order
+The order of the rules that will be displayed in the documentation will be changed to the rule registered in the rules method as a way of maintaining the display standard. If not informed, the display rule will be the same as the `rules` method.
+It is recommended that `nullable` be inserted at the end of the rules to correctly present the description `or null`
+
+```php
+    'rules_order' => [
+        'required',
+        'required_if',
+        'file',
+        'integer',
+        'string',
+        'bool',
+        'date',
+        'file',
+        'image',
+        'array',
+        'min',
+        'max',
+        'nullable',
+    ]
 ```
 
 # Response codes
