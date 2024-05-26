@@ -11,8 +11,17 @@ export interface IAPIExample {
     [key: string]: string[];
 }
 
+export interface IAPIFieldInfos {
+    [key: string]: {
+        description: string;
+        example: string;
+    };
+}
+
 export interface IAPIInfo {
     uri: string;
+    summary: string;
+    description: string;
     middlewares: string[];
     controller: string;
     controller_full_path: string;
@@ -25,6 +34,9 @@ export interface IAPIInfo {
     group_index: number;
     responses: string[];
     examples: IAPIExample;
+    fieldInfo: IAPIFieldInfos;
+    rulesOrder: string[];
+    tags: string;
 
 }
 
