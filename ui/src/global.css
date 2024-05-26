@@ -38,7 +38,7 @@ aside {
     @apply h-screen;
     position: fixed;
     overflow-y: auto;
-    width: 30%;
+    width: 25%;
 }
 
 aside > ul {
@@ -63,9 +63,11 @@ h2[id] {
 
 .table th.param-cell {
     @apply font-normal;
-    overflow: auto;
+    overflow: hidden;
     border-left: 1px solid rgb(59 130 246);
     padding-left: 0px;
+    padding-bottom: 0.5rem;
+
 
 }
 .method-GET {
