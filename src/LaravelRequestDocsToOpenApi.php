@@ -51,7 +51,10 @@ class LaravelRequestDocsToOpenApi
             $isDelete        = $httpMethod == 'delete';
             $uriLeadingSlash = '/' . $doc->getUri();
 
-            $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['description'] = $doc->getDocBlock();
+            $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['summary'] = $doc->getSummary() ?? null;
+            $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['description'] = $doc->getDescription() ??
+            $doc->getDocBlock();
+            $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['tags'] = [ $doc->getTags()];
             $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['parameters']  = [];
 
             foreach ($doc->getPathParameters() as $parameter => $rule) {
@@ -81,11 +84,12 @@ class LaravelRequestDocsToOpenApi
             foreach ($doc->getRules() as $attribute => $rules) {
                 foreach ($rules as $rule) {
                     if ($isGet) {
-                        $parameter                                                             = $this->makeQueryParameterItem($attribute, $rule);
+                        $parameter = $this->makeQueryParameterItem($attribute, $rule, $doc->getFieldInfo()
+                        [$attribute] ?? []);
                         $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['parameters'][] = $parameter;
                     }
                     if ($isPost || $isPut || ($isDelete && $deleteWithBody)) {
-                        $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['requestBody']['content'][$contentType]['schema']['properties'][$attribute] = $this->makeRequestBodyContentPropertyItem($rule);
+                        $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['requestBody']['content'][$contentType]['schema']['properties'][$attribute] = $this->makeRequestBodyContentPropertyItem($rule,$doc->getFieldInfo()[$attribute] ?? []);
                     }
                 }
             }
@@ -111,19 +115,23 @@ class LaravelRequestDocsToOpenApi
         return str_contains($rule, 'file') || str_contains($rule, 'image');
     }
 
-    protected function makeQueryParameterItem(string $attribute, $rule): array
+    protected function makeQueryParameterItem(string $attribute, $rule, array $description): array
     {
         if (is_array($rule)) {
             $rule = implode('|', $rule);
         }
         $parameter = [
-            'name' => $attribute,
-            'description' => $rule,
             'in' => 'query',
+            'name' => $attribute,
+            'description' => $description['description'] ?? $rule,
+            'example' => $description['example'] ?? null,
             'style' => 'form',
             'required' => str_contains($rule, 'required'),
             'schema' => [
                 'type' => $this->getAttributeType($rule),
+                'format' => $this->getAttributeType($rule),
+                'description' => $description['description'] ?? $rule,
+                'example' => $description['example'] ?? null,
             ],
         ];
         return $parameter;
@@ -164,7 +172,7 @@ class LaravelRequestDocsToOpenApi
         return $requestBody;
     }
 
-    protected function makeRequestBodyContentPropertyItem(string $rule): array
+    protected function makeRequestBodyContentPropertyItem(string $rule, array $fieldInfo): array
     {
         $type = $this->getAttributeType($rule);
 
@@ -172,6 +180,8 @@ class LaravelRequestDocsToOpenApi
             'type' => $type,
             'nullable' => str_contains($rule, 'nullable'),
             'format' => $this->attributeIsFile($rule) ? 'binary' : $type,
+            'description' => $fieldInfo['description'] ?? '',
+            'example' => $fieldInfo['example'] ?? '',
         ];
     }
 

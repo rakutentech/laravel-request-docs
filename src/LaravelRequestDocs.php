@@ -7,6 +7,8 @@ use Illuminate\Routing\RouteAction;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use phpDocumentor\Reflection\DocBlockFactory;
+use phpDocumentor\Reflection\DocBlockFactoryInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use Throwable;
@@ -14,10 +16,12 @@ use Throwable;
 class LaravelRequestDocs
 {
     private RoutePath $routePath;
+    private DocBlockFactoryInterface $documentator;
 
     public function __construct(RoutePath $routePath)
     {
         $this->routePath = $routePath;
+        $this->documentator = DocBlockFactory::createInstance();
     }
 
     /**
@@ -191,6 +195,14 @@ class LaravelRequestDocs
 
             $pathParameters = [];
             $pp             = $this->routePath->getPathParameters($route);
+
+            if ($controllerFullPath) {
+                $classDoc = (new ReflectionClass($controllerFullPath));
+                $docBlock = $this->documentator->create($classDoc->getDocComment());
+                $classDoc = $docBlock?->getTagsByName('LRDtags') ?? null;
+                $classDoc = $classDoc ? explode("\n", $classDoc[0]->__toString())[0] : '';
+            }
+
             // same format as rules
             foreach ($pp as $k => $v) {
                 $pathParameters[$k] = [$v];
@@ -207,6 +219,12 @@ class LaravelRequestDocs
                 $pathParameters,
                 [],
                 '',
+                [],
+                [],
+                config('request-docs.rules_order') ?? [],
+                '',
+                '',
+                $classDoc
             );
 
             $docs->push($doc);
@@ -225,6 +243,7 @@ class LaravelRequestDocs
      */
     public function appendRequestRules(Collection $docs): Collection
     {
+        /** @var Doc $doc */
         foreach ($docs as $doc) {
             if ($doc->isClosure()) {
                 // Skip to next if controller is not exists.
@@ -234,6 +253,9 @@ class LaravelRequestDocs
             $controllerReflectionMethod = new ReflectionMethod($doc->getControllerFullPath(), $doc->getMethod());
 
             $controllerMethodDocComment = $this->getDocComment($controllerReflectionMethod);
+            $docBlock  = $this->documentator->create($controllerMethodDocComment);
+            $doc->setSummary($docBlock->getSummary());
+            $doc->setDescription($docBlock->getDescription()->render());
 
             $controllerMethodLrdComment = $this->lrdDocComment($controllerMethodDocComment);
             $controllerMethodDocRules   = $this->customParamsDocComment($controllerMethodDocComment);
@@ -257,6 +279,10 @@ class LaravelRequestDocs
                         $requestObject = $reflectionClass->newInstanceWithoutConstructor();
                     }
 
+                    if (method_exists($requestObject, 'fieldDescriptions')) {
+                        $doc->setFieldInfo($requestObject->fieldDescriptions());
+                    }
+
                     foreach (config('request-docs.rules_methods') as $requestMethod) {
                         if (!method_exists($requestObject, $requestMethod)) {
                             continue;
@@ -277,6 +303,9 @@ class LaravelRequestDocs
 
                         $lrdDocComments[] = $requestMethodLrdComment;
                         $doc->mergeRules($requestMethodDocRules);
+                        if (config('request-docs.use_factory')) {
+                            $this->appendExample($doc);
+                        }
                     }
                 } catch (Throwable $e) {
                     // Do nothing.
@@ -316,6 +345,35 @@ class LaravelRequestDocs
             }
         }
         return $lrdComment;
+    }
+
+    public function appendExample(Doc $doc): void
+    {
+            try {
+                $controllerName = class_basename($doc->getController());
+                $modelName = Str::replace('APIController', '', $controllerName);
+                $fullModelName = "App\\Models\\" . $modelName;
+
+                if (!class_exists($fullModelName)) {
+                    return;
+                }
+
+                /** @var \Illuminate\Database\Eloquent\Model $model */
+                $model = app($fullModelName);
+
+                if (!method_exists($model, 'factory')) {
+                    return;
+                }
+
+                $excludeFields = config('request-docs.exclude_fields') ?? [];
+                $example = $model->factory()->make()->toArray();
+                $example = array_filter($example, fn($key) => !in_array($key, $excludeFields), ARRAY_FILTER_USE_KEY);
+                $doc->mergeExamples($example);
+
+            } catch (Throwable $e) {
+                // Do nothing.
+            }
+
     }
 
     /**
