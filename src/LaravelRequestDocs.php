@@ -197,10 +197,13 @@ class LaravelRequestDocs
             $pp             = $this->routePath->getPathParameters($route);
 
             if ($controllerFullPath) {
-                $classDoc = (new ReflectionClass($controllerFullPath));
-                $docBlock = $this->documentator->create($classDoc->getDocComment());
-                $classDoc = $docBlock?->getTagsByName('LRDtags') ?? null;
-                $classDoc = $classDoc ? explode("\n", $classDoc[0]->__toString())[0] : '';
+                $classDoc = new ReflectionClass($controllerFullPath);
+
+                if ($classDoc->getDocComment()) {
+                    $docBlock = $this->documentator->create($classDoc->getDocComment());
+                    $classDoc = $docBlock?->getTagsByName('LRDtags') ?? null;
+                    $classDoc = $classDoc ? explode("\n", $classDoc[0]->__toString())[0] : '';
+                }
             }
 
             // same format as rules
@@ -224,7 +227,7 @@ class LaravelRequestDocs
                 config('request-docs.rules_order') ?? [],
                 '',
                 '',
-                $classDoc
+                $classDoc ?? ''
             );
 
             $docs->push($doc);
@@ -349,30 +352,30 @@ class LaravelRequestDocs
 
     public function appendExample(Doc $doc): void
     {
-            try {
-                $controllerName = class_basename($doc->getController());
-                $modelName = Str::replace('APIController', '', $controllerName);
-                $fullModelName = "App\\Models\\" . $modelName;
+        try {
+            $controllerName = class_basename($doc->getController());
+            $modelName = Str::replace('APIController', '', $controllerName);
+            $fullModelName = "App\\Models\\" . $modelName;
 
-                if (!class_exists($fullModelName)) {
-                    return;
-                }
-
-                /** @var \Illuminate\Database\Eloquent\Model $model */
-                $model = app($fullModelName);
-
-                if (!method_exists($model, 'factory')) {
-                    return;
-                }
-
-                $excludeFields = config('request-docs.exclude_fields') ?? [];
-                $example = $model->factory()->make()->toArray();
-                $example = array_filter($example, fn($key) => !in_array($key, $excludeFields), ARRAY_FILTER_USE_KEY);
-                $doc->mergeExamples($example);
-
-            } catch (Throwable $e) {
-                // Do nothing.
+            if (!class_exists($fullModelName)) {
+                return;
             }
+
+            /** @var \Illuminate\Database\Eloquent\Model $model */
+            $model = app($fullModelName);
+
+            if (!method_exists($model, 'factory')) {
+                return;
+            }
+
+            $excludeFields = config('request-docs.exclude_fields') ?? [];
+            $example = $model->factory()->make()->toArray();
+            $example = array_filter($example, fn($key) => !in_array($key, $excludeFields), ARRAY_FILTER_USE_KEY);
+            $doc->mergeExamples($example);
+
+        } catch (Throwable $e) {
+            // Do nothing.
+        }
 
     }
 
