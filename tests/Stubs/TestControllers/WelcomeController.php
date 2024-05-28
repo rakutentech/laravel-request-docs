@@ -8,6 +8,9 @@ use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestRequests\WelcomeEditRequest;
 use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestRequests\WelcomeIndexRequest;
 use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestRequests\WelcomeStoreRequest;
 
+/**
+ * @LRDtags Welcome
+ */
 class WelcomeController
 {
     /**
