@@ -201,8 +201,8 @@ class LaravelRequestDocs
 
                 if ($classDoc->getDocComment()) {
                     $docBlock = $this->documentator->create($classDoc->getDocComment());
-                    $classDoc = $docBlock?->getTagsByName('LRDtags') ?? null;
-                    $classDoc = $classDoc ? explode("\n", $classDoc[0]->__toString())[0] : '';
+                    $tag = $docBlock->getTagsByName('LRDtags') ?? null;
+                    $tag = $tag ? explode("\n", $tag[0]->__toString())[0] : '';
                 }
             }
 
@@ -227,7 +227,7 @@ class LaravelRequestDocs
                 config('request-docs.rules_order') ?? [],
                 '',
                 '',
-                $classDoc ?? ''
+                $tag ?? ''
             );
 
             $docs->push($doc);
@@ -256,9 +256,12 @@ class LaravelRequestDocs
             $controllerReflectionMethod = new ReflectionMethod($doc->getControllerFullPath(), $doc->getMethod());
 
             $controllerMethodDocComment = $this->getDocComment($controllerReflectionMethod);
-            $docBlock  = $this->documentator->create($controllerMethodDocComment);
-            $doc->setSummary($docBlock->getSummary());
-            $doc->setDescription($docBlock->getDescription()->render());
+            if ($controllerMethodDocComment) {
+                $docBlock  = $this->documentator->create($controllerMethodDocComment);
+                $doc->setSummary($docBlock->getSummary());
+                $doc->setDescription($docBlock->getDescription()->render());
+            }
+
 
             $controllerMethodLrdComment = $this->lrdDocComment($controllerMethodDocComment);
             $controllerMethodDocRules   = $this->customParamsDocComment($controllerMethodDocComment);
