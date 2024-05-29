@@ -20,7 +20,7 @@ class LaravelRequestDocs
 
     public function __construct(RoutePath $routePath)
     {
-        $this->routePath = $routePath;
+        $this->routePath    = $routePath;
         $this->documentator = DocBlockFactory::createInstance();
     }
 
@@ -201,8 +201,8 @@ class LaravelRequestDocs
 
                 if ($classDoc->getDocComment()) {
                     $docBlock = $this->documentator->create($classDoc->getDocComment());
-                    $tag = $docBlock->getTagsByName('LRDtags') ?? null;
-                    $tag = $tag ? explode("\n", $tag[0]->__toString())[0] : '';
+                    $tag      = $docBlock->getTagsByName('LRDtags') ?? null;
+                    $tag      = $tag ? explode("\n", $tag[0]->__toString())[0] : '';
                 }
             }
 
@@ -253,11 +253,16 @@ class LaravelRequestDocs
                 continue;
             }
 
-            $controllerReflectionMethod = new ReflectionMethod($doc->getControllerFullPath(), $doc->getMethod());
+            try {
+                $controllerReflectionMethod = new ReflectionMethod($doc->getControllerFullPath(), $doc->getMethod());
+            } catch (Throwable $e) {
+                // Skip to next if controller is not exists.
+                continue;
+            }
 
             $controllerMethodDocComment = $this->getDocComment($controllerReflectionMethod);
             if ($controllerMethodDocComment) {
-                $docBlock  = $this->documentator->create($controllerMethodDocComment);
+                $docBlock = $this->documentator->create($controllerMethodDocComment);
                 $doc->setSummary($docBlock->getSummary());
                 $doc->setDescription($docBlock->getDescription()->render());
             }
@@ -357,8 +362,8 @@ class LaravelRequestDocs
     {
         try {
             $controllerName = class_basename($doc->getController());
-            $modelName = Str::replace('APIController', '', $controllerName);
-            $fullModelName = "App\\Models\\" . $modelName;
+            $modelName      = Str::replace('APIController', '', $controllerName);
+            $fullModelName  = "App\\Models\\" . $modelName;
 
             if (!class_exists($fullModelName)) {
                 return;
@@ -372,14 +377,12 @@ class LaravelRequestDocs
             }
 
             $excludeFields = config('request-docs.exclude_fields') ?? [];
-            $example = $model->factory()->make()->toArray();
-            $example = array_filter($example, fn($key) => !in_array($key, $excludeFields), ARRAY_FILTER_USE_KEY);
+            $example       = $model->factory()->make()->toArray();
+            $example       = array_filter($example, fn($key) => !in_array($key, $excludeFields), ARRAY_FILTER_USE_KEY);
             $doc->mergeExamples($example);
-
         } catch (Throwable $e) {
             // Do nothing.
         }
-
     }
 
     /**
