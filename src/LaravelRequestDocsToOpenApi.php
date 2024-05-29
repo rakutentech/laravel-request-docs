@@ -51,10 +51,10 @@ class LaravelRequestDocsToOpenApi
             $isDelete        = $httpMethod == 'delete';
             $uriLeadingSlash = '/' . $doc->getUri();
 
-            $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['summary'] = $doc->getSummary() ?? null;
+            $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['summary']     = $doc->getSummary() ?? null;
             $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['description'] = $doc->getDescription() ??
             $doc->getDocBlock();
-            $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['tags'] = [ $doc->getTags()];
+            $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['tags']        = [ $doc->getTags()];
             $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['parameters']  = [];
 
             foreach ($doc->getPathParameters() as $parameter => $rule) {
@@ -84,12 +84,13 @@ class LaravelRequestDocsToOpenApi
             foreach ($doc->getRules() as $attribute => $rules) {
                 foreach ($rules as $rule) {
                     if ($isGet) {
-                        $parameter = $this->makeQueryParameterItem($attribute, $rule, $doc->getFieldInfo()
-                        [$attribute] ?? []);
+                        $parameter                                                             = $this
+                            ->makeQueryParameterItem($attribute, $rule, $doc->getFieldInfo()[$attribute] ?? []);
                         $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['parameters'][] = $parameter;
                     }
                     if ($isPost || $isPut || ($isDelete && $deleteWithBody)) {
-                        $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['requestBody']['content'][$contentType]['schema']['properties'][$attribute] = $this->makeRequestBodyContentPropertyItem($rule,$doc->getFieldInfo()[$attribute] ?? []);
+                        $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['requestBody']['content'][$contentType
+                        ]['schema']['properties'][$attribute] = $this->makeRequestBodyContentPropertyItem($rule, $doc->getFieldInfo()[$attribute] ?? []);
                     }
                 }
             }
