@@ -267,8 +267,9 @@ export default function ApiAction(props: Props) {
                 return acc;
             }, {})
 
-            const jsonBody = JSON.stringify(body, null, 2)
+            const jsonBody = lrdDocsItem.examples ? JSON.stringify(lrdDocsItem.examples, null, 2) : JSON.stringify(body, null, 2)
             setBodyParams(jsonBody)
+            console.log(jsonBody)
             setCurlCommand(makeCurlCommand(host, lrdDocsItem.uri, method, jsonBody, requestHeaders))
         }
     }, [])

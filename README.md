@@ -62,8 +62,8 @@ Read more: https://medium.com/web-developer/laravel-automatically-generate-api-d
 
 | Lang    | Versions                  |
 | :------ |:--------------------------|
-| PHP     | 7.4 or 8.0 or 8.1 or 8.2  |
-| Laravel | 6.* or 8.* or 9.* or 10.* |
+| PHP     | 8.0 or 8.1 or 8.2  |
+| Laravel | 8.* or 9.* or 10.* |
 
 # Installation
 
@@ -282,6 +282,21 @@ you are able to explicitly define what status codes can be returned by the serve
 
 # Configuration
 Please view the `request-docs.php` config file to see how you can customise your experience.
+
+# Use Factory to example
+To generate an example based on the project's factories, the `use_factory` option must be enabled in the project file.
+settings. This way, the examples will be generated based on the output of your model's factories.  
+
+# Remove factory fields in examples
+To ensure that a field is not generated in the example, it can be inserted as a new value in the `exclude_fields` 
+configuration array, this way this field will be removed when the example is generated, ensuring correct display  
+
+```
+'exclude_fields' => [
+    'password',
+    'remember_token',
+], 
+```
 
 # Testing
 
