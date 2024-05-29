@@ -201,7 +201,7 @@ class LaravelRequestDocs
 
                 if ($classDoc->getDocComment()) {
                     $docBlock = $this->documentator->create($classDoc->getDocComment());
-                    $tag      = $docBlock->getTagsByName('LRDtags') ?? null;
+                    $tag      = $docBlock->getTagsByName('LRDtags');
                     $tag      = $tag ? explode("\n", $tag[0]->__toString())[0] : '';
                 }
             }
@@ -459,6 +459,7 @@ class LaravelRequestDocs
                 return ['key' => $fieldName, 'rules' => $definedFieldRules];
             })
             ->keyBy('key')
+            // @phpstan-ignore-next-line
             ->transform(function ($item) {
                 return $item['rules'];
             })->toArray();

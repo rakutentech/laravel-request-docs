@@ -51,9 +51,8 @@ class LaravelRequestDocsToOpenApi
             $isDelete        = $httpMethod == 'delete';
             $uriLeadingSlash = '/' . $doc->getUri();
 
-            $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['summary']     = $doc->getSummary() ?? null;
-            $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['description'] = $doc->getDescription() ??
-            $doc->getDocBlock();
+            $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['summary']     = $doc->getSummary();
+            $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['description'] = $doc->getDescription() ?: $doc->getDocBlock();
             $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['tags']        = [ $doc->getTags()];
             $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['parameters']  = [];
 
