@@ -181,4 +181,20 @@ return [
     ],
 
     'use_factory' => false,
+
+    'rules_order' => [
+        'required',
+        'required_if',
+        'file',
+        'integer',
+        'string',
+        'bool',
+        'date',
+        'file',
+        'image',
+        'array',
+        'min',
+        'max',
+        'nullable',
+    ]
 ];
