@@ -815,7 +815,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tags": ""
     },
     {
         "uri": "closure",
@@ -847,7 +847,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tags": ""
     },
     {
         "uri": "closure",
@@ -879,7 +879,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tags": ""
     },
     {
         "uri": "accounts",
@@ -922,7 +922,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tags": ""
     },
     {
         "uri": "accounts",
@@ -965,7 +965,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tags": ""
     },
     {
         "uri": "accounts",
@@ -1008,7 +1008,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tags": ""
     },
     {
         "uri": "accounts/{account}",
@@ -1053,7 +1053,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tags": ""
     },
     {
         "uri": "accounts/{account}",
@@ -1098,7 +1098,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tags": ""
     },
     {
         "uri": "accounts/{account}",
@@ -1143,7 +1143,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tags": ""
     },
     {
         "uri": "accounts/{account}",
@@ -1188,7 +1188,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tags": ""
     },
     {
         "uri": "accounts/{account}",
@@ -1233,7 +1233,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tags": ""
     },
     {
         "uri": "match",
@@ -1276,7 +1276,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tags": ""
     },
     {
         "uri": "match",
@@ -1319,7 +1319,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tags": ""
     },
     {
         "uri": "match",
@@ -1362,6 +1362,6 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tags": ""
     }
 ]

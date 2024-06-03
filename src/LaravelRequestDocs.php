@@ -228,7 +228,7 @@ class LaravelRequestDocs
                 config('request-docs.rules_order') ?? [],
                 '',
                 '',
-                $tag ?? ''
+                $tag
             );
 
             $docs->push($doc);
