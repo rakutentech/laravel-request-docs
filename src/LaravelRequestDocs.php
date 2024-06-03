@@ -184,6 +184,7 @@ class LaravelRequestDocs
             $controllerName     = '';
             $controllerFullPath = '';
             $method             = '';
+            $tag                = '';
 
             // `$route->action['uses']` value is either 'Class@method' string or Closure.
             if (is_string($route->action['uses']) && !RouteAction::containsSerializedClosure($route->action)) {
