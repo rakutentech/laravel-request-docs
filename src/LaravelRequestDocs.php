@@ -202,8 +202,9 @@ class LaravelRequestDocs
 
                 if ($classDoc->getDocComment()) {
                     $docBlock = $this->documentator->create($classDoc->getDocComment());
-                    $tag      = $docBlock->getTagsByName('LRDtag');
-                    $tag      = $tag ? explode("\n", $tag[0]->__toString())[0] : '';
+                    $tag      = ($tags = $docBlock->getTagsByName('LRDtag'))
+                        ? explode("\n", $tags[0]->__toString())[0]
+                        : '';
                 }
             }
 
