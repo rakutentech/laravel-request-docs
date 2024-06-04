@@ -24,7 +24,7 @@ export default function Sidebar(props: Props) {
                             {(lrdDocsItem.group != null && lrdDocsItem.group != "" && lrdDocsItem.group_index == 0) && (
                                 <li className="pt-5 text-slate-600">
                                     {/* Only in case of controller names full path -> just controller name */}
-                                    {lrdDocsItem?.tags ? lrdDocsItem.tags : lrdDocsItem.group.split('\\').pop()}
+                                    {lrdDocsItem?.tag ? lrdDocsItem.tag : lrdDocsItem.group.split('\\').pop()}
                                 </li>
                             )}
                             <li>

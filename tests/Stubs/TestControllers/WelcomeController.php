@@ -9,7 +9,7 @@ use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestRequests\WelcomeIndexRequest;
 use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestRequests\WelcomeStoreRequest;
 
 /**
- * @LRDtags Welcome
+ * @LRDtag Welcome
  */
 class WelcomeController
 {

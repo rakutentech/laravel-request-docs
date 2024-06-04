@@ -141,11 +141,11 @@ class Doc implements Arrayable
     private string $description;
 
     /**
-     * Endpoint tags.
+     * Endpoint tag.
      *
      * @var string
      */
-    private string $tags;
+    private string $tag;
 
     /**
      * @param string $uri
@@ -163,7 +163,7 @@ class Doc implements Arrayable
      * @param array<string> $rulesOrder
      * @param string $summary
      * @param string $description
-     * @param string $tags
+     * @param string $tag
      */
     public function __construct(
         string $uri,
@@ -181,7 +181,7 @@ class Doc implements Arrayable
         array $rulesOrder,
         string $summary,
         string $description,
-        string $tags
+        string $tag
     ) {
         $this->uri                = $uri;
         $this->methods            = $methods;
@@ -199,7 +199,7 @@ class Doc implements Arrayable
         $this->rulesOrder         = $rulesOrder;
         $this->summary            = $summary;
         $this->description        = $description;
-        $this->tags               = $tags;
+        $this->tag               = $tag;
     }
 
     /**
@@ -478,14 +478,14 @@ class Doc implements Arrayable
         $this->description = $description;
     }
 
-    public function getTags(): string
+    public function getTag(): string
     {
-        return $this->tags;
+        return $this->tag;
     }
 
-    public function setTags(string $tags): void
+    public function setTag(string $tag): void
     {
-        $this->tags = $tags;
+        $this->tag = $tag;
     }
 
     public function toArray(): array
@@ -506,7 +506,7 @@ class Doc implements Arrayable
             'examples'             => $this->examples,
             'fieldInfo'            => $this->fieldInfo,
             'rulesOrder'           => $this->rulesOrder,
-            'tags'                 => $this->tags,
+            'tag'                 => $this->tag,
         ];
 
         if (isset($this->group)) {

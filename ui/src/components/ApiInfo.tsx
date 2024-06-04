@@ -31,8 +31,8 @@ export default function ApiInfo(props: Props) {
         <>
             <h2 className='text-lg' id={method + lrdDocsItem.uri}>
                 <span className={`badge badge-ghost rounded-none method-${method}`}>{method}</span>
-                {lrdDocsItem?.tags ? (
-                    <span className='pl-5'>{lrdDocsItem.tags}</span>
+                {lrdDocsItem?.tag ? (
+                    <span className='pl-5'>{lrdDocsItem.tag}</span>
                 ) : (
                     <span className='pl-5'>{lrdDocsItem.uri}</span>
                 )}

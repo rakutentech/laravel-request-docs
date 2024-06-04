@@ -53,7 +53,7 @@ class LaravelRequestDocsToOpenApi
 
             $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['summary']     = $doc->getSummary();
             $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['description'] = $doc->getDescription() ?: $doc->getDocBlock();
-            $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['tags']        = [ $doc->getTags()];
+            $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['tag']        = [ $doc->getTags()];
             $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['parameters']  = [];
 
             foreach ($doc->getPathParameters() as $parameter => $rule) {

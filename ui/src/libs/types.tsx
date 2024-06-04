@@ -36,7 +36,7 @@ export interface IAPIInfo {
     examples: IAPIExample;
     fieldInfo: IAPIFieldInfos;
     rulesOrder: string[];
-    tags: string;
+    tag: string;
 
 }
 
