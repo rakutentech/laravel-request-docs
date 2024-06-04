@@ -159,7 +159,7 @@ Example of using it in the controller:
 ```
 
 # Route grouping
-You can add a `@LRDtags` parameter to the description of your controller to group the routes on the dashboard. Endpoint grouping is still done by routes and these tags will only be used as a friendly name for viewing the dashboard.
+You can add a `@LRDtag` parameter to the description of your controller to group the routes on the dashboard. Endpoint grouping is still done by routes and these tag will only be used as a friendly name for viewing the dashboard.
 @LRDTags is used to generate documentation in OpenAPI format
 Example of using it in the controller:
 
@@ -167,7 +167,7 @@ Example of using it in the controller:
     /**
      * Class DemoController
      * @package App\Http\Controllers
-     * @LRDtags Demonstration
+     * @LRDtag Demonstration
      * Demonstration management endpoint
      */
      class DemoController extends Controller
@@ -211,10 +211,10 @@ So, the precedence is `Controller method PHPDoc` < `Rules method PHPDoc` < `Rule
     {
 ```
 # Rules and field description and example
-Para obter uma descrição do campos e das regras você pode adicionar um método `fieldDescriptions()` a seu `formRequest` e retornar um array associativo onde a chave é o nome do campo e o valor é a descrição e o exemplo do campo.
-Esse método não é requerido, caso não seja encontrado não será adicionada as descrições.
-Os exemplos são utilizados tão somente para a documentação não sendo usado para o envio da requisição.
-As descrições e exemplos são utilizadas para a geração da documentação no formato OpenAPI
+To obtain a description of the fields and rules you can add a `fieldDescriptions()` method to your `formRequest` and return an associative array where the key is the name of the field and the value is the description and example of the field.
+This method is not required, if it is not found, the descriptions will not be added.
+The examples are only used for documentation and are not used for sending the request.
+Descriptions and examples are used to generate documentation in OpenAPI format
 ```php
     class UserRequest extends FormRequest
     {
