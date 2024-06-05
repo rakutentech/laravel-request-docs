@@ -6,11 +6,11 @@ interface Props {
     rules: string[],
     mainRule: string,
     infos?: { [key: string]: { description: string, example: string} },
-    rulesOrder?: string[]
+    rules_order?: string[]
 }
 
-const orderingRules = (rule: string, rulesOrder: string[]): string => {
-    if (!rulesOrder) {
+const orderingRules = (rule: string, rules_order: string[]): string => {
+    if (!rules_order) {
         return rule;
     }
     const ruleArray = rule.split('|');
@@ -18,10 +18,10 @@ const orderingRules = (rule: string, rulesOrder: string[]): string => {
     ruleArray.sort((a, b) => {
         const aKey = a.split(':')[0];
         const bKey = b.split(':')[0];
-        let aIndex = rulesOrder.indexOf(aKey);
-        let bIndex = rulesOrder.indexOf(bKey);
+        let aIndex = rules_order.indexOf(aKey);
+        let bIndex = rules_order.indexOf(bKey);
 
-        const lastIndex = rulesOrder.length + 1;
+        const lastIndex = rules_order.length + 1;
         const defaultIndex = lastIndex / 2;
 
         aIndex = aIndex === -1 ? (lastRules.includes(aKey) ? lastIndex : defaultIndex) : aIndex;
@@ -37,7 +37,7 @@ const generateJSX = (rule: string, className: string): JSX.Element => {
 }
 
 export default function ApiInfoRules(props: Props) {
-    const { rules, mainRule, infos, rulesOrder } = props
+    const { rules, mainRule, infos, rules_order } = props
 
     const FormatRules = (rules: string[]): JSX.Element => {
         const concatRules: React.JSX.Element[] = [];
@@ -57,7 +57,7 @@ export default function ApiInfoRules(props: Props) {
         };
 
         rules.map((rule) => {
-            const orderedRule = orderingRules(rule, rulesOrder || []);
+            const orderedRule = orderingRules(rule, rules_order || []);
             orderedRule.split('|').map((theRule) => {
                 const split = theRule.split(':');
                 const handler = ruleHandlers[theRule.split(':')[0]] || ruleHandlers["default"];

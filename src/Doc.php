@@ -504,9 +504,9 @@ class Doc implements Arrayable
             'doc_block'            => $this->docBlock,
             'responses'            => $this->responses,
             'examples'             => $this->examples,
-            'fieldInfo'            => $this->fieldInfo,
-            'rulesOrder'           => $this->rulesOrder,
-            'tag'                 => $this->tag,
+            'field_info'           => $this->fieldInfo,
+            'rules_order'          => $this->rulesOrder,
+            'tag'                  => $this->tag,
         ];
 
         if (isset($this->group)) {

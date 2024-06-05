@@ -34,8 +34,8 @@ export interface IAPIInfo {
     group_index: number;
     responses: string[];
     examples: IAPIExample;
-    fieldInfo: IAPIFieldInfos;
-    rulesOrder: string[];
+    field_info: IAPIFieldInfos;
+    rules_order: string[];
     tag: string;
 
 }

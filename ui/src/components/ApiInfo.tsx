@@ -90,7 +90,7 @@ export default function ApiInfo(props: Props) {
                 <table className="table table-fixed table-compact w-full">
                     <tbody>
                         {lrdDocsItem.rules && Object.keys(lrdDocsItem.rules).map((rule) => (
-                            <ApiInfoRules key={shortid.generate()} mainRule={rule} rules={lrdDocsItem.rules[rule]} infos={lrdDocsItem.fieldInfo} rulesOrder={lrdDocsItem.rulesOrder}/>
+                            <ApiInfoRules key={shortid.generate()} mainRule={rule} rules={lrdDocsItem.rules[rule]} infos={lrdDocsItem.field_info} rules_order={lrdDocsItem.rules_order}/>
                         ))}
                     </tbody>
                 </table>
