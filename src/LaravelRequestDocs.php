@@ -257,78 +257,77 @@ class LaravelRequestDocs
 
             try {
                 $controllerReflectionMethod = new ReflectionMethod($doc->getControllerFullPath(), $doc->getMethod());
+
+
+                $controllerMethodDocComment = $this->getDocComment($controllerReflectionMethod);
+                if ($controllerMethodDocComment) {
+                    $docBlock = $this->documentator->create($controllerMethodDocComment);
+                    $doc->setSummary($docBlock->getSummary());
+                    $doc->setDescription($docBlock->getDescription()->render());
+                }
+
+                $controllerMethodLrdComment = $this->lrdDocComment($controllerMethodDocComment);
+                $controllerMethodDocRules   = $this->customParamsDocComment($controllerMethodDocComment);
+
+                $doc->setResponses($this->customResponsesDocComment($controllerMethodDocComment));
+
+                $lrdDocComments = [];
+                foreach ($controllerReflectionMethod->getParameters() as $param) {
+                    /** @var \ReflectionNamedType|\ReflectionUnionType|\ReflectionIntersectionType|null $namedType */
+                    $namedType = $param->getType();
+                    if (!$namedType) {
+                        continue;
+                    }
+
+                    try {
+                        $requestClassName = $namedType->getName();
+                        $reflectionClass  = new ReflectionClass($requestClassName);
+                        try {
+                            $requestObject = $reflectionClass->newInstance();
+                        } catch (Throwable $th) {
+                            $requestObject = $reflectionClass->newInstanceWithoutConstructor();
+                        }
+
+                        if (method_exists($requestObject, 'fieldDescriptions')) {
+                            $doc->setFieldInfo($requestObject->fieldDescriptions());
+                        }
+
+                        foreach (config('request-docs.rules_methods') as $requestMethod) {
+                            if (!method_exists($requestObject, $requestMethod)) {
+                                continue;
+                            }
+
+                            try {
+                                $doc->mergeRules($this->flattenRules($requestObject->$requestMethod()));
+                                $requestReflectionMethod = new ReflectionMethod($requestObject, $requestMethod);
+                            } catch (Throwable $e) {
+                                $doc->mergeRules($this->rulesByRegex($requestClassName, $requestMethod));
+                                $requestReflectionMethod = new ReflectionMethod($requestClassName, $requestMethod);
+                            }
+
+                            $requestMethodDocComment = $this->getDocComment($requestReflectionMethod);
+
+                            $requestMethodLrdComment = $this->lrdDocComment($requestMethodDocComment);
+                            $requestMethodDocRules   = $this->customParamsDocComment($requestMethodDocComment);
+
+                            $lrdDocComments[] = $requestMethodLrdComment;
+                            $doc->mergeRules($requestMethodDocRules);
+                            if (config('request-docs.use_factory')) {
+                                $this->appendExample($doc);
+                            }
+                        }
+                    } catch (Throwable $e) {
+                        // Do nothing.
+                    }
+                }
+
+                $lrdDocComments[] = $controllerMethodLrdComment;
+                $lrdDocComments   = array_filter($lrdDocComments, fn($s) => $s !== '');
+                $doc->setDocBlock(join("\n", $lrdDocComments));
+                $doc->mergeRules($controllerMethodDocRules);
             } catch (Throwable $e) {
-                // Skip to next if controller is not exists.
                 continue;
             }
-
-            $controllerMethodDocComment = $this->getDocComment($controllerReflectionMethod);
-            if ($controllerMethodDocComment) {
-                $docBlock = $this->documentator->create($controllerMethodDocComment);
-                $doc->setSummary($docBlock->getSummary());
-                $doc->setDescription($docBlock->getDescription()->render());
-            }
-
-
-            $controllerMethodLrdComment = $this->lrdDocComment($controllerMethodDocComment);
-            $controllerMethodDocRules   = $this->customParamsDocComment($controllerMethodDocComment);
-
-            $doc->setResponses($this->customResponsesDocComment($controllerMethodDocComment));
-
-            $lrdDocComments = [];
-            foreach ($controllerReflectionMethod->getParameters() as $param) {
-                /** @var \ReflectionNamedType|\ReflectionUnionType|\ReflectionIntersectionType|null $namedType */
-                $namedType = $param->getType();
-                if (!$namedType) {
-                    continue;
-                }
-
-                try {
-                    $requestClassName = $namedType->getName();
-                    $reflectionClass  = new ReflectionClass($requestClassName);
-                    try {
-                        $requestObject = $reflectionClass->newInstance();
-                    } catch (Throwable $th) {
-                        $requestObject = $reflectionClass->newInstanceWithoutConstructor();
-                    }
-
-                    if (method_exists($requestObject, 'fieldDescriptions')) {
-                        $doc->setFieldInfo($requestObject->fieldDescriptions());
-                    }
-
-                    foreach (config('request-docs.rules_methods') as $requestMethod) {
-                        if (!method_exists($requestObject, $requestMethod)) {
-                            continue;
-                        }
-
-                        try {
-                            $doc->mergeRules($this->flattenRules($requestObject->$requestMethod()));
-                            $requestReflectionMethod = new ReflectionMethod($requestObject, $requestMethod);
-                        } catch (Throwable $e) {
-                            $doc->mergeRules($this->rulesByRegex($requestClassName, $requestMethod));
-                            $requestReflectionMethod = new ReflectionMethod($requestClassName, $requestMethod);
-                        }
-
-                        $requestMethodDocComment = $this->getDocComment($requestReflectionMethod);
-
-                        $requestMethodLrdComment = $this->lrdDocComment($requestMethodDocComment);
-                        $requestMethodDocRules   = $this->customParamsDocComment($requestMethodDocComment);
-
-                        $lrdDocComments[] = $requestMethodLrdComment;
-                        $doc->mergeRules($requestMethodDocRules);
-                        if (config('request-docs.use_factory')) {
-                            $this->appendExample($doc);
-                        }
-                    }
-                } catch (Throwable $e) {
-                    // Do nothing.
-                }
-            }
-
-            $lrdDocComments[] = $controllerMethodLrdComment;
-            $lrdDocComments   = array_filter($lrdDocComments, fn($s) => $s !== '');
-            $doc->setDocBlock(join("\n", $lrdDocComments));
-            $doc->mergeRules($controllerMethodDocRules);
         }
         return $docs;
     }
