@@ -88,8 +88,8 @@ class LaravelRequestDocsToOpenApi
                         $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['parameters'][] = $parameter;
                     }
                     if ($isPost || $isPut || ($isDelete && $deleteWithBody)) {
-                        $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['requestBody']['content'][$contentType
-                        ]['schema']['properties'][$attribute] = $this->makeRequestBodyContentPropertyItem($rule, $doc->getFieldInfo()[$attribute] ?? []);
+                        $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['requestBody']['content'][$contentType]['schema']['properties'][$attribute] =
+                            $this->makeRequestBodyContentPropertyItem($rule, $doc->getFieldInfo()[$attribute] ?? []);
                     }
                 }
             }

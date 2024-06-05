@@ -199,7 +199,7 @@ class Doc implements Arrayable
         $this->rulesOrder         = $rulesOrder;
         $this->summary            = $summary;
         $this->description        = $description;
-        $this->tag               = $tag;
+        $this->tag                = $tag;
     }
 
     /**

@@ -21,11 +21,9 @@ const orderingRules = (rule: string, rulesOrder: string[]): string => {
         let aIndex = rulesOrder.indexOf(aKey);
         let bIndex = rulesOrder.indexOf(bKey);
 
-        // Defina um valor de índice padrão para min, max e nullable
         const lastIndex = rulesOrder.length + 1;
         const defaultIndex = lastIndex / 2;
 
-        // Se a regra não estiver na lista de ordenação, defina seu índice para um valor menor que min, max e nullable
         aIndex = aIndex === -1 ? (lastRules.includes(aKey) ? lastIndex : defaultIndex) : aIndex;
         bIndex = bIndex === -1 ? (lastRules.includes(bKey) ? lastIndex : defaultIndex) : bIndex;
 
