@@ -510,4 +510,98 @@ class LaravelRequestDocsControllerTest extends TestCase
 
         $this->assertSame($expected, $pathParameter);
     }
+
+
+    public function testGenerateExampleToFactory()
+    {
+        config(['request-docs.factory_path' => 'Rakutentech\LaravelRequestDocs\Tests\Factories']);
+        config(['request-docs.use_factory' => true]);
+        config(['request-docs.pattern_model_from_controller_name' => '/Controller$/']);
+        Route::post('api/v1/users/store', [UserController::class, 'store']);
+
+        $response  = $this->get(route('request-docs.api'))
+            ->assertStatus(Response::HTTP_OK);
+        $docs      = collect($response->json());
+        $userRoute = $docs
+            ->filter(fn(array $item) => Str::startsWith($item['uri'], ['api']));
+        $examples  = $userRoute->pluck('examples')->toArray();
+        $expected  = [\Rakutentech\LaravelRequestDocs\Tests\Factories\UserFactory::new()->make()->toArray()];
+
+        $this->assertSame($expected, $examples);
+    }
+
+    public function testGenerateFieldDescriptionAndExamples()
+    {
+        config(['request-docs.factory_path' => 'Rakutentech\LaravelRequestDocs\Tests\Factories']);
+        config(['request-docs.use_factory' => true]);
+        config(['request-docs.pattern_model_from_controller_name' => '/Controller$/']);
+        Route::post('api/v1/users/store', [UserController::class, 'store']);
+
+        $response  = $this->get(route('request-docs.api'))
+            ->assertStatus(Response::HTTP_OK);
+        $docs      = collect($response->json());
+        $userRoute = $docs
+            ->filter(fn(array $item) => Str::startsWith($item['uri'], ['api']));
+        $fieldInfo = $userRoute->pluck('field_info')->get(0);
+        $expected  = [
+            'name'  => [
+                'description' => 'User Name',
+                'example'     => 'John Doe'
+            ],
+            'email' => [
+                'description' => 'User email',
+                'example'     => 'johndoe@email.com'
+            ]
+        ];
+
+        $this->assertSame($expected, $fieldInfo);
+    }
+
+
+    public function testSummaryAndDescriptionMethod()
+    {
+        Route::post('api/v1/users/store', [UserController::class, 'store']);
+
+        $response    = $this->get(route('request-docs.api'))
+            ->assertStatus(Response::HTTP_OK);
+        $docs        = collect($response->json());
+        $userRoute   = $docs
+            ->filter(fn(array $item) => Str::startsWith($item['uri'], ['api']));
+        $summary     = $userRoute->pluck('summary')->get(0);
+        $description = $userRoute->pluck('description')->get(0);
+
+        $expectedSummary     = 'Store a newly created resource in storage.';
+        $expectedDescription = 'This method creates a user when validations are met.';
+
+        $this->assertSame($expectedSummary, $summary);
+        $this->assertSame($description, $expectedDescription);
+    }
+
+    public function testRuleOrder()
+    {
+        Route::post('api/v1/users/store', [UserController::class, 'store']);
+
+        $response   = $this->get(route('request-docs.api'))
+            ->assertStatus(Response::HTTP_OK);
+        $docs       = collect($response->json());
+        $userRoute  = $docs
+            ->filter(fn(array $item) => Str::startsWith($item['uri'], ['api']));
+        $rulesOrder = $userRoute->pluck('rules_order')->get(0);
+
+        $this->assertSame(config('request-docs.rules_order'), $rulesOrder);
+    }
+
+    public function testTag()
+    {
+        Route::post('api/v1/users/store', [UserController::class, 'store']);
+
+        $response  = $this->get(route('request-docs.api'))
+            ->assertStatus(Response::HTTP_OK);
+        $docs      = collect($response->json());
+        $userRoute = $docs
+            ->filter(fn(array $item) => Str::startsWith($item['uri'], ['api']));
+        $tag       = $userRoute->pluck('tag')->get(0);
+
+        $this->assertSame('User', $tag);
+    }
 }

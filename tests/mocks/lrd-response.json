@@ -43,8 +43,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -59,7 +59,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tag": "Welcome"
     },
     {
         "uri": "/",
@@ -105,8 +105,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -121,7 +121,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tag": "Welcome"
     },
     {
         "uri": "welcome",
@@ -167,8 +167,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -183,7 +183,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tag": "Welcome"
     },
     {
         "uri": "welcome",
@@ -229,8 +229,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -245,7 +245,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tag": "Welcome"
     },
     {
         "uri": "welcome/{id}",
@@ -274,8 +274,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -290,7 +290,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tag": "Welcome"
     },
     {
         "uri": "welcome/{id}",
@@ -319,8 +319,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -335,7 +335,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tag": "Welcome"
     },
     {
         "uri": "welcome",
@@ -372,8 +372,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -388,7 +388,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tag": "Welcome"
     },
     {
         "uri": "welcome",
@@ -424,8 +424,8 @@
             "401"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -440,7 +440,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tag": "Welcome"
     },
     {
         "uri": "welcome/patch",
@@ -476,8 +476,8 @@
             "401"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -492,7 +492,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tag": "Welcome"
     },
     {
         "uri": "welcome",
@@ -523,8 +523,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -539,7 +539,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tag": "Welcome"
     },
     {
         "uri": "health",
@@ -566,8 +566,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -582,7 +582,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tag": "Welcome"
     },
     {
         "uri": "health",
@@ -609,8 +609,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -625,7 +625,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tag": "Welcome"
     },
     {
         "uri": "single",
@@ -652,8 +652,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -668,7 +668,7 @@
             "max",
             "nullable"
         ],
-        "tags": ""
+        "tag": ""
     },
     {
         "uri": "single",
@@ -695,8 +695,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -711,7 +711,7 @@
             "max",
             "nullable"
         ],
-        "tags": ""
+        "tag": ""
     },
     {
         "uri": "welcome/no-rules",
@@ -738,8 +738,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -754,7 +754,7 @@
             "max",
             "nullable"
         ],
-        "tags": "Welcome"
+        "tag": "Welcome"
     },
     {
         "uri": "comments-on-request-rules-method",
@@ -799,8 +799,8 @@
             "244"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -815,7 +815,7 @@
             "max",
             "nullable"
         ],
-        "tags": ""
+        "tag": ""
     },
     {
         "uri": "closure",
@@ -831,8 +831,8 @@
         "doc_block": "",
         "responses": [],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -847,7 +847,7 @@
             "max",
             "nullable"
         ],
-        "tags": ""
+        "tag": ""
     },
     {
         "uri": "closure",
@@ -863,8 +863,8 @@
         "doc_block": "",
         "responses": [],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -879,7 +879,7 @@
             "max",
             "nullable"
         ],
-        "tags": ""
+        "tag": ""
     },
     {
         "uri": "accounts",
@@ -906,8 +906,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -922,7 +922,7 @@
             "max",
             "nullable"
         ],
-        "tags": ""
+        "tag": ""
     },
     {
         "uri": "accounts",
@@ -949,8 +949,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -965,7 +965,7 @@
             "max",
             "nullable"
         ],
-        "tags": ""
+        "tag": ""
     },
     {
         "uri": "accounts",
@@ -992,8 +992,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -1008,7 +1008,7 @@
             "max",
             "nullable"
         ],
-        "tags": ""
+        "tag": ""
     },
     {
         "uri": "accounts/{account}",
@@ -1037,8 +1037,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -1053,7 +1053,7 @@
             "max",
             "nullable"
         ],
-        "tags": ""
+        "tag": ""
     },
     {
         "uri": "accounts/{account}",
@@ -1082,8 +1082,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -1098,7 +1098,7 @@
             "max",
             "nullable"
         ],
-        "tags": ""
+        "tag": ""
     },
     {
         "uri": "accounts/{account}",
@@ -1127,8 +1127,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -1143,7 +1143,7 @@
             "max",
             "nullable"
         ],
-        "tags": ""
+        "tag": ""
     },
     {
         "uri": "accounts/{account}",
@@ -1172,8 +1172,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -1188,7 +1188,7 @@
             "max",
             "nullable"
         ],
-        "tags": ""
+        "tag": ""
     },
     {
         "uri": "accounts/{account}",
@@ -1217,8 +1217,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -1233,7 +1233,7 @@
             "max",
             "nullable"
         ],
-        "tags": ""
+        "tag": ""
     },
     {
         "uri": "match",
@@ -1260,8 +1260,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -1276,7 +1276,7 @@
             "max",
             "nullable"
         ],
-        "tags": ""
+        "tag": ""
     },
     {
         "uri": "match",
@@ -1303,8 +1303,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -1319,7 +1319,7 @@
             "max",
             "nullable"
         ],
-        "tags": ""
+        "tag": ""
     },
     {
         "uri": "match",
@@ -1346,8 +1346,8 @@
             "503"
         ],
         "examples": [],
-        "fieldInfo": [],
-        "rulesOrder": [
+        "field_info": [],
+        "rules_order": [
             "required",
             "required_if",
             "file",
@@ -1362,6 +1362,6 @@
             "max",
             "nullable"
         ],
-        "tags": ""
+        "tag": ""
     }
 ]

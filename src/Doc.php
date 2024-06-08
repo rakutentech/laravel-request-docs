@@ -439,7 +439,12 @@ class Doc implements Arrayable
      */
     public function setFieldInfo(array $fieldInfo): void
     {
-        $this->fieldInfo = $fieldInfo;
+        foreach ($fieldInfo as $key => $item) {
+            $this->fieldInfo[$key] = [
+                'description' => $item,
+                'example'     => $this->examples[$key] ?? ''
+            ];
+        }
     }
 
     /**

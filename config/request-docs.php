@@ -180,7 +180,14 @@ return [
     'exclude_fields' => [
     ],
 
+    // Use factory to create data examples
     'use_factory' => false,
+
+    // Regex to extract the model name from the controller name
+    'pattern_model_from_controller_name' => '/APIController$/',
+
+    // Path where the project's factories are located
+    'factory_path' => 'Database\Factories',
 
     'rules_order' => [
         'required',

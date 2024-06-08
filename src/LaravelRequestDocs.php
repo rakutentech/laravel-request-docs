@@ -288,10 +288,6 @@ class LaravelRequestDocs
                             $requestObject = $reflectionClass->newInstanceWithoutConstructor();
                         }
 
-                        if (method_exists($requestObject, 'fieldDescriptions')) {
-                            $doc->setFieldInfo($requestObject->fieldDescriptions());
-                        }
-
                         foreach (config('request-docs.rules_methods') as $requestMethod) {
                             if (!method_exists($requestObject, $requestMethod)) {
                                 continue;
@@ -314,6 +310,10 @@ class LaravelRequestDocs
                             $doc->mergeRules($requestMethodDocRules);
                             if (config('request-docs.use_factory')) {
                                 $this->appendExample($doc);
+                            }
+
+                            if (method_exists($requestObject, 'fieldDescriptions')) {
+                                $doc->setFieldInfo($requestObject->fieldDescriptions());
                             }
                         }
                     } catch (Throwable $e) {
@@ -362,24 +362,26 @@ class LaravelRequestDocs
     public function appendExample(Doc $doc): void
     {
         try {
-            $controllerName = class_basename($doc->getController());
-            $modelName      = Str::replace('APIController', '', $controllerName);
-            $fullModelName  = "App\\Models\\" . $modelName;
+            $modelName       = Str::replaceMatches(
+                config('request-docs.pattern_model_from_controller_name'),
+                '',
+                class_basename($doc->getController())
+            );
+            $fullFactoryName = config('request-docs.factory_path') . "\\{$modelName}Factory";
 
-            if (!class_exists($fullModelName)) {
+            if (!class_exists($fullFactoryName)) {
                 return;
             }
 
-            /** @var \Illuminate\Database\Eloquent\Model $model */
-            $model = app($fullModelName);
-
-            if (!method_exists($model, 'factory')) {
-                return;
-            }
-
+            /** @var \Illuminate\Database\Eloquent\Factories\Factory $factory */
+            $factory       = app($fullFactoryName);
             $excludeFields = config('request-docs.exclude_fields') ?? [];
-            $example       = $model->factory()->make()->toArray();
-            $example       = array_filter($example, fn($key) => !in_array($key, $excludeFields), ARRAY_FILTER_USE_KEY);
+            $example       = $factory::new()->make()->toArray();
+            $example       = array_filter(
+                $example,
+                fn($key) => !in_array($key, $excludeFields),
+                ARRAY_FILTER_USE_KEY
+            );
             $doc->mergeExamples($example);
         } catch (Throwable $e) {
             // Do nothing.
