@@ -362,7 +362,7 @@ class LaravelRequestDocs
     public function appendExample(Doc $doc): void
     {
         try {
-            $modelName       = Str::replaceMatches(
+            $modelName       = preg_replace(
                 config('request-docs.pattern_model_from_controller_name'),
                 '',
                 class_basename($doc->getController())
