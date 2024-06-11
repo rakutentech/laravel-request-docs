@@ -97,17 +97,18 @@ export default function ApiInfoRules(props: Props) {
                                         </div>
                                         <div className="col-span-4">
                                             <code
-                                                className="text-xs text-gray-500">{infos?.[mainRule]?.description} </code>
+                                                className="text-xs text-gray-500">{infos?.[mainRule]?.description.toString()} </code>
                                         </div>
                                     </div>
                                 )}
-                                {infos?.[mainRule]?.example && (
+                                {infos?.[mainRule]?.example.toString() && (
                                     <div className="grid grid-cols-5 pl-10">
                                         <div className="col-span-1">
                                             <code className="text-xs text-gray-500">Example: </code>
                                         </div>
                                         <div className="col-span-4">
-                                            <code className="text-xs text-gray-500">{infos?.[mainRule]?.example} </code>
+                                            <code
+                                                className="text-xs text-gray-500">{infos?.[mainRule]?.example.toString()} </code>
                                         </div>
                                     </div>
                                 )}
