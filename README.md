@@ -237,17 +237,9 @@ Descriptions and examples are used to generate documentation in OpenAPI format
     public function fieldDescriptions(): array
     {
         return [
-            'name' => [
-                'description' => 'Name of user',
-                'example' => 'Jhon Doe'
-            ],
-            'password' => [
-                'description' => 'The password of the user being created',
-                'example' => '###123@@@890'
-            ],
-            'remember' => [
-                'description' => 'Whether or not the user should be reminded'
-            ],
+            'name' => 'Name of user'
+            'password' => 'The password of the user being created',
+            'remember' => 'Whether or not the user should be reminded'
         ];
     }
 ```
