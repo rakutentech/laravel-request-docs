@@ -231,6 +231,43 @@ class LaravelRequestDocs
                 continue;
             }
 
+            // Use a method in controller to get rules.
+            // Name of the method can be changed in config.
+            $controllerRulesMethod = config('request-docs.controller_rules.method', null);
+
+            // Name of the parameter to pass the method name to the rules function.
+            $controllerMethodRulesParameter = config('request-docs.controller_rules.parameter_for_method_name', 'method');
+
+            // Check if the feature is enabled and the controller has the "rules" method.
+            if ($controllerRulesMethod && method_exists($doc->getControllerFullPath(), $controllerRulesMethod)) {
+                // Function to get rules for the controller.
+                $rulesMethod = new ReflectionMethod($doc->getControllerFullPath(), $controllerRulesMethod);
+
+                // Create a faux instance of the controller to call the rules function.
+                $fauxControllerClass = new ReflectionClass($doc->getControllerFullPath());
+                // A controller instance is needed to call the rules method.
+                $fauxControllerInstance = $fauxControllerClass->newInstanceWithoutConstructor();
+
+                // Check if "$method" is a parameter in the "rules" function.
+                // If so, we will pass the endpoint method name to the rules function.
+                $rulesMethodParams = $rulesMethod->getParameters();
+                $rulesMethodParamNames = array_map(fn ($param) => $param->getName(), $rulesMethodParams);
+                if (in_array($controllerMethodRulesParameter, $rulesMethodParamNames)) {
+                    // Get the index of the "method" parameter.
+                    $methodIndex = array_search($controllerMethodRulesParameter, $rulesMethodParamNames);
+
+                    // Fill the parameters with null values.
+                    $methodParams = array_fill(0, count($rulesMethodParams), null);
+
+                    // Replace the "method" parameter with the actual method name.
+                    $methodParams[$methodIndex] = $doc->getMethod();
+
+                    $doc->mergeRules($this->flattenRules($rulesMethod->invokeArgs($fauxControllerInstance, $methodParams)));
+                } else {
+                    $doc->mergeRules($this->flattenRules($rulesMethod->invoke($fauxControllerInstance)));
+                }
+            }
+
             $controllerReflectionMethod = new ReflectionMethod($doc->getControllerFullPath(), $doc->getMethod());
 
             $controllerMethodDocComment = $this->getDocComment($controllerReflectionMethod);
