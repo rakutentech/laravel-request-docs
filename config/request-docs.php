@@ -41,6 +41,13 @@ return [
         'rules'
     ],
 
+    // A method in the controller can be used as source of rules
+    // Uncomment 'method' to use this feature
+    'controller_rules' => [
+        //    'method' => 'rules', // method name in controller
+        //    'parameter_for_method_name' => 'method', // parameter name to pass the function name of the controller method
+    ],
+
     // Can be overridden as // @LRDresponses 200|400|401
     'default_responses' => [ "200", "400", "401", "403", "404", "405", "422", "429", "500", "503"],
 
