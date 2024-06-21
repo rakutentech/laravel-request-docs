@@ -236,7 +236,7 @@ class LaravelRequestDocs
             $controllerRulesMethod = config('request-docs.controller_rules.method', null);
 
             // Name of the parameter to pass the method name to the rules function.
-            $controllerMethodRulesParameter = config('request-docs.controller_rules.parameter_for_method_name', 'method');
+            $controllerRulesMethodParameter = config('request-docs.controller_rules.parameter_for_method_name', 'method');
 
             // Check if the feature is enabled and the controller has the "rules" method.
             if ($controllerRulesMethod && method_exists($doc->getControllerFullPath(), $controllerRulesMethod)) {
@@ -252,19 +252,24 @@ class LaravelRequestDocs
                 // If so, we will pass the endpoint method name to the rules function.
                 $rulesMethodParams = $rulesMethod->getParameters();
                 $rulesMethodParamNames = array_map(fn ($param) => $param->getName(), $rulesMethodParams);
-                if (in_array($controllerMethodRulesParameter, $rulesMethodParamNames)) {
-                    // Get the index of the "method" parameter.
-                    $methodIndex = array_search($controllerMethodRulesParameter, $rulesMethodParamNames);
+                try {
+                    if (in_array($controllerRulesMethodParameter, $rulesMethodParamNames)) {
+                        // Get the index of the "method" parameter.
+                        $methodIndex = array_search($controllerRulesMethodParameter, $rulesMethodParamNames);
 
-                    // Fill the parameters with null values.
-                    $methodParams = array_fill(0, count($rulesMethodParams), null);
+                        // Fill the parameters with null values.
+                        $methodParams = array_fill(0, count($rulesMethodParams), null);
 
-                    // Replace the "method" parameter with the actual method name.
-                    $methodParams[$methodIndex] = $doc->getMethod();
+                        // Replace the "method" parameter with the actual method name.
+                        $methodParams[$methodIndex] = $doc->getMethod();
 
-                    $doc->mergeRules($this->flattenRules($rulesMethod->invokeArgs($fauxControllerInstance, $methodParams)));
-                } else {
-                    $doc->mergeRules($this->flattenRules($rulesMethod->invoke($fauxControllerInstance)));
+                        $doc->mergeRules($this->flattenRules($rulesMethod->invokeArgs($fauxControllerInstance, $methodParams)));
+                    } else {
+                        $doc->mergeRules($this->flattenRules($rulesMethod->invoke($fauxControllerInstance)));
+                    }
+                } catch (Throwable $e) {
+                    // This is in case the rules method raises an exception.
+                    // Do nothing.
                 }
             }
 
