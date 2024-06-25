@@ -236,7 +236,7 @@ class LaravelRequestDocs
             $controllerRulesMethod = config('request-docs.controller_rules.method', null);
 
             // Name of the parameter to pass the method name to the rules function.
-            $controllerRulesMethodParameter = config('request-docs.controller_rules.parameter_for_method_name', 'method');
+            $controllerRulesMethodParameter = 'method';
 
             // Check if the feature is enabled and the controller has the "rules" method.
             if ($controllerRulesMethod && method_exists($doc->getControllerFullPath(), $controllerRulesMethod)) {
