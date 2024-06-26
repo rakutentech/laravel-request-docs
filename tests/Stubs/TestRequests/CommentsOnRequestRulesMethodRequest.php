@@ -18,6 +18,7 @@ class CommentsOnRequestRulesMethodRequest extends FormRequest
      * @LRDparam extra_rules_field_2 string|nullable|max:32
      *  // duplicate param in controller
      * @LRDparam this_is_a_duplicate_param request description
+     * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
     public function rules(): array
     {

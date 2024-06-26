@@ -16,14 +16,6 @@ class TestCase extends Orchestra
         $this->registerRoutes();
     }
 
-    public function getEnvironmentSetUp($app): void
-    {
-        app()->setBasePath(__DIR__ . '/../');
-
-        $app['config']->set('database.default', 'testing');
-        $app['config']->set('app.debug', true);
-    }
-
     public function registerRoutes(): void
     {
         Route::get('/', [TestControllers\WelcomeController::class, 'index']);
@@ -53,6 +45,20 @@ class TestCase extends Orchestra
         Route::options('options_is_not_included', static fn () => false);
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function getEnvironmentSetUp($app)
+    {
+        app()->setBasePath(__DIR__ . '/../');
+
+        $app['config']->set('database.default', 'testing');
+        $app['config']->set('app.debug', true);
+    }
+
+    /**
+     * @inheritDoc
+     */
     protected function getPackageProviders($app)
     {
         return [

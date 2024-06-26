@@ -9,7 +9,7 @@ namespace Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers;
  */
 class SingleActionController
 {
-    public function __invoke()
+    public function __invoke(): int
     {
         return 1;
     }

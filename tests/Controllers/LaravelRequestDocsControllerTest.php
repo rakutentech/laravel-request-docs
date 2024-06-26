@@ -16,7 +16,7 @@ use Rakutentech\LaravelRequestDocs\Tests\TestCase;
 
 class LaravelRequestDocsControllerTest extends TestCase
 {
-    public function testApi(): void
+    public function testApiMain(): void
     {
         $response = $this->get(route('request-docs.api'))
             ->assertStatus(Response::HTTP_OK);
@@ -284,46 +284,60 @@ class LaravelRequestDocsControllerTest extends TestCase
 
         $docs = collect($response->json());
 
-        $grouped = $docs
-            ->filter(static fn (array $item) => Str::startsWith($item['uri'], ['api']))
-            ->map(static fn (array $item) => collect($item)->only(['group', 'group_index'])->toArray())
-            ->values()
-            ->toArray();
-
         $expected = [
-            [
-                'group'       => 'api/v1/health',
-                'group_index' => 0,
+            'api/v1/health' => [
+                [
+                    'uri'         => 'api/v1/health',
+                    'group'       => 'api/v1/health',
+                    'group_index' => 0,
+                ],
+                [
+                    'uri'         => 'api/v1/health',
+                    'group'       => 'api/v1/health',
+                    'group_index' => 1,
+                ],
+                [
+                    'uri'         => 'api/v1/health',
+                    'group'       => 'api/v1/health',
+                    'group_index' => 2,
+                ],
             ],
-            [
-                'group'       => 'api/v1/health',
-                'group_index' => 1,
-            ],
-            [
-                'group'       => 'api/v1/health',
-                'group_index' => 2,
-            ],
-            [
-                'group'       => 'api/v1/users',
-                'group_index' => 0,
-            ],
-            [
-                'group'       => 'api/v1/users',
-                'group_index' => 1,
-            ],
-            [
-                'group'       => 'api/v1/users',
-                'group_index' => 2,
-            ],
-            [
-                'group'       => 'api/v1/users',
-                'group_index' => 3,
-            ],
-            [
-                'group'       => 'api/v1/users',
-                'group_index' => 4,
+            'api/v1/users'  => [
+                [
+                    'uri'         => 'api/v1/users/store',
+                    'group'       => 'api/v1/users',
+                    'group_index' => 0,
+                ],
+                [
+                    'uri'         => 'api/v1/users',
+                    'group'       => 'api/v1/users',
+                    'group_index' => 1,
+                ],
+                [
+                    'uri'         => 'api/v1/users',
+                    'group'       => 'api/v1/users',
+                    'group_index' => 2,
+                ],
+                [
+                    'uri'         => 'api/v1/users/update',
+                    'group'       => 'api/v1/users',
+                    'group_index' => 3,
+                ],
+                [
+                    'uri'         => 'api/v1/users/destroy',
+                    'group'       => 'api/v1/users',
+                    'group_index' => 4,
+                ],
             ],
         ];
+
+        $grouped = $docs
+            ->filter(static fn (array $item) => Str::startsWith($item['uri'], ['users', 'api']))
+            ->map(static fn (array $item) => collect($item)->only(['uri', 'group', 'group_index'])->toArray())
+            ->groupBy('group')
+            ->toArray();
+
+        $this->assertSame($expected, $grouped);
     }
 
     public function testGroupByURIBackwardCompatible(): void

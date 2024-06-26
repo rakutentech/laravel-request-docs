@@ -75,7 +75,7 @@ class Doc implements Arrayable
     /**
      * A list of route path parameters, such as `/users/{id}`.
      *
-     * @var array<string, string>
+     * @var array<string, string[]>
      */
     private array $pathParameters;
 
@@ -92,7 +92,7 @@ class Doc implements Arrayable
     /**
      * @param  string[]  $methods
      * @param  string[]  $middlewares
-     * @param  array<string, string>  $pathParameters
+     * @param  array<string, string[]>  $pathParameters
      * @param  array<string, string[]>  $rules
      */
     public function __construct(
@@ -281,7 +281,7 @@ class Doc implements Arrayable
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, string[]>
      */
     public function getPathParameters(): array
     {

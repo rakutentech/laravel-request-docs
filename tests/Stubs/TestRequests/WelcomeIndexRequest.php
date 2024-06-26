@@ -17,6 +17,8 @@ class WelcomeIndexRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
     public function rules(): array
     {
@@ -28,9 +30,5 @@ class WelcomeIndexRequest extends FormRequest
             'page'     => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
         ];
-    }
-
-    protected function prepareForValidation(): void
-    {
     }
 }

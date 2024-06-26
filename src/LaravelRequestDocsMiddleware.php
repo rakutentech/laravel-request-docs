@@ -15,9 +15,27 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LaravelRequestDocsMiddleware extends QueryLogger
 {
-    private array $queries        = [];
-    private array $logs           = [];
-    private array $models         = [];
+    /**
+     * @var array<int, array{time: float, connection_name: string, sql: string}>
+     */
+    private array $queries = [];
+
+    /**
+     * @var array<int, object>
+     *
+     * The object structure:
+     * object{level: string, message: string, context: array<string, string>}
+     */
+    private array $logs = [];
+
+    /**
+     * @var array<class-string, array<string, int>>
+     */
+    private array $models = [];
+
+    /**
+     * @var array<int, array{event: string, model: class-string}>
+     */
     private array $modelsTimeline = [];
 
     /**
@@ -124,18 +142,10 @@ class LaravelRequestDocsMiddleware extends QueryLogger
 
     public function listenToModels(): void
     {
-        Event::listen('eloquent.*', function ($event, $models): void {
+        Event::listen('eloquent.*', function (string $event, $models): void {
             foreach (array_filter($models) as $model) {
                 // doing and booted ignore
-                if (
-                    Str::startsWith($event, 'eloquent.booting')
-                    || Str::startsWith($event, 'eloquent.booted')
-                    || Str::startsWith($event, 'eloquent.retrieving')
-                    || Str::startsWith($event, 'eloquent.creating')
-                    || Str::startsWith($event, 'eloquent.saving')
-                    || Str::startsWith($event, 'eloquent.updating')
-                    || Str::startsWith($event, 'eloquent.deleting')
-                ) {
+                if ($this->shouldIgnore($event)) {
                     continue;
                 }
 
@@ -160,5 +170,19 @@ class LaravelRequestDocsMiddleware extends QueryLogger
                 $this->models[$class][$event] += 1;
             }
         });
+    }
+
+    /**
+     * Event of doing and booted ignore
+     */
+    private function shouldIgnore(string $event): bool
+    {
+        return Str::startsWith($event, 'eloquent.booting')
+            || Str::startsWith($event, 'eloquent.booted')
+            || Str::startsWith($event, 'eloquent.retrieving')
+            || Str::startsWith($event, 'eloquent.creating')
+            || Str::startsWith($event, 'eloquent.saving')
+            || Str::startsWith($event, 'eloquent.updating')
+            || Str::startsWith($event, 'eloquent.deleting');
     }
 }

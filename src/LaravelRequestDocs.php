@@ -136,6 +136,8 @@ class LaravelRequestDocs
      * @return \Illuminate\Support\Collection<int, \Rakutentech\LaravelRequestDocs\Doc>
      * @throws \ReflectionException
      */
+    // TODO Should reduce complexity
+    // phpcs:ignore
     public function getControllersInfo(array $onlyMethods): Collection
     {
         $docs = collect();
@@ -159,7 +161,7 @@ class LaravelRequestDocs
 
             $routeMethods = array_intersect($route->methods, $onlyMethods);
 
-            if (empty($routeMethods)) {
+            if (count($routeMethods) === 0) {
                 continue;
             }
 
@@ -210,6 +212,8 @@ class LaravelRequestDocs
      * @return \Illuminate\Support\Collection<int, \Rakutentech\LaravelRequestDocs\Doc>
      * @throws \ReflectionException
      */
+    // TODO Should reduce complexity
+    // phpcs:ignore
     public function appendRequestRules(Collection $docs): Collection
     {
         foreach ($docs as $doc) {
@@ -379,15 +383,15 @@ class LaravelRequestDocs
 
         return collect($rules)
             ->filter(static fn ($item) => count($item[0]) > 0)
-            // @phpstan-ignore-next-line
-            ->transform(static function ($item) {
+            ->map(static function (array $item) {
                 $fieldName         = Str::of($item[0][0])->replace(['"', "'"], '');
                 $definedFieldRules = collect(array_slice($item[0], 1))->transform(static fn ($rule) => Str::of($rule)->replace(['"', "'"], '')->__toString())->toArray();
 
                 return ['key' => $fieldName, 'rules' => $definedFieldRules];
             })
             ->keyBy('key')
-            ->transform(static fn ($item) => $item['rules'])->toArray();
+            ->transform(static fn ($item) => $item['rules'])
+            ->toArray();
     }
 
     /**

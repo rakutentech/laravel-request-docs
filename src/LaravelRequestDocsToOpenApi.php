@@ -2,12 +2,57 @@
 
 namespace Rakutentech\LaravelRequestDocs;
 
+/**
+ * @phpstan-type OpenApi array{
+ *     openapi: string,
+ *     info: array{
+ *         version: string,
+ *         title: string,
+ *         description: string,
+ *         license: array{
+ *             name: string,
+ *             url: string,
+ *         },
+ *     },
+ *     servers: array{
+ *         url: string,
+ *     }
+ *  }
+ *
+ * @phpstan-type Parameter array{
+ *      name: string,
+ *      description: string,
+ *      in: string,
+ *      style: string,
+ *      required: bool,
+ *      schema: array{
+ *          type: string
+ *      }
+ *  }
+ *
+ * @phpstan-type Property array{type: string, nullable: bool, format: string}
+ *
+ * @phpstan-type RequestBody array{
+ *     description: string,
+ *     content: array{
+ *         string: array{
+ *             schema: array{
+ *                 type: string,
+ *                 properties: array<string, Property>
+ *             }
+ *         }
+ *     }
+ * }
+ */
 class LaravelRequestDocsToOpenApi
 {
-    private array $openApi = [];
+    /**
+     * @var OpenApi
+     */
+    private array $openApi;
 
     /**
-     * @param \Rakutentech\LaravelRequestDocs\Doc[] $docs
+     * @param  \Rakutentech\LaravelRequestDocs\Doc[]  $docs
      * @return $this
      */
     public function openApi(array $docs): self
@@ -35,17 +80,32 @@ class LaravelRequestDocsToOpenApi
         return collect($this->openApi)->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 
+    /**
+     * @return OpenApi
+     */
     public function toArray(): array
     {
         return $this->openApi;
     }
 
+    /**
+     * @return array<string, array{
+     *     description: string,
+     *     content: array{
+     *         string: array{
+     *             schema: array{
+     *                 type: string
+     *             }
+     *         }
+     *     }
+     * }>
+     */
     protected function setAndFilterResponses(Doc $doc): array
     {
         $docResponses    = $doc->getResponses();
         $configResponses = config('request-docs.open_api.responses', []);
 
-        if (empty($docResponses) || empty($configResponses)) {
+        if (count($docResponses) === 0 || count($configResponses) === 0) {
             return $configResponses;
         }
 
@@ -63,12 +123,11 @@ class LaravelRequestDocsToOpenApi
         return str_contains($rule, 'file') || str_contains($rule, 'image');
     }
 
-    protected function makeQueryParameterItem(string $attribute, $rule): array
+    /**
+     * @return Parameter
+     */
+    protected function makeQueryParameterItem(string $attribute, string $rule): array
     {
-        if (is_array($rule)) {
-            $rule = implode('|', $rule);
-        }
-
         return [
             'name'        => $attribute,
             'description' => $rule,
@@ -81,7 +140,11 @@ class LaravelRequestDocsToOpenApi
         ];
     }
 
-    protected function makePathParameterItem(string $attribute, $rule): array
+    /**
+     * @param  string[]  $rule
+     * @return Parameter
+     */
+    protected function makePathParameterItem(string $attribute, array $rule): array
     {
         if (is_array($rule)) {
             $rule = implode('|', $rule);
@@ -99,6 +162,9 @@ class LaravelRequestDocsToOpenApi
         ];
     }
 
+    /**
+     * @return RequestBody
+     */
     protected function makeRequestBodyItem(string $contentType): array
     {
         return [
@@ -114,6 +180,9 @@ class LaravelRequestDocsToOpenApi
         ];
     }
 
+    /**
+     * @return Property
+     */
     protected function makeRequestBodyContentPropertyItem(string $rule): array
     {
         $type = $this->getAttributeType($rule);
@@ -209,8 +278,10 @@ class LaravelRequestDocsToOpenApi
     }
 
     /**
-     * @param \Rakutentech\LaravelRequestDocs\Doc[] $docs
+     * @param  \Rakutentech\LaravelRequestDocs\Doc[]  $docs
      */
+    // TODO Should reduce complexity
+    // phpcs:ignore
     private function docsToOpenApi(array $docs): void
     {
         $this->openApi['paths'] = [];
@@ -263,7 +334,8 @@ class LaravelRequestDocsToOpenApi
             foreach ($doc->getRules() as $attribute => $rules) {
                 foreach ($rules as $rule) {
                     if ($isGet) {
-                        $parameter                                                             = $this->makeQueryParameterItem($attribute, $rule);
+                        $parameter = $this->makeQueryParameterItem($attribute, $rule);
+
                         $this->openApi['paths'][$uriLeadingSlash][$httpMethod]['parameters'][] = $parameter;
                     }
 

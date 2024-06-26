@@ -94,6 +94,9 @@ class RoutePath
         return $pathParameters;
     }
 
+    /**
+     * @return array<int, string>
+     */
     private function getOptionalParameterNames(string $uri): array
     {
         preg_match_all('/\{(\w+?)\?\}/', $uri, $matches);

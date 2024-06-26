@@ -23,7 +23,7 @@ class CommentsOnRequestRulesMethodController
      *
      * After
      */
-    public function index(CommentsOnRequestRulesMethodRequest $request)
+    public function index(CommentsOnRequestRulesMethodRequest $request): int
     {
         return 1;
     }

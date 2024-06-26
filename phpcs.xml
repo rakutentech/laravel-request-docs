@@ -136,7 +136,13 @@
     <rule ref="SlevomatCodingStandard.Functions.UselessParameterDefaultValue"/>
     <rule ref="SlevomatCodingStandard.Namespaces.AlphabeticallySortedUses"/>
     <!--<rule ref="SlevomatCodingStandard.Namespaces.DisallowGroupUse"/>-->
-    <rule ref="SlevomatCodingStandard.Namespaces.FullyQualifiedClassNameInAnnotation"/>
+    <rule ref="SlevomatCodingStandard.Namespaces.FullyQualifiedClassNameInAnnotation">
+        <properties>
+            <property name="ignoredAnnotationNames" type="array">
+                <element value="@phpstan-type"/>
+            </property>
+        </properties>
+    </rule>
     <!--<rule ref="SlevomatCodingStandard.Namespaces.FullyQualifiedExceptions"/>-->
     <!--<rule ref="SlevomatCodingStandard.Namespaces.FullyQualifiedGlobalConstants"/>-->
     <!--<rule ref="SlevomatCodingStandard.Namespaces.FullyQualifiedGlobalFunctions"/>-->
@@ -187,7 +193,11 @@
     <rule ref="SlevomatCodingStandard.Variables.DisallowVariableVariable"/>
     <!--<rule ref="SlevomatCodingStandard.Variables.DisallowSuperGlobalVariable"/>-->
     <rule ref="SlevomatCodingStandard.Variables.DuplicateAssignmentToVariable"/>
-    <rule ref="SlevomatCodingStandard.Variables.UnusedVariable"/>
+    <rule ref="SlevomatCodingStandard.Variables.UnusedVariable">
+        <properties>
+            <property name="ignoreUnusedValuesWhenOnlyKeysAreUsedInForeach" value="true"/>
+        </properties>
+    </rule>
     <rule ref="SlevomatCodingStandard.Variables.UselessVariable"/>
     <rule ref="SlevomatCodingStandard.Whitespaces.DuplicateSpaces">
         <properties>

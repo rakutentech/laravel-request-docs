@@ -22,7 +22,7 @@ class LaravelRequestDocsMiddlewareTest extends TestCase
     {
         Route::get('middleware', static fn () => 1)->middleware(LaravelRequestDocsMiddleware::class);
 
-        $response = $this->get('middleware', ['X-Request-LRD' => true])
+        $this->get('middleware', ['X-Request-LRD' => true])
             ->assertStatus(200)
             ->assertExactJson([1]);
     }
