@@ -15,10 +15,11 @@ class NotFoundWhenProduction
     {
         if (app()->environment('prod', 'production')) {
             return response()->json([
-                'status' => 'forbidden',
-                'status_code' => Response::HTTP_FORBIDDEN
+                'status'      => 'forbidden',
+                'status_code' => Response::HTTP_FORBIDDEN,
             ], Response::HTTP_FORBIDDEN);
         }
+
         return $next($request);
     }
 }

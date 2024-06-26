@@ -8,8 +8,6 @@ class Post extends Model
 {
     /**
      * Test with different route key name.
-     *
-     * @return string
      */
     public function getRouteKeyName(): string
     {

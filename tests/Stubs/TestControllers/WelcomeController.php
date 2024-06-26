@@ -12,6 +12,7 @@ class WelcomeController
 {
     /**
      * Before
+     *
      * @lrd:start
      * #Hello markdown
      * ## Documentation for /my route

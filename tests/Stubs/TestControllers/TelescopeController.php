@@ -6,10 +6,8 @@ class TelescopeController
 {
     /**
      * For `config('request-docs.hide_matching')` test.
-     *
-     * @return int
      */
-    public function index()
+    public function index(): int
     {
         return 1;
     }

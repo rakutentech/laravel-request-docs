@@ -13,7 +13,6 @@ class CommentsOnRequestRulesMethodController
      * # Controller
      * ## Index Method Comment
      * @lrd:end
-     *
      * @LRDparam extra_index_field_1 string|max:32
      * // either space or pipe
      * @LRDparam extra_index_field_2 string|nullable|max:32

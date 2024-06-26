@@ -36,7 +36,7 @@ class LaravelRequestDocsMiddleware extends QueryLogger
             $jsonContent = json_encode([
                 // because php stan is not what it used to be
                 /** @phpstan-ignore-next-line */
-                'data' => $response->getData()
+                'data' => $response->getData(),
             ]);
             $response->setContent($jsonContent);
             return $response;
@@ -45,17 +45,19 @@ class LaravelRequestDocsMiddleware extends QueryLogger
         if (!config('app.debug')) {
             return $next($request);
         }
+
         if (!$request->headers->has('X-Request-LRD')) {
             return $next($request);
         }
 
-
         if (!config('request-docs.hide_sql_data')) {
             $this->listenToDB();
         }
+
         if (!config('request-docs.hide_logs_data')) {
             $this->listenToLogs();
         }
+
         if (!config('request-docs.hide_models_data')) {
             $this->listenToModels();
         }
@@ -89,43 +91,44 @@ class LaravelRequestDocsMiddleware extends QueryLogger
 
             // Add necessary headers.
             $response->headers->add([
-                'Content-Type' => 'application/json; charset=utf-8',
-                'Content-Length' => strlen($compressedContent),
+                'Content-Type'     => 'application/json; charset=utf-8',
+                'Content-Length'   => strlen($compressedContent),
                 'Content-Encoding' => 'gzip',
             ]);
 
             return $response; // Return the response object directly.
-        } else {
-            // Fallback for clients that do not support gzip.
-            $response = new Response($jsonContent);
-            $response->headers->add([
-                'Content-Type' => 'application/json; charset=utf-8',
-            ]);
-
-            return $response;
         }
+
+        // Fallback for clients that do not support gzip.
+        $response = new Response($jsonContent);
+        $response->headers->add([
+            'Content-Type' => 'application/json; charset=utf-8',
+        ]);
+
+        return $response;
     }
 
     public function listenToDB(): void
     {
-        DB::listen(function (QueryExecuted $query) {
+        DB::listen(function (QueryExecuted $query): void {
             $this->queries[] = $this->getMessages($query);
         });
     }
 
     public function listenToLogs(): void
     {
-        Log::listen(function ($message) {
+        Log::listen(function ($message): void {
             $this->logs[] = $message;
         });
     }
 
     public function listenToModels(): void
     {
-        Event::listen('eloquent.*', function ($event, $models) {
+        Event::listen('eloquent.*', function ($event, $models): void {
             foreach (array_filter($models) as $model) {
                 // doing and booted ignore
-                if (Str::startsWith($event, 'eloquent.booting')
+                if (
+                    Str::startsWith($event, 'eloquent.booting')
                     || Str::startsWith($event, 'eloquent.booted')
                     || Str::startsWith($event, 'eloquent.retrieving')
                     || Str::startsWith($event, 'eloquent.creating')
@@ -135,10 +138,11 @@ class LaravelRequestDocsMiddleware extends QueryLogger
                 ) {
                     continue;
                 }
+
                 // split $event by : and take first part
                 $event = explode(':', $event)[0];
                 $event = Str::replace('eloquent.', '', $event);
-                $class = get_class($model);
+                $class = $model::class;
 
                 $this->modelsTimeline[] = [
                     'event' => $event,
@@ -148,10 +152,12 @@ class LaravelRequestDocsMiddleware extends QueryLogger
                 if (!isset($this->models[$class])) {
                     $this->models[$class] = [];
                 }
+
                 if (!isset($this->models[$class][$event])) {
                     $this->models[$class][$event] = 0;
                 }
-                $this->models[$class][$event] = $this->models[$class][$event] + 1;
+
+                $this->models[$class][$event] += 1;
             }
         });
     }

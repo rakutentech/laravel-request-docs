@@ -7,13 +7,11 @@ use Rakutentech\LaravelRequestDocs\NotFoundWhenProduction;
 
 class NotFoundWhenProductionTest extends TestCase
 {
-    public function testForbiddenInProduction()
+    public function testForbiddenInProduction(): void
     {
         foreach (['prod', 'production'] as $production) {
             app()['env'] = $production;
-            Route::get('middleware', function () {
-                return 1;
-            })->middleware(NotFoundWhenProduction::class);
+            Route::get('middleware', static fn () => 1)->middleware(NotFoundWhenProduction::class);
 
             $this->get('middleware')
                 ->assertStatus(403)
@@ -21,11 +19,9 @@ class NotFoundWhenProductionTest extends TestCase
         }
     }
 
-    public function testHandle()
+    public function testHandle(): void
     {
-        Route::get('middleware', function () {
-            return response()->json([1]);
-        })->middleware(NotFoundWhenProduction::class);
+        Route::get('middleware', static fn () => response()->json([1]))->middleware(NotFoundWhenProduction::class);
 
         $this->get('middleware')
             ->assertStatus(200)

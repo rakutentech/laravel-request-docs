@@ -9,33 +9,27 @@ use Rakutentech\LaravelRequestDocs\LaravelRequestDocsMiddleware;
 
 class LaravelRequestDocsMiddlewareTest extends TestCase
 {
-    public function testMissingLRDHeader()
+    public function testMissingLRDHeader(): void
     {
-        Route::get('middleware', function () {
-            return ['test' => true];
-        })->middleware(LaravelRequestDocsMiddleware::class);
+        Route::get('middleware', static fn () => ['test' => true])->middleware(LaravelRequestDocsMiddleware::class);
 
         $this->get('middleware')
             ->assertStatus(200)
             ->assertExactJson(['test' => true]);
     }
 
-    public function testNotJsonResponse()
+    public function testNotJsonResponse(): void
     {
-        Route::get('middleware', function () {
-            return 1;
-        })->middleware(LaravelRequestDocsMiddleware::class);
+        Route::get('middleware', static fn () => 1)->middleware(LaravelRequestDocsMiddleware::class);
 
         $response = $this->get('middleware', ['X-Request-LRD' => true])
             ->assertStatus(200)
             ->assertExactJson([1]);
     }
 
-    public function testJsonResponseIsObject()
+    public function testJsonResponseIsObject(): void
     {
-        Route::get('middleware', function () {
-            return response()->json(['test' => true]);
-        })->middleware(LaravelRequestDocsMiddleware::class);
+        Route::get('middleware', static fn () => response()->json(['test' => true]))->middleware(LaravelRequestDocsMiddleware::class);
 
         $response = $this->get('middleware', ['X-Request-LRD' => true])
             ->assertStatus(200);
@@ -53,11 +47,9 @@ class LaravelRequestDocsMiddlewareTest extends TestCase
         $this->assertArrayHasKey('memory', $lrd);
     }
 
-    public function testJsonResponseIsNotObject()
+    public function testJsonResponseIsNotObject(): void
     {
-        Route::get('middleware', function () {
-            return response()->json('abc');
-        })->middleware(LaravelRequestDocsMiddleware::class);
+        Route::get('middleware', static fn () => response()->json('abc'))->middleware(LaravelRequestDocsMiddleware::class);
 
         $response = $this->get('middleware', ['X-Request-LRD' => true])
             ->assertStatus(200);
@@ -70,25 +62,23 @@ class LaravelRequestDocsMiddlewareTest extends TestCase
         $this->assertCount(5, $lrd);
     }
 
-    public function testResponseIsGzipable()
+    public function testResponseIsGzipable(): void
     {
-        Route::get('middleware', function () {
-            return response()->json(['test' => true]);
-        })->middleware(LaravelRequestDocsMiddleware::class);
+        Route::get('middleware', static fn () => response()->json(['test' => true]))->middleware(LaravelRequestDocsMiddleware::class);
 
         $this->get(
             'middleware',
             [
                 'X-Request-LRD'   => true,
                 'Accept-Encoding' => 'gzip',
-            ]
+            ],
         )
             ->assertStatus(200);
     }
 
-    public function testLogListenerIsWorking()
+    public function testLogListenerIsWorking(): void
     {
-        Route::get('middleware', function () {
+        Route::get('middleware', static function () {
             Log::info('aaa');
             return response()->json(['test' => true]);
         })->middleware(LaravelRequestDocsMiddleware::class);
@@ -109,9 +99,9 @@ class LaravelRequestDocsMiddlewareTest extends TestCase
         ], $lrd['logs']);
     }
 
-    public function testDBListenerIsWorking()
+    public function testDBListenerIsWorking(): void
     {
-        Route::get('middleware', function () {
+        Route::get('middleware', static function () {
             DB::select('SELECT 1');
             return response()->json(['test' => true]);
         })->middleware(LaravelRequestDocsMiddleware::class);
