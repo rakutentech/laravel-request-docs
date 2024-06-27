@@ -161,7 +161,7 @@ class LaravelRequestDocsMiddleware extends QueryLogger
                 // split $event by : and take first part
                 $event = explode(':', $event)[0];
                 $event = Str::replace('eloquent.', '', $event);
-                $class = $model::class;
+                $class = get_class($model);
 
                 $this->modelsTimeline[] = [
                     'event' => $event,

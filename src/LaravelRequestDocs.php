@@ -13,8 +13,11 @@ use Throwable;
 
 class LaravelRequestDocs
 {
-    public function __construct(private RoutePath $routePath)
+    private RoutePath $routePath;
+
+    public function __construct(RoutePath $routePath)
     {
+        $this->routePath = $routePath;
     }
 
     /**
@@ -29,7 +32,7 @@ class LaravelRequestDocs
         bool $showPut,
         bool $showPatch,
         bool $showDelete,
-        bool $showHead,
+        bool $showHead
     ): Collection {
         $filteredMethods = array_filter([
             Request::METHOD_GET    => $showGet,
@@ -183,10 +186,13 @@ class LaravelRequestDocs
                 $pathParameters[$k] = [$v];
             }
 
+            /** @var string[] $middlewares */
+            $middlewares = $route->middleware();
+
             $doc = new Doc(
                 $route->uri,
                 $routeMethods,
-                config('request-docs.hide_meta_data') ? [] : $route->middleware(),
+                config('request-docs.hide_meta_data') ? [] : $middlewares,
                 config('request-docs.hide_meta_data') ? '' : $controllerName,
                 config('request-docs.hide_meta_data') ? '' : $controllerFullPath,
                 config('request-docs.hide_meta_data') ? '' : $method,
@@ -253,7 +259,7 @@ class LaravelRequestDocs
 
                     try {
                         $requestObject = $reflectionClass->newInstance();
-                    } catch (Throwable) {
+                    } catch (Throwable $ex) {
                         $requestObject = $reflectionClass->newInstanceWithoutConstructor();
                     }
 
@@ -265,7 +271,7 @@ class LaravelRequestDocs
                         try {
                             $doc->mergeRules($this->flattenRules($requestObject->$requestMethod()));
                             $requestReflectionMethod = new ReflectionMethod($requestObject, $requestMethod);
-                        } catch (Throwable) {
+                        } catch (Throwable $ex) {
                             $doc->mergeRules($this->rulesByRegex($requestClassName, $requestMethod));
                             $requestReflectionMethod = new ReflectionMethod($requestClassName, $requestMethod);
                         }
@@ -278,7 +284,7 @@ class LaravelRequestDocs
                         $lrdDocComments[] = $requestMethodLrdComment;
                         $doc->mergeRules($requestMethodDocRules);
                     }
-                } catch (Throwable) {
+                } catch (Throwable $ex) {
                     // Do nothing.
                 }
             }
@@ -335,7 +341,7 @@ class LaravelRequestDocs
 
         foreach ($mixedRules as $attribute => $rule) {
             if (is_object($rule)) {
-                $rules[$attribute][] = $rule::class;
+                $rules[$attribute][] = get_class($rule);
                 continue;
             }
 
@@ -343,7 +349,7 @@ class LaravelRequestDocs
                 $rulesStrs = [];
 
                 foreach ($rule as $ruleItem) {
-                    $rulesStrs[] = is_object($ruleItem) ? $ruleItem::class : $ruleItem;
+                    $rulesStrs[] = is_object($ruleItem) ? get_class($ruleItem) : $ruleItem;
                 }
 
                 $rules[$attribute][] = implode("|", $rulesStrs);

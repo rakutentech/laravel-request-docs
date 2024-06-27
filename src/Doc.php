@@ -5,7 +5,6 @@ namespace Rakutentech\LaravelRequestDocs;
 use Illuminate\Contracts\Support\Arrayable;
 
 /**
- * @template-implements \Illuminate\Contracts\Support\Arrayable<string, mixed>
  * @codeCoverageIgnore
  */
 class Doc implements Arrayable
@@ -106,7 +105,7 @@ class Doc implements Arrayable
         string $httpMethod,
         array $pathParameters,
         array $rules,
-        string $docBlock,
+        string $docBlock
     ) {
         $this->uri                = $uri;
         $this->methods            = $methods;
