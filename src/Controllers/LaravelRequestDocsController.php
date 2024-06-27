@@ -8,15 +8,16 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Rakutentech\LaravelRequestDocs\LaravelRequestDocs;
 use Rakutentech\LaravelRequestDocs\LaravelRequestDocsToOpenApi;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class LaravelRequestDocsController extends Controller
 {
     private LaravelRequestDocs $laravelRequestDocs;
+    private LaravelRequestDocsToOpenApi $laravelRequestDocsToOpenApi;
 
-    public function __construct(LaravelRequestDocs $laravelRequestDoc, private LaravelRequestDocsToOpenApi $laravelRequestDocsToOpenApi)
+    public function __construct(LaravelRequestDocs $laravelRequestDoc, LaravelRequestDocsToOpenApi $laravelRequestDocsToOpenApi)
     {
-        $this->laravelRequestDocs = $laravelRequestDoc;
+        $this->laravelRequestDocsToOpenApi = $laravelRequestDocsToOpenApi;
+        $this->laravelRequestDocs          = $laravelRequestDoc;
     }
 
     /**
@@ -82,7 +83,11 @@ class LaravelRequestDocsController extends Controller
     /**
      * @codeCoverageIgnore
      */
-    public function assets(Request $request): BinaryFileResponse|JsonResponse
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|\Illuminate\Http\JsonResponse
+     */
+    public function assets(Request $request)
     {
         $path = explode('/', $request->path());
         $path = end($path);

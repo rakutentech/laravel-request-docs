@@ -59,7 +59,10 @@ class WelcomeController
         return 1;
     }
 
-    public function health(mixed $unknown): int
+    /**
+     * @param mixed $unknown
+     */
+    public function health($unknown): int
     {
         return 1;
     }

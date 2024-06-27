@@ -31,8 +31,12 @@ class ExportRequestDocsCommand extends Command
 
     private string $exportFilePath;
 
-    public function __construct(LaravelRequestDocs $laravelRequestDoc, private LaravelRequestDocsToOpenApi $laravelRequestDocsToOpenApi)
+    private LaravelRequestDocsToOpenApi $laravelRequestDocsToOpenApi;
+
+    public function __construct(LaravelRequestDocs $laravelRequestDoc, LaravelRequestDocsToOpenApi $laravelRequestDocsToOpenApi)
     {
+        $this->laravelRequestDocsToOpenApi = $laravelRequestDocsToOpenApi;
+
         parent::__construct();
 
         $this->laravelRequestDocs = $laravelRequestDoc;

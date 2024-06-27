@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="laravel-migrations-generator" xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
-    <description>Custom code standard for Laravel Migrations Generator</description>
+    <description>Standard Based on PSR2</description>
 
     <file>src</file>
     <file>tests</file>
