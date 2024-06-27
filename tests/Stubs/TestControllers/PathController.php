@@ -21,6 +21,7 @@ class PathController
     /**
      * `$name` has no type hint, test generate with default string type.
      */
+    // phpcs:ignore
     public function optional(Request $request, $name = null): Response
     {
         return response('content');

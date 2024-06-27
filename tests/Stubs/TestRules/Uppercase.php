@@ -7,21 +7,14 @@ use Illuminate\Contracts\Validation\Rule;
 class Uppercase implements Rule
 {
     /**
-     * Create a new rule instance.
-     *
-     * @return void
+     * @inheritDoc
      */
     public function __construct()
     {
-        //
     }
 
     /**
-     * Determine if the validation rule passes.
-     *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @return bool
+     * @inheritDoc
      */
     public function passes($attribute, $value)
     {
@@ -29,9 +22,8 @@ class Uppercase implements Rule
     }
 
     /**
-     * Get the validation error message.
-     *
-     * @return string
+     * @inheritDoc
+     * @return string|string[]
      */
     public function message()
     {

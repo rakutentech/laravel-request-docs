@@ -9,29 +9,14 @@ use Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers;
 
 class TestCase extends Orchestra
 {
-
     public function setUp(): void
     {
         parent::setUp();
+
         $this->registerRoutes();
     }
 
-    protected function getPackageProviders($app)
-    {
-        return [
-            LaravelRequestDocsServiceProvider::class,
-        ];
-    }
-
-    public function getEnvironmentSetUp($app)
-    {
-        app()->setBasePath(__DIR__ . '/../');
-
-        $app['config']->set('database.default', 'testing');
-        $app['config']->set('app.debug', true);
-    }
-
-    public function registerRoutes()
+    public function registerRoutes(): void
     {
         Route::get('/', [TestControllers\WelcomeController::class, 'index']);
         Route::get('welcome', [TestControllers\WelcomeController::class, 'index']);
@@ -45,9 +30,7 @@ class TestCase extends Orchestra
         Route::delete('welcome/no-rules', [TestControllers\WelcomeController::class, 'noRules']);
         Route::post('comments-on-request-rules-method', [TestControllers\CommentsOnRequestRulesMethodController::class, 'index']);
 
-        Route::get('closure', function () {
-            return true;
-        });
+        Route::get('closure', static fn () => true);
 
         Route::apiResource('accounts', TestControllers\AccountController::class);
 
@@ -59,9 +42,28 @@ class TestCase extends Orchestra
         // Expected to be skipped
         Route::get('telescope', [TestControllers\TelescopeController::class, 'index']);
 
-        Route::options('options_is_not_included', function () {
-            return false;
-        });
+        Route::options('options_is_not_included', static fn () => false);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getEnvironmentSetUp($app)
+    {
+        app()->setBasePath(__DIR__ . '/../');
+
+        $app['config']->set('database.default', 'testing');
+        $app['config']->set('app.debug', true);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getPackageProviders($app)
+    {
+        return [
+            LaravelRequestDocsServiceProvider::class,
+        ];
     }
 
     protected function countRoutesWithLRDDoc(): int

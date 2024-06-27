@@ -1,6 +1,6 @@
 on: [push]
 
-name: "CI PHP"
+name: "CI PHP lint"
 
 jobs:
   test:
@@ -24,7 +24,7 @@ jobs:
           coverage: pcov
           extensions: intl, gd, zip, pdo, sqlite, pdo_sqlite, dom, curl, libxml, mbstring, fileinfo, exif, iconv
           ini-values: memory_limit=-1,disable_functions="",pcov.exclude="~(vendor|tests|node_modules)~",pcov.directory="./"
-          php-version: 8.3
+          php-version: 7.4
           tools: composer:v2
 
       - name: Composer Install

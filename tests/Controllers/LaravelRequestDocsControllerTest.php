@@ -4,6 +4,7 @@ namespace Rakutentech\LaravelRequestDocs\Tests\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
@@ -16,7 +17,7 @@ use Rakutentech\LaravelRequestDocs\Tests\TestCase;
 
 class LaravelRequestDocsControllerTest extends TestCase
 {
-    public function testApi()
+    public function testApiMain(): void
     {
         $response = $this->get(route('request-docs.api'))
             ->assertStatus(Response::HTTP_OK);
@@ -32,14 +33,14 @@ class LaravelRequestDocsControllerTest extends TestCase
         $this->assertSame($expected, $response->json());
     }
 
-    public function testApiCanHideMetadata()
+    public function testApiCanHideMetadata(): void
     {
         Config::set('request-docs.hide_meta_data', true);
 
         $response = $this->get(route('request-docs.api'))
             ->assertStatus(Response::HTTP_OK);
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
         $this->assertEmpty($docs->pluck('middlewares')->flatten()->toArray());
         $this->assertSame([''], $docs->pluck('controller')->flatten()->unique()->toArray());
@@ -49,12 +50,12 @@ class LaravelRequestDocsControllerTest extends TestCase
         $this->assertEmpty($docs->pluck('rules')->flatten()->toArray());
     }
 
-    public function testAbleFetchAllMethods()
+    public function testAbleFetchAllMethods(): void
     {
         $response = $this->get(route('request-docs.api'))
             ->assertStatus(Response::HTTP_OK);
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
         $this->assertSame(
             [
@@ -70,11 +71,11 @@ class LaravelRequestDocsControllerTest extends TestCase
                 ->unique()
                 ->sort()
                 ->values()
-                ->toArray()
+                ->toArray(),
         );
     }
 
-    public function testAbleFilterMethod()
+    public function testAbleFilterMethod(): void
     {
         $methodMap = [
             'showDelete' => Request::METHOD_DELETE,
@@ -89,7 +90,7 @@ class LaravelRequestDocsControllerTest extends TestCase
             $response = $this->get(route('request-docs.api') . '?' . $request . '=false')
                 ->assertStatus(Response::HTTP_OK);
 
-            $docs = collect($response->json());
+            $docs = new Collection($response->json());
 
             $expected = array_filter([
                 Request::METHOD_DELETE,
@@ -98,7 +99,7 @@ class LaravelRequestDocsControllerTest extends TestCase
                 Request::METHOD_PATCH,
                 Request::METHOD_POST,
                 Request::METHOD_PUT,
-            ], fn($expectedMethod) => $expectedMethod !== $method);
+            ], static fn ($expectedMethod) => $expectedMethod !== $method);
 
             $expected = array_values($expected);
 
@@ -109,31 +110,31 @@ class LaravelRequestDocsControllerTest extends TestCase
                     ->unique()
                     ->sort()
                     ->values()
-                    ->toArray()
+                    ->toArray(),
             );
         }
     }
 
-    public function testOnlyRouteURIStartWith()
+    public function testOnlyRouteURIStartWith(): void
     {
         Config::set('request-docs.only_route_uri_start_with', 'welcome');
 
         $response = $this->get(route('request-docs.api'))
             ->assertStatus(Response::HTTP_OK);
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
         foreach ($docs as $doc) {
             $this->assertStringStartsWith('welcome', $doc['uri']);
         }
     }
 
-    public function testSortDocsByRouteNames()
+    public function testSortDocsByRouteNames(): void
     {
         $response = $this->get(route('request-docs.api'))
             ->assertStatus(Response::HTTP_OK);
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
         // Sort manually.
         $expected = $docs->pluck('uri')->unique()->sort()->values()->toArray();
@@ -141,19 +142,19 @@ class LaravelRequestDocsControllerTest extends TestCase
         $response = $this->get(route('request-docs.api') . '?sort=route_names')
             ->assertStatus(Response::HTTP_OK);
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
         $sorted = $docs->pluck('uri')->unique()->values()->toArray();
 
         $this->assertSame($expected, $sorted);
     }
 
-    public function testSortDocsByMethodNames()
+    public function testSortDocsByMethodNames(): void
     {
         $response = $this->get(route('request-docs.api') . '?sort=method_names')
             ->assertStatus(Response::HTTP_OK);
 
-        $docs   = collect($response->json());
+        $docs   = new Collection($response->json());
         $sorted = $docs->pluck('http_method')->unique()->values()->toArray();
 
         $this->assertSame(
@@ -165,11 +166,11 @@ class LaravelRequestDocsControllerTest extends TestCase
                 Request::METHOD_DELETE,
                 Request::METHOD_HEAD,
             ],
-            $sorted
+            $sorted,
         );
     }
 
-    public function testGroupByAPIURI()
+    public function testGroupByAPIURI(): void
     {
         Route::get('users', UserController::class);
         Route::post('users', UserController::class);
@@ -185,88 +186,88 @@ class LaravelRequestDocsControllerTest extends TestCase
         $response = $this->get(route('request-docs.api') . '?groupby=api_uri')
             ->assertStatus(Response::HTTP_OK);
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
         $expected = [
             'api/users'       => [
                 [
                     'uri'         => 'api/users',
                     'group'       => 'api/users',
-                    'group_index' => 0
+                    'group_index' => 0,
                 ],
                 [
                     'uri'         => 'api/users/{id}',
                     'group'       => 'api/users',
-                    'group_index' => 1
-                ]
+                    'group_index' => 1,
+                ],
             ],
             'api/users_roles' => [
                 [
                     'uri'         => 'api/users_roles/{id}',
                     'group'       => 'api/users_roles',
-                    'group_index' => 0
-                ]
+                    'group_index' => 0,
+                ],
             ],
             'api/v1/users'    => [
                 [
                     'uri'         => 'api/v1/users',
                     'group'       => 'api/v1/users',
-                    'group_index' => 0
+                    'group_index' => 0,
                 ],
                 [
                     'uri'         => 'api/v1/users/{id}/store',
                     'group'       => 'api/v1/users',
-                    'group_index' => 1
-                ]
+                    'group_index' => 1,
+                ],
             ],
             'api/v2/users'    => [
                 [
                     'uri'         => 'api/v2/users',
                     'group'       => 'api/v2/users',
-                    'group_index' => 0
-                ]
+                    'group_index' => 0,
+                ],
             ],
             'api/v99/users'   => [
                 [
                     'uri'         => 'api/v99/users',
                     'group'       => 'api/v99/users',
-                    'group_index' => 0
-                ]
+                    'group_index' => 0,
+                ],
             ],
             'users'           => [
                 [
                     'uri'         => 'users',
                     'group'       => 'users',
-                    'group_index' => 0
+                    'group_index' => 0,
                 ],
                 [
                     'uri'         => 'users',
                     'group'       => 'users',
-                    'group_index' => 1
+                    'group_index' => 1,
                 ],
                 [
                     'uri'         => 'users',
                     'group'       => 'users',
-                    'group_index' => 2
+                    'group_index' => 2,
                 ],
                 [
                     'uri'         => 'users/update',
                     'group'       => 'users',
-                    'group_index' => 3
-                ]
-            ]
+                    'group_index' => 3,
+                ],
+            ],
         ];
 
         $grouped = $docs
-            ->filter(fn(array $item) => Str::startsWith($item['uri'], ['users', 'api']))
-            ->map(fn(array $item) => collect($item)->only(['uri', 'group', 'group_index'])->toArray())
+            ->filter(static fn (array $item) => Str::startsWith($item['uri'], ['users', 'api']))
+            ->map(static fn (array $item) => (new Collection($item))->only(['uri', 'group', 'group_index'])->toArray())
             ->groupBy('group')
             ->toArray();
 
         $this->assertSame($expected, $grouped);
     }
 
-    public function testGroupDocsIsSortedByGroupAndGroupIndex()
+    public function testGroupDocsIsSortedByGroupAndGroupIndex(): void
     {
         // Define routes with random ordering.
         Route::post('api/v1/users/store', UserController::class);
@@ -282,51 +283,65 @@ class LaravelRequestDocsControllerTest extends TestCase
         $response = $this->get(route('request-docs.api') . '?groupby=api_uri')
             ->assertStatus(Response::HTTP_OK);
 
-        $docs = collect($response->json());
-
-        $grouped = $docs
-            ->filter(fn(array $item) => Str::startsWith($item['uri'], ['api']))
-            ->map(fn(array $item) => collect($item)->only(['group', 'group_index'])->toArray())
-            ->values()
-            ->toArray();
+        $docs = new Collection($response->json());
 
         $expected = [
-            [
-                'group'       => 'api/v1/health',
-                'group_index' => 0
+            'api/v1/health' => [
+                [
+                    'uri'         => 'api/v1/health',
+                    'group'       => 'api/v1/health',
+                    'group_index' => 0,
+                ],
+                [
+                    'uri'         => 'api/v1/health',
+                    'group'       => 'api/v1/health',
+                    'group_index' => 1,
+                ],
+                [
+                    'uri'         => 'api/v1/health',
+                    'group'       => 'api/v1/health',
+                    'group_index' => 2,
+                ],
             ],
-            [
-                'group'       => 'api/v1/health',
-                'group_index' => 1
+            'api/v1/users'  => [
+                [
+                    'uri'         => 'api/v1/users/store',
+                    'group'       => 'api/v1/users',
+                    'group_index' => 0,
+                ],
+                [
+                    'uri'         => 'api/v1/users',
+                    'group'       => 'api/v1/users',
+                    'group_index' => 1,
+                ],
+                [
+                    'uri'         => 'api/v1/users',
+                    'group'       => 'api/v1/users',
+                    'group_index' => 2,
+                ],
+                [
+                    'uri'         => 'api/v1/users/update',
+                    'group'       => 'api/v1/users',
+                    'group_index' => 3,
+                ],
+                [
+                    'uri'         => 'api/v1/users/destroy',
+                    'group'       => 'api/v1/users',
+                    'group_index' => 4,
+                ],
             ],
-            [
-                'group'       => 'api/v1/health',
-                'group_index' => 2
-            ],
-            [
-                'group'       => 'api/v1/users',
-                'group_index' => 0
-            ],
-            [
-                'group'       => 'api/v1/users',
-                'group_index' => 1
-            ],
-            [
-                'group'       => 'api/v1/users',
-                'group_index' => 2
-            ],
-            [
-                'group'       => 'api/v1/users',
-                'group_index' => 3
-            ],
-            [
-                'group'       => 'api/v1/users',
-                'group_index' => 4
-            ]
         ];
+
+        $grouped = $docs
+            ->filter(static fn (array $item) => Str::startsWith($item['uri'], ['users', 'api']))
+            ->map(static fn (array $item) => (new Collection($item))->only(['uri', 'group', 'group_index'])->toArray())
+            ->groupBy('group')
+            ->toArray();
+
+        $this->assertSame($expected, $grouped);
     }
 
-    public function testGroupByURIBackwardCompatible()
+    public function testGroupByURIBackwardCompatible(): void
     {
         // Set to `null` to test backward compatibility.
         Config::set('request-docs.group_by.uri_patterns', []);
@@ -335,7 +350,7 @@ class LaravelRequestDocsControllerTest extends TestCase
             ->assertStatus(Response::HTTP_OK);
     }
 
-    public function testGroupByControllerFullPath()
+    public function testGroupByControllerFullPath(): void
     {
         Route::post('api/group1', [Group1Controller::class, 'store']);
         Route::put('api/group1', [Group1Controller::class, 'update']);
@@ -345,7 +360,7 @@ class LaravelRequestDocsControllerTest extends TestCase
         $response = $this->get(route('request-docs.api') . '?groupby=controller_full_path')
             ->assertStatus(Response::HTTP_OK);
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
         $expected = [
             'Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\API\Group1Controller' => [
@@ -353,13 +368,13 @@ class LaravelRequestDocsControllerTest extends TestCase
                     'method'      => 'store',
                     'http_method' => 'POST',
                     'group'       => 'Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\API\Group1Controller',
-                    'group_index' => 0
+                    'group_index' => 0,
                 ],
                 [
                     'method'      => 'update',
                     'http_method' => 'PUT',
                     'group'       => 'Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\API\Group1Controller',
-                    'group_index' => 1
+                    'group_index' => 1,
                 ],
             ],
             'Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\API\Group2Controller' => [
@@ -367,39 +382,39 @@ class LaravelRequestDocsControllerTest extends TestCase
                     'method'      => 'show',
                     'http_method' => 'GET',
                     'group'       => 'Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\API\Group2Controller',
-                    'group_index' => 0
+                    'group_index' => 0,
                 ],
                 [
                     'method'      => 'show',
                     'http_method' => 'HEAD',
                     'group'       => 'Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\API\Group2Controller',
-                    'group_index' => 1
+                    'group_index' => 1,
                 ],
                 [
                     'method'      => 'destroy',
                     'http_method' => 'DELETE',
                     'group'       => 'Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\API\Group2Controller',
-                    'group_index' => 2
-                ]
-            ]
+                    'group_index' => 2,
+                ],
+            ],
         ];
 
         $grouped = $docs
-            ->filter(fn(array $item) => Str::startsWith($item['uri'], ['api']))
-            ->map(fn(array $item) => collect($item)->only(['method', 'http_method', 'group', 'group_index'])->toArray())
+            ->filter(static fn (array $item) => Str::startsWith($item['uri'], ['api']))
+            ->map(static fn (array $item) => (new Collection($item))->only(['method', 'http_method', 'group', 'group_index'])->toArray())
             ->groupBy('group')
             ->toArray();
 
         $this->assertSame($expected, $grouped);
     }
 
-    public function testOpenApi()
+    public function testOpenApi(): void
     {
         $this->get(route('request-docs.api') . '?openapi=true')
             ->assertStatus(Response::HTTP_OK);
     }
 
-    public function testPath()
+    public function testPath(): void
     {
         Route::get('user/{id}', [PathController::class, 'index'])
             ->where('id', '[0-9]+');
@@ -411,16 +426,16 @@ class LaravelRequestDocsControllerTest extends TestCase
             'id' => ['integer|required|regex:/[0-9]+/'],
         ];
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
-        $pathParameter = $docs->filter(fn(array $doc) => Str::startsWith($doc['uri'], 'user') && $doc['http_method'] === 'GET')
+        $pathParameter = $docs->filter(static fn (array $doc) => Str::startsWith($doc['uri'], 'user') && $doc['http_method'] === 'GET')
             ->pluck('path_parameters')
             ->first();
 
         $this->assertSame($expected, $pathParameter);
     }
 
-    public function testPathWithOptional()
+    public function testPathWithOptional(): void
     {
         Route::get('user/{name?}', [PathController::class, 'optional'])
             ->where('name', '[A-Za-z]+');
@@ -432,16 +447,16 @@ class LaravelRequestDocsControllerTest extends TestCase
             'name' => ['string|nullable|regex:/[A-Za-z]+/'],
         ];
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
-        $pathParameter = $docs->filter(fn(array $doc) => Str::startsWith($doc['uri'], 'user') && $doc['http_method'] === 'GET')
+        $pathParameter = $docs->filter(static fn (array $doc) => Str::startsWith($doc['uri'], 'user') && $doc['http_method'] === 'GET')
             ->pluck('path_parameters')
             ->first();
 
         $this->assertSame($expected, $pathParameter);
     }
 
-    public function testPathWithModelBinding()
+    public function testPathWithModelBinding(): void
     {
         Route::get('user/{user}/{post}/{comment:name}', [PathController::class, 'model']);
 
@@ -454,16 +469,16 @@ class LaravelRequestDocsControllerTest extends TestCase
             'comment:name' => ['string|required'],
         ];
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
-        $pathParameter = $docs->filter(fn(array $doc) => Str::startsWith($doc['uri'], 'user') && $doc['http_method'] === 'GET')
+        $pathParameter = $docs->filter(static fn (array $doc) => Str::startsWith($doc['uri'], 'user') && $doc['http_method'] === 'GET')
             ->pluck('path_parameters')
             ->first();
 
         $this->assertSame($expected, $pathParameter);
     }
 
-    public function testPathWithMethodParametersIsLesser()
+    public function testPathWithMethodParametersIsLesser(): void
     {
         Route::get('user/{id}/{user}/{valid?}', [PathController::class, 'index'])
             ->where('missing', '[A-Za-z]+')
@@ -478,20 +493,20 @@ class LaravelRequestDocsControllerTest extends TestCase
             'valid' => ['string|nullable|regex:/[A-Za-z]+/'],
         ];
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
-        $pathParameter = $docs->filter(fn(array $doc) => Str::startsWith($doc['uri'], 'user') && $doc['http_method'] === 'GET')
+        $pathParameter = $docs->filter(static fn (array $doc) => Str::startsWith($doc['uri'], 'user') && $doc['http_method'] === 'GET')
             ->pluck('path_parameters')
             ->first();
 
         $this->assertSame($expected, $pathParameter);
     }
 
-    public function testPathWithGlobalPattern()
+    public function testPathWithGlobalPattern(): void
     {
         Route::pattern('id', '[0-9]+');
 
-        Route::get('/user/{id}', function (string $id) {
+        Route::get('/user/{id}', static function (string $id): void {
             // Only executed if {id} is numeric...
         });
 
@@ -502,9 +517,9 @@ class LaravelRequestDocsControllerTest extends TestCase
             'id' => ['string|required|regex:/[0-9]+/'],
         ];
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
-        $pathParameter = $docs->filter(fn(array $doc) => Str::startsWith($doc['uri'], 'user') && $doc['http_method'] === 'GET')
+        $pathParameter = $docs->filter(static fn (array $doc) => Str::startsWith($doc['uri'], 'user') && $doc['http_method'] === 'GET')
             ->pluck('path_parameters')
             ->first();
 

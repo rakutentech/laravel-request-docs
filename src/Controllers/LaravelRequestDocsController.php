@@ -8,17 +8,16 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Rakutentech\LaravelRequestDocs\LaravelRequestDocs;
 use Rakutentech\LaravelRequestDocs\LaravelRequestDocsToOpenApi;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class LaravelRequestDocsController extends Controller
 {
-    private LaravelRequestDocs          $laravelRequestDocs;
+    private LaravelRequestDocs $laravelRequestDocs;
     private LaravelRequestDocsToOpenApi $laravelRequestDocsToOpenApi;
 
     public function __construct(LaravelRequestDocs $laravelRequestDoc, LaravelRequestDocsToOpenApi $laravelRequestDocsToOpenApi)
     {
-        $this->laravelRequestDocs          = $laravelRequestDoc;
         $this->laravelRequestDocsToOpenApi = $laravelRequestDocsToOpenApi;
+        $this->laravelRequestDocs          = $laravelRequestDoc;
     }
 
     /**
@@ -36,7 +35,7 @@ class LaravelRequestDocsController extends Controller
     public function api(Request $request): JsonResponse
     {
         $showGet    = !$request->has('showGet') || $request->input('showGet') === 'true';
-        $showPost   = !$request->has('showPost') || $request->input('showPost') == 'true';
+        $showPost   = !$request->has('showPost') || $request->input('showPost') === 'true';
         $showPut    = !$request->has('showPut') || $request->input('showPut') === 'true';
         $showPatch  = !$request->has('showPatch') || $request->input('showPatch') === 'true';
         $showDelete = !$request->has('showDelete') || $request->input('showDelete') === 'true';
@@ -65,9 +64,9 @@ class LaravelRequestDocsController extends Controller
                 $this->laravelRequestDocsToOpenApi->openApi($docs->all())->toArray(),
                 Response::HTTP_OK,
                 [
-                    'Content-type' => 'application/json; charset=utf-8'
+                    'Content-type' => 'application/json; charset=utf-8',
                 ],
-                JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+                JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
             );
         }
 
@@ -77,13 +76,15 @@ class LaravelRequestDocsController extends Controller
             [
                 'Content-type' => 'application/json; charset=utf-8',
             ],
-            JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+            JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
         );
     }
 
     /**
      * @codeCoverageIgnore
-     * @param  \Illuminate\Http\Request  $request
+     */
+
+    /**
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|\Illuminate\Http\JsonResponse
      */
     public function assets(Request $request)
@@ -92,24 +93,31 @@ class LaravelRequestDocsController extends Controller
         $path = end($path);
         // read js, css from dist folder
         $path = base_path() . "/vendor/rakutentech/laravel-request-docs/resources/dist/_astro/" . $path;
+
         if (file_exists($path)) {
             $headers = ['Content-Type' => 'text/plain'];
+
             // set MIME type to js module
             if (str_ends_with($path, '.js')) {
                 $headers = ['Content-Type' => 'application/javascript'];
             }
+
             if (str_ends_with($path, '.css')) {
                 $headers = ['Content-Type' => 'text/css'];
             }
+
             if (str_ends_with($path, '.woff')) {
                 $headers = ['Content-Type' => 'font/woff'];
             }
+
             if (str_ends_with($path, '.woff2')) {
                 $headers = ['Content-Type' => 'font/woff2'];
             }
+
             if (str_ends_with($path, '.png')) {
                 $headers = ['Content-Type' => 'image/png'];
             }
+
             if (str_ends_with($path, '.jpg')) {
                 $headers = ['Content-Type' => 'image/jpg'];
             }
@@ -119,19 +127,18 @@ class LaravelRequestDocsController extends Controller
             $headers['Expires']       = gmdate('D, d M Y H:i:s \G\M\T', time() + 1800);
             return response()->file($path, $headers);
         }
+
         return response()->json(['error' => 'file not found'], 404);
     }
 
     /**
      * @codeCoverageIgnore
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
      */
-    public function config(Request $request)
+    public function config(Request $request): JsonResponse
     {
         $config = [
-            'title' => config('request-docs.title'),
-            'default_headers'  => config('request-docs.default_headers'),
+            'title'           => config('request-docs.title'),
+            'default_headers' => config('request-docs.default_headers'),
         ];
         return response()->json($config);
     }

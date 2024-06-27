@@ -1,7 +1,7 @@
 on:
   - push
 
-name: CI PHP
+name: "CI PHP test"
 
 jobs:
   test:
