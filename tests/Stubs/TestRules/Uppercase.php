@@ -23,6 +23,7 @@ class Uppercase implements Rule
 
     /**
      * @inheritDoc
+     * @return string|string[]
      */
     public function message()
     {

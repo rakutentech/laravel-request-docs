@@ -5,6 +5,7 @@ namespace Rakutentech\LaravelRequestDocs;
 use Illuminate\Contracts\Support\Arrayable;
 
 /**
+ * @template-implements \Illuminate\Contracts\Support\Arrayable<string, mixed>
  * @codeCoverageIgnore
  */
 class Doc implements Arrayable

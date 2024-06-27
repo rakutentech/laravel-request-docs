@@ -4,6 +4,7 @@ namespace Rakutentech\LaravelRequestDocs\Tests\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
@@ -39,7 +40,7 @@ class LaravelRequestDocsControllerTest extends TestCase
         $response = $this->get(route('request-docs.api'))
             ->assertStatus(Response::HTTP_OK);
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
         $this->assertEmpty($docs->pluck('middlewares')->flatten()->toArray());
         $this->assertSame([''], $docs->pluck('controller')->flatten()->unique()->toArray());
@@ -54,7 +55,7 @@ class LaravelRequestDocsControllerTest extends TestCase
         $response = $this->get(route('request-docs.api'))
             ->assertStatus(Response::HTTP_OK);
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
         $this->assertSame(
             [
@@ -89,7 +90,7 @@ class LaravelRequestDocsControllerTest extends TestCase
             $response = $this->get(route('request-docs.api') . '?' . $request . '=false')
                 ->assertStatus(Response::HTTP_OK);
 
-            $docs = collect($response->json());
+            $docs = new Collection($response->json());
 
             $expected = array_filter([
                 Request::METHOD_DELETE,
@@ -121,7 +122,7 @@ class LaravelRequestDocsControllerTest extends TestCase
         $response = $this->get(route('request-docs.api'))
             ->assertStatus(Response::HTTP_OK);
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
         foreach ($docs as $doc) {
             $this->assertStringStartsWith('welcome', $doc['uri']);
@@ -133,7 +134,7 @@ class LaravelRequestDocsControllerTest extends TestCase
         $response = $this->get(route('request-docs.api'))
             ->assertStatus(Response::HTTP_OK);
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
         // Sort manually.
         $expected = $docs->pluck('uri')->unique()->sort()->values()->toArray();
@@ -141,7 +142,7 @@ class LaravelRequestDocsControllerTest extends TestCase
         $response = $this->get(route('request-docs.api') . '?sort=route_names')
             ->assertStatus(Response::HTTP_OK);
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
         $sorted = $docs->pluck('uri')->unique()->values()->toArray();
 
@@ -153,7 +154,7 @@ class LaravelRequestDocsControllerTest extends TestCase
         $response = $this->get(route('request-docs.api') . '?sort=method_names')
             ->assertStatus(Response::HTTP_OK);
 
-        $docs   = collect($response->json());
+        $docs   = new Collection($response->json());
         $sorted = $docs->pluck('http_method')->unique()->values()->toArray();
 
         $this->assertSame(
@@ -185,7 +186,7 @@ class LaravelRequestDocsControllerTest extends TestCase
         $response = $this->get(route('request-docs.api') . '?groupby=api_uri')
             ->assertStatus(Response::HTTP_OK);
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
         $expected = [
             'api/users'       => [
@@ -259,7 +260,7 @@ class LaravelRequestDocsControllerTest extends TestCase
 
         $grouped = $docs
             ->filter(static fn (array $item) => Str::startsWith($item['uri'], ['users', 'api']))
-            ->map(static fn (array $item) => collect($item)->only(['uri', 'group', 'group_index'])->toArray())
+            ->map(static fn (array $item) => (new Collection($item))->only(['uri', 'group', 'group_index'])->toArray())
             ->groupBy('group')
             ->toArray();
 
@@ -282,7 +283,7 @@ class LaravelRequestDocsControllerTest extends TestCase
         $response = $this->get(route('request-docs.api') . '?groupby=api_uri')
             ->assertStatus(Response::HTTP_OK);
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
         $expected = [
             'api/v1/health' => [
@@ -333,7 +334,7 @@ class LaravelRequestDocsControllerTest extends TestCase
 
         $grouped = $docs
             ->filter(static fn (array $item) => Str::startsWith($item['uri'], ['users', 'api']))
-            ->map(static fn (array $item) => collect($item)->only(['uri', 'group', 'group_index'])->toArray())
+            ->map(static fn (array $item) => (new Collection($item))->only(['uri', 'group', 'group_index'])->toArray())
             ->groupBy('group')
             ->toArray();
 
@@ -359,7 +360,7 @@ class LaravelRequestDocsControllerTest extends TestCase
         $response = $this->get(route('request-docs.api') . '?groupby=controller_full_path')
             ->assertStatus(Response::HTTP_OK);
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
         $expected = [
             'Rakutentech\LaravelRequestDocs\Tests\Stubs\TestControllers\API\Group1Controller' => [
@@ -400,7 +401,7 @@ class LaravelRequestDocsControllerTest extends TestCase
 
         $grouped = $docs
             ->filter(static fn (array $item) => Str::startsWith($item['uri'], ['api']))
-            ->map(static fn (array $item) => collect($item)->only(['method', 'http_method', 'group', 'group_index'])->toArray())
+            ->map(static fn (array $item) => (new Collection($item))->only(['method', 'http_method', 'group', 'group_index'])->toArray())
             ->groupBy('group')
             ->toArray();
 
@@ -425,7 +426,7 @@ class LaravelRequestDocsControllerTest extends TestCase
             'id' => ['integer|required|regex:/[0-9]+/'],
         ];
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
         $pathParameter = $docs->filter(static fn (array $doc) => Str::startsWith($doc['uri'], 'user') && $doc['http_method'] === 'GET')
             ->pluck('path_parameters')
@@ -446,7 +447,7 @@ class LaravelRequestDocsControllerTest extends TestCase
             'name' => ['string|nullable|regex:/[A-Za-z]+/'],
         ];
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
         $pathParameter = $docs->filter(static fn (array $doc) => Str::startsWith($doc['uri'], 'user') && $doc['http_method'] === 'GET')
             ->pluck('path_parameters')
@@ -468,7 +469,7 @@ class LaravelRequestDocsControllerTest extends TestCase
             'comment:name' => ['string|required'],
         ];
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
         $pathParameter = $docs->filter(static fn (array $doc) => Str::startsWith($doc['uri'], 'user') && $doc['http_method'] === 'GET')
             ->pluck('path_parameters')
@@ -492,7 +493,7 @@ class LaravelRequestDocsControllerTest extends TestCase
             'valid' => ['string|nullable|regex:/[A-Za-z]+/'],
         ];
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
         $pathParameter = $docs->filter(static fn (array $doc) => Str::startsWith($doc['uri'], 'user') && $doc['http_method'] === 'GET')
             ->pluck('path_parameters')
@@ -516,7 +517,7 @@ class LaravelRequestDocsControllerTest extends TestCase
             'id' => ['string|required|regex:/[0-9]+/'],
         ];
 
-        $docs = collect($response->json());
+        $docs = new Collection($response->json());
 
         $pathParameter = $docs->filter(static fn (array $doc) => Str::startsWith($doc['uri'], 'user') && $doc['http_method'] === 'GET')
             ->pluck('path_parameters')

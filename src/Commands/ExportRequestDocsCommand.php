@@ -108,6 +108,9 @@ class ExportRequestDocsCommand extends Command
         return true;
     }
 
+    /**
+     * @param  \Illuminate\Support\Collection<int, \Rakutentech\LaravelRequestDocs\Doc>  $docs
+     */
     private function writeApiDocsToFile(Collection $docs): bool
     {
         $content = json_encode(

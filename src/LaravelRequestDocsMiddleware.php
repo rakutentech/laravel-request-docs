@@ -50,13 +50,12 @@ class LaravelRequestDocsMiddleware extends QueryLogger
         }
 
         if (!config('app.debug') && $request->headers->has('X-Request-LRD')) {
+            /** @var \Illuminate\Http\JsonResponse $response */
             $response    = $next($request);
             $jsonContent = json_encode([
-                // because php stan is not what it used to be
-                /** @phpstan-ignore-next-line */
                 'data' => $response->getData(),
             ]);
-            $response->setContent($jsonContent);
+            $response->setContent((string) $jsonContent);
             return $response;
         }
 
@@ -100,9 +99,17 @@ class LaravelRequestDocsMiddleware extends QueryLogger
 
         $jsonContent = json_encode($content);
 
+        if (!$jsonContent) {
+            return $next($request);
+        }
+
         if (in_array('gzip', $request->getEncodings()) && function_exists('gzencode')) {
             $level             = 9; // Best compression.
             $compressedContent = gzencode($jsonContent, $level);
+
+            if ($compressedContent === false) {
+                return $next($request);
+            }
 
             // Create a new response object with compressed content.
             $response = new Response($compressedContent);
@@ -142,8 +149,10 @@ class LaravelRequestDocsMiddleware extends QueryLogger
 
     public function listenToModels(): void
     {
-        Event::listen('eloquent.*', function (string $event, $models): void {
+        Event::listen('eloquent.*', function (string $event, array $models): void {
             foreach (array_filter($models) as $model) {
+                /** @var \Illuminate\Database\Eloquent\Model $model */
+
                 // doing and booted ignore
                 if ($this->shouldIgnore($event)) {
                     continue;

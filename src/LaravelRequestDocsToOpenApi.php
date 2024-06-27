@@ -34,14 +34,13 @@ namespace Rakutentech\LaravelRequestDocs;
  *
  * @phpstan-type RequestBody array{
  *     description: string,
- *     content: array{
- *         string: array{
+ *     content: array<string, array{
  *             schema: array{
  *                 type: string,
  *                 properties: array<string, Property>
  *             }
  *         }
- *     }
+ *     >
  * }
  */
 class LaravelRequestDocsToOpenApi

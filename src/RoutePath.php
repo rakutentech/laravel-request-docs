@@ -46,6 +46,7 @@ class RoutePath
     {
         $bindableParameters = $this->getBindableParameters($route);
 
+        /** @var string $parameterName */
         foreach ($route->parameterNames() as $position => $parameterName) {
             // Check `$bindableParameters` existence by comparing the position of route parameters.
             if (!isset($bindableParameters[$position])) {
@@ -109,15 +110,15 @@ class RoutePath
      * This method will filter {@see \Illuminate\Http\Request}.
      * The ordering of returned parameter should be maintained to match with route path parameter.
      *
-     * @return array<int, array{parameter: \ReflectionParameter, class: \ReflectionClass|null}>
+     * @return array<int, array{parameter: \ReflectionParameter, class: \ReflectionClass<\Illuminate\Database\Eloquent\Model>|null}>
      * @throws \ReflectionException
      */
     private function getBindableParameters(Route $route): array
     {
-        /** @var array<int, array{parameter: \ReflectionParameter, class: \ReflectionClass|null}> $parameters */
         $parameters = [];
 
         foreach ($route->signatureParameters() as $reflectionParameter) {
+            /** @var class-string<\Illuminate\Database\Eloquent\Model>|null $className */
             $className = Reflector::getParameterClassName($reflectionParameter);
 
             // Is native type.
@@ -220,6 +221,7 @@ class RoutePath
     {
         $mutatedPath = [];
 
+        /** @var string $name */
         foreach ($route->parameterNames() as $name) {
             $bindingName = $route->bindingFieldFor($name);
 

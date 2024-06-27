@@ -40,7 +40,6 @@ class LaravelRequestDocs
             Request::METHOD_HEAD   => $showHead,
         ], static fn (bool $shouldShow) => $shouldShow);
 
-        /** @var string[] $methods */
         $methods = array_keys($filteredMethods);
 
         $docs = $this->getControllersInfo($methods);
@@ -57,7 +56,6 @@ class LaravelRequestDocs
      */
     public function splitByMethods(Collection $docs): Collection
     {
-        /** @var \Illuminate\Support\Collection<int, \Rakutentech\LaravelRequestDocs\Doc> $splitDocs */
         $splitDocs = collect();
 
         foreach ($docs as $doc) {
@@ -141,7 +139,6 @@ class LaravelRequestDocs
     public function getControllersInfo(array $onlyMethods): Collection
     {
         $docs = collect();
-        /** @var \Illuminate\Support\Collection<int, \Rakutentech\LaravelRequestDocs\Doc> $docs */
 
         $routes = Route::getRoutes()->getRoutes();
 
@@ -171,6 +168,7 @@ class LaravelRequestDocs
 
             // `$route->action['uses']` value is either 'Class@method' string or Closure.
             if (is_string($route->action['uses']) && !RouteAction::containsSerializedClosure($route->action)) {
+                /** @var array{0: class-string<\Illuminate\Routing\Controller>, 1: string} $controllerCallback */
                 $controllerCallback = Str::parseCallback($route->action['uses']);
                 $controllerFullPath = $controllerCallback[0];
                 $method             = $controllerCallback[1];
@@ -234,7 +232,6 @@ class LaravelRequestDocs
             $lrdDocComments = [];
 
             foreach ($controllerReflectionMethod->getParameters() as $param) {
-                /** @var \ReflectionNamedType|\ReflectionUnionType|\ReflectionIntersectionType|null $namedType */
                 $namedType = $param->getType();
 
                 if (!$namedType) {
@@ -242,8 +239,17 @@ class LaravelRequestDocs
                 }
 
                 try {
+                    if (!method_exists($namedType, 'getName')) {
+                        continue;
+                    }
+
                     $requestClassName = $namedType->getName();
-                    $reflectionClass  = new ReflectionClass($requestClassName);
+
+                    if (!class_exists($requestClassName)) {
+                        continue;
+                    }
+
+                    $reflectionClass = new ReflectionClass($requestClassName);
 
                     try {
                         $requestObject = $reflectionClass->newInstance();
@@ -320,12 +326,11 @@ class LaravelRequestDocs
     /**
      * Parse rules from the request.
      *
-     * @param  array<string, \Illuminate\Contracts\Validation\Rule|array|string>  $mixedRules
+     * @param  array<string, \Illuminate\Contracts\Validation\Rule|array<\Illuminate\Contracts\Validation\Rule|string>|string>  $mixedRules
      * @return array<string, string[]>  Key is attribute, value is a list of rules.
      */
     public function flattenRules(array $mixedRules): array
     {
-        /** @var array<string, string[]> $rules */
         $rules = [];
 
         foreach ($mixedRules as $attribute => $rule) {
@@ -335,7 +340,6 @@ class LaravelRequestDocs
             }
 
             if (is_array($rule)) {
-                /** @var string[] $rulesStrs */
                 $rulesStrs = [];
 
                 foreach ($rule as $ruleItem) {
@@ -361,7 +365,12 @@ class LaravelRequestDocs
     public function rulesByRegex(string $requestClassName, string $methodName): array
     {
         $data  = new ReflectionMethod($requestClassName, $methodName);
-        $lines = file($data->getFileName());
+        $lines = file((string) $data->getFileName());
+
+        if ($lines === false) {
+            return [];
+        }
+
         $rules = [];
 
         for ($i = $data->getStartLine() - 1; $i <= $data->getEndLine() - 1; $i++) {
@@ -390,7 +399,7 @@ class LaravelRequestDocs
                 return ['key' => $fieldName, 'rules' => $definedFieldRules];
             })
             ->keyBy('key')
-            ->transform(static fn ($item) => $item['rules'])
+            ->map(static fn ($item) => $item['rules'])
             ->toArray();
     }
 
@@ -429,7 +438,6 @@ class LaravelRequestDocs
      */
     private function customResponsesDocComment(string $docComment): array
     {
-        /** @var string[] $params */
         $params = [];
 
         foreach (explode("\n", $docComment) as $comment) {
@@ -450,7 +458,7 @@ class LaravelRequestDocs
     }
 
     /**
-     * @param  string[]  $delimiters
+     * @param  array<non-empty-string>  $delimiters
      * @return string[]
      */
     private function multiExplode(array $delimiters, string $string): array
@@ -471,7 +479,6 @@ class LaravelRequestDocs
         $regex = count($patterns) > 0 ? '(' . implode('|', $patterns) . ')' : '';
 
         // A collection<string, int> to remember indexes with `group` => `index` pair.
-        /** @var \Illuminate\Support\Collection<string, int> $groupIndexes */
         $groupIndexes = collect();
 
         foreach ($docs as $doc) {
@@ -484,7 +491,7 @@ class LaravelRequestDocs
 
             $group = $this->getGroupByURI($prefix ?? '', $doc->getUri());
             $this->rememberGroupIndex($groupIndexes, $group);
-            $this->setGroupInfo($doc, $group, $groupIndexes->get($group));
+            $this->setGroupInfo($doc, $group, (int) $groupIndexes->get($group));
         }
     }
 
@@ -513,13 +520,12 @@ class LaravelRequestDocs
     private function groupDocsByFQController(Collection $docs): void
     {
         // To remember group indexes with group => index pair.
-        /** @var \Illuminate\Support\Collection<string, int> $groupIndexes */
         $groupIndexes = collect();
 
         foreach ($docs as $doc) {
             $group = $doc->getControllerFullPath();
             $this->rememberGroupIndex($groupIndexes, $group);
-            $this->setGroupInfo($doc, $group, $groupIndexes->get($group));
+            $this->setGroupInfo($doc, $group, (int) $groupIndexes->get($group));
         }
     }
 

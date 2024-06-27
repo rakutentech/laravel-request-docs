@@ -2,6 +2,7 @@
 
 namespace Rakutentech\LaravelRequestDocs\Tests;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
@@ -34,7 +35,7 @@ class LaravelRequestDocsMiddlewareTest extends TestCase
         $response = $this->get('middleware', ['X-Request-LRD' => true])
             ->assertStatus(200);
 
-        $content = collect($response->json());
+        $content = new Collection($response->json());
 
         $this->assertSame(['test' => true], $content->get('data'));
 
@@ -54,7 +55,7 @@ class LaravelRequestDocsMiddlewareTest extends TestCase
         $response = $this->get('middleware', ['X-Request-LRD' => true])
             ->assertStatus(200);
 
-        $content = collect($response->json());
+        $content = new Collection($response->json());
 
         $this->assertSame('abc', $content->get('data'));
 
@@ -86,7 +87,7 @@ class LaravelRequestDocsMiddlewareTest extends TestCase
         $response = $this->get('middleware', ['X-Request-LRD' => true])
             ->assertStatus(200);
 
-        $content = collect($response->json());
+        $content = new Collection($response->json());
 
         $lrd = $content->get('_lrd');
 
@@ -109,7 +110,7 @@ class LaravelRequestDocsMiddlewareTest extends TestCase
         $response = $this->get('middleware', ['X-Request-LRD' => true])
             ->assertStatus(200);
 
-        $content = collect($response->json());
+        $content = new Collection($response->json());
 
         $lrd = $content->get('_lrd');
 
