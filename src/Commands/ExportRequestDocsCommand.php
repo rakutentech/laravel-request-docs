@@ -73,8 +73,8 @@ class ExportRequestDocsCommand extends Command
 
             // Loop and split Doc by the `methods` property.
             $docs = $this->laravelRequestDocs->splitByMethods($docs);
-            $docs = $this->laravelRequestDocs->sortDocs($docs, $this->option('sort'));
-            $docs = $this->laravelRequestDocs->groupDocs($docs, $this->option('groupby'));
+            $docs = $this->laravelRequestDocs->sortDocs($docs, $this->option('sort') ?? 'default');
+            $docs = $this->laravelRequestDocs->groupDocs($docs, $this->option('groupby') ?? 'default');
 
             if (!$this->writeApiDocsToFile($docs)) {
                 throw new ErrorException("Failed to write on [{$this->exportFilePath}] file.");
