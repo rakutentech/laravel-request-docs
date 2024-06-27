@@ -1,6 +1,6 @@
 on: [push]
 
-name: "CI PHP"
+name: "CI PHP lint"
 
 jobs:
   test:
