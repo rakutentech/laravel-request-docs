@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        php: [7.4, 8.0, 8.1, 8.2, 8.3]
+        php: [8.0, 8.1, 8.2, 8.3]
         laravel: ['8.*', '11.*']
         include:
           - php: 8.0
@@ -27,8 +27,6 @@ jobs:
           - php: '8.2'
             laravel: 11.*
         exclude:
-          - laravel: 11.*
-            php: 7.4
           - laravel: 11.*
             php: 8.0
           - laravel: 11.*
