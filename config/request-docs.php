@@ -48,6 +48,7 @@ return [
     // Later the local storage is used when edits are made
     'default_headers' => [
         'Content-Type' => 'application/json',
+        'Accept' => 'application/json',
     ],
 
     // By default, LRD group your routes by the first /path.
