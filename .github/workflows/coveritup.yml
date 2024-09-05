@@ -1,0 +1,76 @@
+on:
+  - push
+
+name: "CoveritUp"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php: [8.3]
+    name: PHP ${{ matrix.php }}
+
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install tools
+        run: |
+          curl -sLk https://raw.githubusercontent.com/kevincobain2000/cover-totalizer/master/install.sh | sh
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-versions }}
+
+      - name: Install PHP with extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: pcov
+          extensions: intl, gd, zip, pdo, sqlite, pdo_sqlite, dom, curl, libxml, mbstring, fileinfo, exif, iconv
+          ini-values: memory_limit=-1,disable_functions="",pcov.exclude="~(vendor|tests|node_modules)~",pcov.directory="./"
+          php-version: ${{ matrix.php }}
+          tools: composer:v2
+
+      - name: NPM Install Time
+        uses: kevincobain2000/action-coveritup@v2
+        with:
+          type: npm-install-time
+          metric: sec
+          command: cd ui/; npm install
+          record: runtime
+
+      - name: Composer Install Time
+        uses: kevincobain2000/action-coveritup@v2
+        with:
+          type: composer-install-time
+          metric: sec
+          command: composer install
+          record: runtime
+
+      - name: PHPUNIT Tests
+        uses: kevincobain2000/action-coveritup@v2
+        with:
+          type: phpunit-run-time
+          metric: sec
+          command: ./vendor/bin/phpunit --coverage-clover=coverage.xml
+          record: runtime
+
+      - name: Code Coverage
+        uses: kevincobain2000/action-coveritup@v2
+        with:
+          type: phpunit-coverage
+          metric: '%'
+          command: ./cover-totalizer coverage.xml
+
+      - name: "Comment on PR"
+        uses: kevincobain2000/action-coveritup@v2
+        with:
+          pr_comment: true
+          diff_types: phpunit-coverage
