@@ -61,10 +61,4 @@ jobs:
 
       - name: PHPUNIT Tests
         run: |
-          ./vendor/bin/phpunit --coverage-clover=coverage.xml
-
-      - name: Upload to codecov
-        uses: codecov/codecov-action@v3
-        with:
-          name: PHP ${{ matrix.php }}
-          files: coverage.xml
+          ./vendor/bin/phpunit
