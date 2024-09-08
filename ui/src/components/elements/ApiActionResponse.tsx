@@ -27,7 +27,8 @@ export default function ApiActionResponse(props: Props) {
     const [previousResponse, setPreviousResponse] = useLocalStorage('previousResponse' + requestUri + method, '');
     const [isHtml, setIsHtml] = useState(false);
     useEffect(() => {
-        if (JSON.parse(responseHeaders)['content-type'].split(';')[0] === 'text/html') {
+
+        if (responseHeaders && JSON.parse(responseHeaders)['content-type'].split(';')[0] === 'text/html') {
             setIsHtml(true)
         }
 
