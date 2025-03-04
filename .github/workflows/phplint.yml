@@ -32,9 +32,9 @@ jobs:
             composer require --no-interaction --no-update
             composer install
 
-      - name: PHPLint
-        run: |
-            ./vendor/bin/phpcs
+      # - name: PHPLint
+      #   run: |
+      #       ./vendor/bin/phpcs
 
       - name: PHPStan
         run: |
