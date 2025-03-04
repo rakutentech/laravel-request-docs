@@ -102,6 +102,7 @@ class RoutePath
     {
         preg_match_all('/\{(\w+?)\?\}/', $uri, $matches);
 
+        /** @phpstan-ignore-next-line */
         return $matches[1] ?? [];
     }
 

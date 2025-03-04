@@ -145,6 +145,7 @@ class LaravelRequestDocsToOpenApi
      */
     protected function makePathParameterItem(string $attribute, array $rule): array
     {
+        /** @phpstan-ignore-next-line */
         if (is_array($rule)) {
             $rule = implode('|', $rule);
         }

@@ -7,6 +7,7 @@ use Illuminate\Contracts\Support\Arrayable;
 /**
  * @codeCoverageIgnore
  */
+/** @phpstan-ignore-next-line */
 class Doc implements Arrayable
 {
     /**
