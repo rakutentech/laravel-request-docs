@@ -24,6 +24,16 @@
   <img src="https://github.com/rakutentech/laravel-request-docs/actions/workflows/phptest.yml/badge.svg?branch=master" alt="CI PHP">
 </p>
 
+![npm-install-time](https://coveritup.app/badge?org=rakutentech&repo=laravel-request-docs&branch=master&type=npm-install-time)
+![composer-install-time](https://coveritup.app/badge?org=rakutentech&repo=laravel-request-docs&branch=master&type=composer-install-time)
+![phpunit-run-time](https://coveritup.app/badge?org=rakutentech&repo=laravel-request-docs&branch=master&type=phpunit-run-time)
+![phpunit-coverage](https://coveritup.app/badge?org=rakutentech&repo=laravel-request-docs&branch=master&type=phpunit-coverage)
+
+![npm-install-time](https://coveritup.app/chart?org=rakutentech&repo=laravel-request-docs&branch=master&type=npm-install-time&theme=light&line=fill&width=150&height=150&output=svg&line=fill)
+![composer-install-time](https://coveritup.app/chart?org=rakutentech&repo=laravel-request-docs&branch=master&type=composer-install-time&theme=light&line=fill&width=150&height=150&output=svg&line=fill)
+![phpunit-run-time](https://coveritup.app/chart?org=rakutentech&repo=laravel-request-docs&branch=master&type=phpunit-run-time&theme=light&line=fill&width=150&height=150&output=svg&line=fill)
+![phpunit-coverage](https://coveritup.app/chart?org=rakutentech&repo=laravel-request-docs&branch=master&type=phpunit-coverage&theme=light&line=fill&width=150&height=150&output=svg&line=fill)
+
 **Fast** Install on any Laravel Project
 
 **Hassle Free** Auto Generate API Documentation for request rules and parameters
