@@ -246,6 +246,7 @@ Fixing lints
 - v2.28 Allow extra documentation to be defined on the `rules` method of the Request class. By @Ken-vdE
 - v2.31 Customized title, vup js and PHP to latest. Customized headers. Save response history.
 - v2.40 A few bug fixes.
+- v2.42 Laravel 12 support
 
 
 # Contributors
