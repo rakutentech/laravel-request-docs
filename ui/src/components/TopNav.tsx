@@ -26,10 +26,13 @@ interface Props {
         sort: string,
         groupby: string) => void
     handleSearch: (search: string) => void
+    config: {
+        title: string
+    }
 }
 export default function TopNav(props: Props) {
 
-    const { handleChangeSettings, handleSearch } = props
+    const { handleChangeSettings, handleSearch, config } = props
     const [theme, setTheme] = useLocalStorage('theme', '');
     const [sort, setSort] = useLocalStorage('sort', 'default');
     const [groupby, setGroupby] = useLocalStorage('groupby', 'default');
@@ -116,7 +119,7 @@ export default function TopNav(props: Props) {
                 <div className="flex-1">
                     <div className="normal-case text-xl">
                         <span className="pl-2">
-                            <span className='title'>Laravel Request Docs</span>
+                            <span className='title'>{config.title}</span>
                             <sup className='pl-2'>
                                 <small>
                                     <a className="link link-info" href={`https://github.com/rakutentech/laravel-request-docs/releases/tag/${import.meta.env.PUBLIC_VERSION}`} target="_blank" rel="noreferrer">
@@ -277,4 +280,3 @@ export default function TopNav(props: Props) {
     )
 
 }
-
