@@ -113,13 +113,16 @@ export default function TopNav(props: Props) {
         document.documentElement.setAttribute('data-theme', 'light');
     }, [])
 
+    // Use a default title if config.title is empty or only whitespace
+    const title = config.title && config.title.trim() !== '' ? config.title : 'Laravel Request Docs';
+
     return (
         <header className="relative bg-none">
             <div className="navbar bg-base-200">
                 <div className="flex-1">
                     <div className="normal-case text-xl">
                         <span className="pl-2">
-                            <span className='title'>{config.title}</span>
+                            <span className='title'>{title}</span>
                             <sup className='pl-2'>
                                 <small>
                                     <a className="link link-info" href={`https://github.com/rakutentech/laravel-request-docs/releases/tag/${import.meta.env.PUBLIC_VERSION}`} target="_blank" rel="noreferrer">
