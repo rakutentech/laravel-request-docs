@@ -12,7 +12,9 @@ export default function ApiInfoRules(props: Props) {
     const { rules, mainRule } = props
     const StyledRule = (rule: any): JSX.Element => {
         const theRule = rule.rule
-        const split = theRule.split(':')
+        const _tmp = theRule.split(':')
+        const split = _tmp.splice(0, 1);
+        _tmp.length && split.push(_tmp.join(':'));
 
         if (theRule == 'url') {
             return (
