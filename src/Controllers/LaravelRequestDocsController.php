@@ -92,40 +92,50 @@ class LaravelRequestDocsController extends Controller
         $path = explode('/', $request->path());
         $path = end($path);
         // read js, css from dist folder
-        $path = base_path() . "/vendor/rakutentech/laravel-request-docs/resources/dist/_astro/" . $path;
+        $baseDirectory = base_path() . "/vendor/rakutentech/laravel-request-docs/resources/dist/_astro";
 
-        if (file_exists($path)) {
-            $headers = ['Content-Type' => 'text/plain'];
+        // Sanitize filename and block traversal
+        $path = basename((string) $path);
 
-            // set MIME type to js module
-            if (str_ends_with($path, '.js')) {
-                $headers = ['Content-Type' => 'application/javascript'];
-            }
+        // Whitelist extensions (security hardening)
+        $allowed = [
+            'js'   => 'application/javascript',
+            'css'  => 'text/css',
+            'woff' => 'font/woff',
+            'woff2' => 'font/woff2',
+            'png'  => 'image/png',
+            'jpg'  => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+        ];
 
-            if (str_ends_with($path, '.css')) {
-                $headers = ['Content-Type' => 'text/css'];
-            }
+        $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        if ($ext === '' || !array_key_exists($ext, $allowed)) {
+            return response()->json(['error' => 'file not found'], 404);
+        }
 
-            if (str_ends_with($path, '.woff')) {
-                $headers = ['Content-Type' => 'font/woff'];
-            }
+        // Build candidate path and ensure it stays under _astro
+        $candidate = $baseDirectory . DIRECTORY_SEPARATOR . $path;
 
-            if (str_ends_with($path, '.woff2')) {
-                $headers = ['Content-Type' => 'font/woff2'];
-            }
+        $baseReal = realpath($baseDirectory);
+        $fileReal = realpath($candidate);
 
-            if (str_ends_with($path, '.png')) {
-                $headers = ['Content-Type' => 'image/png'];
-            }
+        if ($baseReal === false || $fileReal === false) {
+            return response()->json(['error' => 'file not found'], 404);
+        }
 
-            if (str_ends_with($path, '.jpg')) {
-                $headers = ['Content-Type' => 'image/jpg'];
-            }
+        $prefix = $baseReal . DIRECTORY_SEPARATOR;
+        if (strncmp($fileReal, $prefix, strlen($prefix)) !== 0) {
+            return response()->json(['error' => 'file not found'], 404);
+        }
+
+        if (is_file($fileReal)) {
+            $headers = ['Content-Type' => $allowed[$ext]];
 
             // set cache control headers
             $headers['Cache-Control'] = 'public, max-age=1800';
             $headers['Expires']       = gmdate('D, d M Y H:i:s \G\M\T', time() + 1800);
-            return response()->file($path, $headers);
+
+            return response()->file($fileReal, $headers);
         }
 
         return response()->json(['error' => 'file not found'], 404);
