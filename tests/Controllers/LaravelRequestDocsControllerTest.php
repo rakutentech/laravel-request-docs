@@ -17,6 +17,24 @@ use Rakutentech\LaravelRequestDocs\Tests\TestCase;
 
 class LaravelRequestDocsControllerTest extends TestCase
 {
+    private string $astroDir;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->astroDir = base_path('vendor/rakutentech/laravel-request-docs/resources/dist/_astro');
+        @mkdir($this->astroDir, 0755, true);
+        file_put_contents($this->astroDir . '/app.js', '// dummy');
+        file_put_contents($this->astroDir . '/style.css', '/* dummy */');
+    }
+
+    public function tearDown(): void
+    {
+        @unlink($this->astroDir . '/app.js');
+        @unlink($this->astroDir . '/style.css');
+        parent::tearDown();
+    }
+
     public function testApiMain(): void
     {
         // skip these tests
@@ -526,5 +544,62 @@ class LaravelRequestDocsControllerTest extends TestCase
             ->first();
 
         $this->assertSame($expected, $pathParameter);
+    }
+
+    public function testServeStaticFileReturnsJsWithCorrectHeaders(): void
+    {
+        $this->get(route('request-docs.assets', ['slug' => 'app.js']))
+            ->assertStatus(Response::HTTP_OK)
+            ->assertHeader('Content-Type', 'application/javascript')
+            ->assertHeader('Cache-Control', 'max-age=1800, public');
+    }
+
+    public function testServeStaticFileReturnsCssWithCorrectHeaders(): void
+    {
+        $this->get(route('request-docs.assets', ['slug' => 'style.css']))
+            ->assertStatus(Response::HTTP_OK)
+            ->assertHeader('Content-Type', 'text/css; charset=utf-8');
+    }
+
+    public function testDisallowedExtensionReturns404(): void
+    {
+        $this->get(route('request-docs.assets', ['slug' => 'evil.php']))
+            ->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    public function testDisallowedExtensionEnvReturns404(): void
+    {
+        $this->get(route('request-docs.assets', ['slug' => '.env']))
+            ->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    public function testPathTraversalReturns404(): void
+    {
+        $this->get(route('request-docs.assets', ['slug' => '../../etc/passwd']))
+            ->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    public function testPathTraversalWithEncodedDotsReturns404(): void
+    {
+        $this->get(route('request-docs.assets', ['slug' => '..%2F..%2Fetc%2Fpasswd']))
+            ->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    public function testNonExistentFileReturns404(): void
+    {
+        $this->get(route('request-docs.assets', ['slug' => 'nonexistent.js']))
+            ->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    public function testNoExtensionReturns404(): void
+    {
+        $this->get(route('request-docs.assets', ['slug' => 'noextension']))
+            ->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    public function testPathTraversalWithJsExtensionReturns404(): void
+    {
+        $this->get(route('request-docs.assets', ['slug' => '../../etc/passwd.js']))
+            ->assertStatus(Response::HTTP_NOT_FOUND);
     }
 }
